@@ -144,9 +144,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="bin\Debug\Bitmaps\index_card.bmp" />
-  </ItemGroup>
-  <ItemGroup>
+    <None Include="Bitmaps\index_card.bmp" />
     <Content Include="FlashCard.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
