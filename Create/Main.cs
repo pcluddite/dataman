@@ -16,9 +16,9 @@ namespace Virtual_Flash_Cards.Create
         
         public bool saved = false;
 
-        Form1 form;
+        MainForm form;
         Control control;
-        public Main(Quiz q, Form1 Form)
+        public Main(Quiz q, MainForm Form)
         {
             InitializeComponent();
             form = Form;

@@ -12,11 +12,11 @@ namespace Virtual_Flash_Cards.Start
     public partial class WrongAns : Form
     {
         private Finished fin;
-        private Form1 form1;
+        private MainForm form1;
 
         private int current = 0;
 
-        public WrongAns(Finished form, Form1 frm1)
+        public WrongAns(Finished form, MainForm frm1)
         {
             InitializeComponent();
             fin = form;

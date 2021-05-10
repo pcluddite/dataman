@@ -14,9 +14,9 @@ namespace Virtual_Flash_Cards.Start
         public Quiz wrongAns;
         public int correct;
         public int incorrect;
-        public Form1 form1;
+        public MainForm form1;
 
-        public Finished(Quiz WrongAns, int cor, int incor, Form1 frm1)
+        public Finished(Quiz WrongAns, int cor, int incor, MainForm frm1)
         {
             form1 = frm1;
             wrongAns = WrongAns;

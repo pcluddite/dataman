@@ -14,11 +14,11 @@ namespace Virtual_Flash_Cards.Start
         private Quiz quiz;
         private Question current;
         private Score score = new Score();
-        private Form1 form;
+        private MainForm form;
         private int correct = 0;
         private int incorrect = 0;
 
-        public Card(Quiz q, Form1 Form)
+        public Card(Quiz q, MainForm Form)
         {
             InitializeComponent();
             form = Form;

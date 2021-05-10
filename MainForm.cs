@@ -10,10 +10,10 @@ using System.Xml;
 
 namespace Virtual_Flash_Cards
 {
-    public partial class Form1 : Form
+    public partial class MainForm : Form
     {
         bool doOnce = false;
-        public Form1()
+        public MainForm()
         {
             InitializeComponent();
         }
