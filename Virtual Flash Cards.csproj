@@ -49,35 +49,35 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Create\Control.cs">
+    <Compile Include="Forms\Control.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Create\Control.Designer.cs">
+    <Compile Include="Forms\Control.Designer.cs">
       <DependentUpon>Control.cs</DependentUpon>
     </Compile>
-    <Compile Include="Create\Main.cs">
+    <Compile Include="Forms\Main.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Create\Main.Designer.cs">
+    <Compile Include="Forms\Main.Designer.cs">
       <DependentUpon>Main.cs</DependentUpon>
     </Compile>
-    <Compile Include="MainForm.cs">
+    <Compile Include="Forms\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MainForm.Designer.cs">
+    <Compile Include="Forms\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Create\Control.resx">
+    <EmbeddedResource Include="Forms\Control.resx">
       <DependentUpon>Control.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Create\Main.resx">
+    <EmbeddedResource Include="Forms\Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="MainForm.resx">
+    <EmbeddedResource Include="Forms\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -86,19 +86,19 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Start\Card.resx">
+    <EmbeddedResource Include="Forms\Card.resx">
       <DependentUpon>Card.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Start\Finished.resx">
+    <EmbeddedResource Include="Forms\Finished.resx">
       <DependentUpon>Finished.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Start\Score.resx">
+    <EmbeddedResource Include="Forms\Score.resx">
       <DependentUpon>Score.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Start\WrongAns.resx">
+    <EmbeddedResource Include="Forms\WrongAns.resx">
       <DependentUpon>WrongAns.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -118,28 +118,28 @@
     </Compile>
     <Compile Include="Question.cs" />
     <Compile Include="Quiz.cs" />
-    <Compile Include="Start\Card.cs">
+    <Compile Include="Forms\Card.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Start\Card.Designer.cs">
+    <Compile Include="Forms\Card.Designer.cs">
       <DependentUpon>Card.cs</DependentUpon>
     </Compile>
-    <Compile Include="Start\Finished.cs">
+    <Compile Include="Forms\Finished.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Start\Finished.Designer.cs">
+    <Compile Include="Forms\Finished.Designer.cs">
       <DependentUpon>Finished.cs</DependentUpon>
     </Compile>
-    <Compile Include="Start\Score.cs">
+    <Compile Include="Forms\Score.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Start\Score.Designer.cs">
+    <Compile Include="Forms\Score.Designer.cs">
       <DependentUpon>Score.cs</DependentUpon>
     </Compile>
-    <Compile Include="Start\WrongAns.cs">
+    <Compile Include="Forms\WrongAns.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Start\WrongAns.Designer.cs">
+    <Compile Include="Forms\WrongAns.Designer.cs">
       <DependentUpon>WrongAns.cs</DependentUpon>
     </Compile>
   </ItemGroup>

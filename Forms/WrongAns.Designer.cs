@@ -1,4 +1,4 @@
-﻿namespace Virtual_Flash_Cards.Start
+﻿namespace Virtual_Flash_Cards.Forms
 {
     partial class WrongAns
     {

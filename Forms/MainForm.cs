@@ -8,7 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 
-namespace Virtual_Flash_Cards
+namespace Virtual_Flash_Cards.Forms
 {
     public partial class MainForm : Form
     {
@@ -30,7 +30,7 @@ namespace Virtual_Flash_Cards
                 XmlDocument doc = new XmlDocument();
                 doc.Load(openFileDialog1.FileName);
                 Hide();
-                Start.Card card = new Virtual_Flash_Cards.Start.Card(Quiz.FromXml(doc.SelectSingleNode("quiz")), this);
+                Forms.Card card = new Virtual_Flash_Cards.Forms.Card(Quiz.FromXml(doc.SelectSingleNode("quiz")), this);
                 card.Show();
             }
         }
@@ -52,11 +52,11 @@ namespace Virtual_Flash_Cards
                         switch(args[2].ToLower()) 
                         {
                             case "/run":
-                                Start.Card card = new Virtual_Flash_Cards.Start.Card(q, this); 
+                                Forms.Card card = new Virtual_Flash_Cards.Forms.Card(q, this); 
                                 card.Show();
                                 break;
                             case "/edit":
-                                Create.Main main = new Virtual_Flash_Cards.Create.Main(q, this);
+                                Forms.Main main = new Virtual_Flash_Cards.Forms.Main(q, this);
                                 main.Show();
                                 break;
                         }
@@ -68,7 +68,7 @@ namespace Virtual_Flash_Cards
         private void button2_Click(object sender, EventArgs e)
         {
             Hide();
-            Create.Main main = new Virtual_Flash_Cards.Create.Main(null, this);
+            Forms.Main main = new Virtual_Flash_Cards.Forms.Main(null, this);
             main.Show();
         }
 
@@ -79,7 +79,7 @@ namespace Virtual_Flash_Cards
                 XmlDocument doc = new XmlDocument();
                 doc.Load(openFileDialog1.FileName);
                 Hide();
-                Create.Main main = new Virtual_Flash_Cards.Create.Main(Quiz.FromXml(doc.SelectSingleNode("quiz")), this);
+                Forms.Main main = new Virtual_Flash_Cards.Forms.Main(Quiz.FromXml(doc.SelectSingleNode("quiz")), this);
                 main.Show();
             }
         }

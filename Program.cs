@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Forms;
+using Virtual_Flash_Cards.Forms;
 
 namespace Virtual_Flash_Cards
 {

@@ -8,7 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 
-namespace Virtual_Flash_Cards.Create
+namespace Virtual_Flash_Cards.Forms
 {
     public partial class Control : Form
     {
