@@ -1,4 +1,4 @@
-﻿namespace Virtual_Flash_Cards.Forms
+﻿namespace VirtualFlashCards.Forms
 {
     partial class Card
     {
@@ -103,7 +103,7 @@
             this.AcceptButton = this.button2;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackgroundImage = global::Virtual_Flash_Cards.Properties.Resources.index_card;
+            this.BackgroundImage = global::VirtualFlashCards.Properties.Resources.index_card;
             this.ClientSize = new System.Drawing.Size(425, 250);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);

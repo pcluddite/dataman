@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Windows.Forms;
-using Virtual_Flash_Cards.Forms;
+using VirtualFlashCards.Forms;
 
-namespace Virtual_Flash_Cards
+namespace VirtualFlashCards
 {
     static class Program
     {

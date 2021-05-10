@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace Virtual_Flash_Cards.Forms
+namespace VirtualFlashCards.Forms
 {
     public partial class WrongAns : Form
     {

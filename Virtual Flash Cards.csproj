@@ -8,7 +8,7 @@
     <ProjectGuid>{156019A2-89B5-4564-9D1E-9ADEFF6D58F2}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Virtual_Flash_Cards</RootNamespace>
+    <RootNamespace>VirtualFlashCards</RootNamespace>
     <AssemblyName>Virtual Flash Cards</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

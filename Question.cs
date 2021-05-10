@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 
-namespace Virtual_Flash_Cards
+namespace VirtualFlashCards
 {
     public class Question
     {

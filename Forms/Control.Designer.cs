@@ -1,4 +1,4 @@
-﻿namespace Virtual_Flash_Cards.Forms
+﻿namespace VirtualFlashCards.Forms
 {
     partial class Control
     {
