@@ -17,12 +17,12 @@ namespace VirtualFlashCards.Forms
         public bool saved = false;
 
         MainForm form;
-        Control control;
+        EditControlForm control;
         public EditorForm(Quiz q, MainForm Form)
         {
             InitializeComponent();
             form = Form;
-            control = new Control(this);
+            control = new EditControlForm(this);
             control.Show(this);
             if (q == null)
             {

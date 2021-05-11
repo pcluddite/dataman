@@ -58,11 +58,11 @@
     <Compile Include="Forms\CardFormBase.Designer.cs">
       <DependentUpon>CardFormBase.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Control.cs">
+    <Compile Include="Forms\EditControlForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Control.Designer.cs">
-      <DependentUpon>Control.cs</DependentUpon>
+    <Compile Include="Forms\EditControlForm.Designer.cs">
+      <DependentUpon>EditControlForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\EditorForm.cs">
       <SubType>Form</SubType>
@@ -82,8 +82,8 @@
       <DependentUpon>CardFormBase.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Control.resx">
-      <DependentUpon>Control.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\EditControlForm.resx">
+      <DependentUpon>EditControlForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\EditorForm.resx">

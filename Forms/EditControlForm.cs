@@ -10,10 +10,10 @@ using System.Xml;
 
 namespace VirtualFlashCards.Forms
 {
-    public partial class Control : Form
+    public partial class EditControlForm : Form
     {
         EditorForm main;
-        public Control(EditorForm mainForm)
+        public EditControlForm(EditorForm mainForm)
         {
             main = mainForm;
             InitializeComponent();
