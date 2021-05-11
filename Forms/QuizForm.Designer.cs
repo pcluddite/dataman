@@ -101,30 +101,14 @@
             // Card
             // 
             this.AcceptButton = this.button2;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackgroundImage = global::VirtualFlashCards.Properties.Resources.index_card;
-            this.ClientSize = new System.Drawing.Size(425, 250);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.textBox1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
-            this.Name = "Card";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Name = "QuizForm";
             this.Text = "Card";
-            this.Load += new System.EventHandler(this.Card_Load);
-            this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Card_MouseUp);
-            this.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.Card_MouseDoubleClick);
-            this.Activated += new System.EventHandler(this.Card_Activated);
-            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Card_MouseDown);
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Card_FormClosing);
-            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Card_MouseMove);
             this.ResumeLayout(false);
             this.PerformLayout();
 

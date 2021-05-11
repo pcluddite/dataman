@@ -125,10 +125,6 @@
             // 
             // Main
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackgroundImage = global::VirtualFlashCards.Properties.Resources.index_card;
-            this.ClientSize = new System.Drawing.Size(425, 250);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
@@ -137,22 +133,11 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.textBox3);
             this.Controls.Add(this.textBox1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "Main";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Name = "EditorForm";
             this.Text = "New Card Set";
             this.ResumeLayout(false);
             this.PerformLayout();
 
-        }
-
-        void Main_FormClosing(object sender, System.Windows.Forms.FormClosingEventArgs e)
-        {
-            control.Close();
-            form.SetDesktopLocation(this.Location.X, this.Location.Y);
-            form.FormBorderStyle = this.FormBorderStyle;
-            form.Show();
         }
 
         #endregion
