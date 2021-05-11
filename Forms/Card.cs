@@ -13,7 +13,7 @@ namespace VirtualFlashCards.Forms
     {
         private Quiz quiz;
         private Question current;
-        private Score score = new Score();
+        private ScoreForm score = new ScoreForm();
         private MainForm form;
         private int correct = 0;
         private int incorrect = 0;

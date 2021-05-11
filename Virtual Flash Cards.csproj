@@ -107,8 +107,8 @@
       <DependentUpon>Finished.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Score.resx">
-      <DependentUpon>Score.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\ScoreForm.resx">
+      <DependentUpon>ScoreForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\WrongAns.resx">
@@ -143,11 +143,11 @@
     <Compile Include="Forms\Finished.Designer.cs">
       <DependentUpon>Finished.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Score.cs">
+    <Compile Include="Forms\ScoreForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Score.Designer.cs">
-      <DependentUpon>Score.cs</DependentUpon>
+    <Compile Include="Forms\ScoreForm.Designer.cs">
+      <DependentUpon>ScoreForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\WrongAns.cs">
       <SubType>Form</SubType>

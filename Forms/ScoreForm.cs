@@ -9,9 +9,9 @@ using System.Windows.Forms;
 
 namespace VirtualFlashCards.Forms
 {
-    public partial class Score : Form
+    public partial class ScoreForm : Form
     {
-        public Score()
+        public ScoreForm()
         {
             InitializeComponent();
         }
