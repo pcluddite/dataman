@@ -30,7 +30,7 @@ namespace VirtualFlashCards.Forms
                 XmlDocument doc = new XmlDocument();
                 doc.Load(openFileDialog1.FileName);
                 Hide();
-                Forms.Card card = new VirtualFlashCards.Forms.Card(Quiz.FromXml(doc.SelectSingleNode("quiz")), this);
+                Forms.QuizForm card = new VirtualFlashCards.Forms.QuizForm(Quiz.FromXml(doc.SelectSingleNode("quiz")), this);
                 card.Show();
             }
         }
@@ -52,7 +52,7 @@ namespace VirtualFlashCards.Forms
                         switch(args[2].ToLower()) 
                         {
                             case "/run":
-                                Forms.Card card = new VirtualFlashCards.Forms.Card(q, this); 
+                                Forms.QuizForm card = new VirtualFlashCards.Forms.QuizForm(q, this); 
                                 card.Show();
                                 break;
                             case "/edit":

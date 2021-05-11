@@ -75,7 +75,7 @@ namespace VirtualFlashCards.Forms
 
         private void button2_Click(object sender, EventArgs e)
         {
-            Card c = new Card(fin.wrongAns, fin.form1);
+            QuizForm c = new QuizForm(fin.wrongAns, fin.form1);
             fin.Close();
             Close();
             form1.Hide();

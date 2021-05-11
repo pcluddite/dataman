@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace VirtualFlashCards.Forms
 {
-    public partial class Card : CardForm
+    public partial class QuizForm : CardForm
     {
         private Quiz quiz;
         private Question current;
@@ -18,7 +18,7 @@ namespace VirtualFlashCards.Forms
         private int correct = 0;
         private int incorrect = 0;
 
-        public Card(Quiz q, MainForm Form)
+        public QuizForm(Quiz q, MainForm Form)
         {
             InitializeComponent();
             form = Form;
