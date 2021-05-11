@@ -33,7 +33,7 @@ namespace VirtualFlashCards.Forms
         {
             if (wrongAns.Count != 0)
             {
-                WrongAns wAnswers = new WrongAns(this, form1);
+                WrongAnswerForm wAnswers = new WrongAnswerForm(this, form1);
                 wAnswers.ShowDialog();
                 decimal p = (decimal)correct / (decimal)(correct + incorrect);
                 label4.Text = correct + "";

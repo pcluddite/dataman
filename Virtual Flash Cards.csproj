@@ -111,8 +111,8 @@
       <DependentUpon>ScoreForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\WrongAns.resx">
-      <DependentUpon>WrongAns.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\WrongAnswerForm.resx">
+      <DependentUpon>WrongAnswerForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <Compile Include="Properties\Resources.Designer.cs">
@@ -149,11 +149,11 @@
     <Compile Include="Forms\ScoreForm.Designer.cs">
       <DependentUpon>ScoreForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\WrongAns.cs">
+    <Compile Include="Forms\WrongAnswerForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\WrongAns.Designer.cs">
-      <DependentUpon>WrongAns.cs</DependentUpon>
+    <Compile Include="Forms\WrongAnswerForm.Designer.cs">
+      <DependentUpon>WrongAnswerForm.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

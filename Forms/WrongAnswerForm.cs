@@ -9,14 +9,14 @@ using System.Windows.Forms;
 
 namespace VirtualFlashCards.Forms
 {
-    public partial class WrongAns : Form
+    public partial class WrongAnswerForm : Form
     {
         private Finished fin;
         private MainForm form1;
 
         private int current = 0;
 
-        public WrongAns(Finished form, MainForm frm1)
+        public WrongAnswerForm(Finished form, MainForm frm1)
         {
             InitializeComponent();
             fin = form;
