@@ -12,15 +12,15 @@ namespace VirtualFlashCards.Forms
     public partial class WrongAnswerForm : Form
     {
         private FinishedForm fin;
-        private MainForm form1;
+        private AppContext context;
 
         private int current = 0;
 
-        public WrongAnswerForm(FinishedForm form, MainForm frm1)
+        public WrongAnswerForm(FinishedForm form)
         {
-            InitializeComponent();
             fin = form;
-            form1 = frm1;
+            context = fin.context;
+            InitializeComponent();
             showCurrent();
         }
 
@@ -75,11 +75,9 @@ namespace VirtualFlashCards.Forms
 
         private void button2_Click(object sender, EventArgs e)
         {
-            QuizForm c = new QuizForm(fin.wrongAns, fin.form1);
+            context.StartQuiz(fin.wrongAns);
             fin.Close();
             Close();
-            form1.Hide();
-            c.Show();
         }
 
         private void WrongAns_Load(object sender, EventArgs e)

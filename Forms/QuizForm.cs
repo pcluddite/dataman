@@ -14,39 +14,27 @@ namespace VirtualFlashCards.Forms
         private Quiz quiz;
         private Question current;
         private ScoreForm score = new ScoreForm();
-        private MainForm form;
+        private AppContext context;
         private int correct = 0;
         private int incorrect = 0;
 
-        public QuizForm(Quiz q, MainForm Form)
+        public QuizForm(AppContext context)
         {
             InitializeComponent();
-            form = Form;
-            quiz = q;
-            score.label4.Text = "You are currently on question: " + (q.Current + 1) + " of " + q.Count;
-        }
-
-        void Card_FormClosing(object sender, System.Windows.Forms.FormClosingEventArgs e)
-        {
-            score.Close();
-            form.SetDesktopLocation(this.Location.X, this.Location.Y);
-            form.FormBorderStyle = this.FormBorderStyle;
-            form.Show();
+            this.context = context;
+            quiz = context.CurrentQuiz;
+            score.label4.Text = "You are currently on question: " + (quiz.Current + 1) + " of " + quiz.Count;
         }
 
         private void Card_Load(object sender, EventArgs e)
         {
-            this.SetDesktopLocation(form.Location.X, form.Location.Y);
-            score.Show(this);
-            score.SetDesktopLocation(this.Location.X - 320, this.Location.Y + 60);
-            this.FormBorderStyle = form.FormBorderStyle;
-            if (form.FormBorderStyle == FormBorderStyle.FixedToolWindow)
+            if (FormBorderStyle == FormBorderStyle.FixedToolWindow)
             {
                 button3.Visible = true;
             }
             if (quiz.Count == 0)
             {
-                MessageBox.Show(this, "There appear to be no questions in this quiz.", Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                context.ShowError("There appear to be no questions in this quiz.");
                 Close();
             }
             else
@@ -78,7 +66,7 @@ namespace VirtualFlashCards.Forms
             if (current == null)
             {
                 Close();
-                FinishedForm fin = new FinishedForm(quiz.Wrong(), correct, incorrect, form);
+                FinishedForm fin = new FinishedForm(quiz.Wrong(), correct, incorrect, context);
                 fin.Show();
             }
             else {
@@ -118,30 +106,6 @@ namespace VirtualFlashCards.Forms
                 }
                 state.CreateChild("Quiz", "Order", order);
             } */
-        }
-
-        private void Card_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (drag)
-            {
-                Point endPoint = PointToScreen(e.Location);
-                Location = new Point(endPoint.X - startPoint.X,
-                                     endPoint.Y - startPoint.Y);
-            }
-        }
-
-        private bool drag = false;
-        private Point startPoint;
-
-        private void Card_MouseDown(object sender, MouseEventArgs e)
-        {
-            drag = true;
-            startPoint = e.Location;
-        }
-
-        private void Card_MouseUp(object sender, MouseEventArgs e)
-        {
-            drag = false;
         }
     }
 }

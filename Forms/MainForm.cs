@@ -1,86 +1,75 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+using System.IO;
 
 namespace VirtualFlashCards.Forms
 {
     public partial class MainForm : CardForm
     {
-        bool doOnce = false;
-        public MainForm()
+        private AppContext context;
+
+        public MainForm(AppContext context)
         {
             InitializeComponent();
+            this.context = context;
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
-            Application.Exit();
+            Close();
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if (openFileDialog1.ShowDialog() != DialogResult.Cancel)
-            {
-                XmlDocument doc = new XmlDocument();
-                doc.Load(openFileDialog1.FileName);
-                Hide();
-                Forms.QuizForm card = new VirtualFlashCards.Forms.QuizForm(Quiz.FromXml(doc.SelectSingleNode("quiz")), this);
-                card.Show();
-            }
-        }
+            if (openFileDialog1.ShowDialog() == DialogResult.Cancel)
+                return;
 
-        void Form1_Activated(object sender, System.EventArgs e)
-        {
-            if (!doOnce)
+            Quiz q = null;
+
+            try
             {
-                doOnce = true;
-                string[] args = Environment.GetCommandLineArgs();
-                if (args.GetUpperBound(0) == 2)
-                {
-                    if (System.IO.File.Exists(args[1]))
-                    {
-                        XmlDocument doc = new XmlDocument();
-                        doc.Load(args[1]);
-                        Quiz q = Quiz.FromXml(doc.SelectSingleNode("quiz"));
-                        Hide();
-                        switch(args[2].ToLower()) 
-                        {
-                            case "/run":
-                                Forms.QuizForm card = new VirtualFlashCards.Forms.QuizForm(q, this); 
-                                card.Show();
-                                break;
-                            case "/edit":
-                                Forms.EditorForm main = new VirtualFlashCards.Forms.EditorForm(q, this);
-                                main.Show();
-                                break;
-                        }
-                    }
-                }
+                q = Quiz.FromFile(openFileDialog1.FileName);
+            }
+            catch(Exception ex)
+            {
+                if (!(ex is IOException || ex is XmlException))
+                    throw;
+                context.ShowError(ex.Message);
+            }
+
+            if (q != null)
+            {
+                context.StartQuiz(q);
             }
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            Hide();
-            Forms.EditorForm main = new VirtualFlashCards.Forms.EditorForm(null, this);
-            main.Show();
+            context.EditQuiz(null);
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
-            if (openFileDialog1.ShowDialog() != DialogResult.Cancel)
+            if (context.CurrentQuiz == null && openFileDialog1.ShowDialog() == DialogResult.Cancel)
+                return;
+
+            Quiz q = null;
+
+            try
             {
-                XmlDocument doc = new XmlDocument();
-                doc.Load(openFileDialog1.FileName);
-                Hide();
-                Forms.EditorForm main = new VirtualFlashCards.Forms.EditorForm(Quiz.FromXml(doc.SelectSingleNode("quiz")), this);
-                main.Show();
+                q = Quiz.FromFile(openFileDialog1.FileName);
+            }
+            catch (Exception ex)
+            {
+                if (!(ex is IOException || ex is XmlException))
+                    throw;
+                context.ShowError(ex.Message);
+            }
+
+            if (q != null)
+            {
+                context.EditQuiz(q);
             }
         }
     }

@@ -14,11 +14,11 @@ namespace VirtualFlashCards.Forms
         public Quiz wrongAns;
         public int correct;
         public int incorrect;
-        public MainForm form1;
+        public AppContext context;
 
-        public FinishedForm(Quiz WrongAns, int cor, int incor, MainForm frm1)
+        public FinishedForm(Quiz WrongAns, int cor, int incor, AppContext context)
         {
-            form1 = frm1;
+            this.context = context;
             wrongAns = WrongAns;
             correct = cor;
             incorrect = incor;
@@ -33,7 +33,7 @@ namespace VirtualFlashCards.Forms
         {
             if (wrongAns.Count != 0)
             {
-                WrongAnswerForm wAnswers = new WrongAnswerForm(this, form1);
+                WrongAnswerForm wAnswers = new WrongAnswerForm(this);
                 wAnswers.ShowDialog();
                 decimal p = (decimal)correct / (decimal)(correct + incorrect);
                 label4.Text = correct + "";

@@ -114,5 +114,15 @@ namespace VirtualFlashCards
                 return new Quiz(questions);
             }
         }
+
+        public static Quiz FromFile(string path)
+        {
+            XmlDocument doc = new XmlDocument();
+            doc.Load(path);
+            XmlNode quizNode = doc.SelectSingleNode("quiz");
+            if (quizNode == null)
+                throw new XmlException("File is not a valid quiz");
+            return FromXml(quizNode);
+        }
     }
 }

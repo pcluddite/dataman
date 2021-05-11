@@ -16,22 +16,20 @@ namespace VirtualFlashCards.Forms
         
         public bool saved = false;
 
-        MainForm form;
+        private AppContext context;
         EditControlForm control;
-        public EditorForm(Quiz q, MainForm Form)
+
+        public EditorForm(AppContext context)
         {
+            quiz = context.CurrentQuiz;
+            this.context = context;
             InitializeComponent();
-            form = Form;
-            control = new EditControlForm(this);
-            control.Show(this);
-            if (q == null)
+            if (quiz == null)
             {
                 quiz = new Quiz();
             }
             else
             {
-                quiz = q;
-                showCurrent();
                 saved = true;
             }
         }
@@ -127,9 +125,21 @@ namespace VirtualFlashCards.Forms
 
         private void Main_Load(object sender, EventArgs e)
         {
-            this.SetDesktopLocation(form.Location.X, form.Location.Y);
-            this.FormBorderStyle = form.FormBorderStyle;
             control.SetDesktopLocation(this.Location.X + 500, this.Location.Y + 50);
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            base.OnFormClosing(e);
+            control.Close();
+        }
+
+        protected override void OnShown(EventArgs e)
+        {
+            base.OnShown(e);
+            control = new EditControlForm(this);
+            control.Show(this);
+            showCurrent();
         }
     }
 }
