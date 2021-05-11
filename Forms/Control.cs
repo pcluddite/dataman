@@ -12,8 +12,8 @@ namespace VirtualFlashCards.Forms
 {
     public partial class Control : Form
     {
-        Main main;
-        public Control(Main mainForm)
+        EditorForm main;
+        public Control(EditorForm mainForm)
         {
             main = mainForm;
             InitializeComponent();

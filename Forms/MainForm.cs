@@ -56,7 +56,7 @@ namespace VirtualFlashCards.Forms
                                 card.Show();
                                 break;
                             case "/edit":
-                                Forms.Main main = new VirtualFlashCards.Forms.Main(q, this);
+                                Forms.EditorForm main = new VirtualFlashCards.Forms.EditorForm(q, this);
                                 main.Show();
                                 break;
                         }
@@ -68,7 +68,7 @@ namespace VirtualFlashCards.Forms
         private void button2_Click(object sender, EventArgs e)
         {
             Hide();
-            Forms.Main main = new VirtualFlashCards.Forms.Main(null, this);
+            Forms.EditorForm main = new VirtualFlashCards.Forms.EditorForm(null, this);
             main.Show();
         }
 
@@ -79,7 +79,7 @@ namespace VirtualFlashCards.Forms
                 XmlDocument doc = new XmlDocument();
                 doc.Load(openFileDialog1.FileName);
                 Hide();
-                Forms.Main main = new VirtualFlashCards.Forms.Main(Quiz.FromXml(doc.SelectSingleNode("quiz")), this);
+                Forms.EditorForm main = new VirtualFlashCards.Forms.EditorForm(Quiz.FromXml(doc.SelectSingleNode("quiz")), this);
                 main.Show();
             }
         }
