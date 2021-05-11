@@ -10,7 +10,7 @@ using System.Xml;
 
 namespace VirtualFlashCards.Forms
 {
-    public partial class MainForm : Form
+    public partial class MainForm : CardForm
     {
         bool doOnce = false;
         public MainForm()
@@ -82,35 +82,6 @@ namespace VirtualFlashCards.Forms
                 Forms.Main main = new VirtualFlashCards.Forms.Main(Quiz.FromXml(doc.SelectSingleNode("quiz")), this);
                 main.Show();
             }
-        }
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void Card_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (drag)
-            {
-                Point endPoint = PointToScreen(e.Location);
-                Location = new Point(endPoint.X - startPoint.X,
-                                     endPoint.Y - startPoint.Y);
-            }
-        }
-
-        private bool drag = false;
-        private Point startPoint;
-
-        private void Card_MouseDown(object sender, MouseEventArgs e)
-        {
-            drag = true;
-            startPoint = e.Location;
-        }
-
-        private void Card_MouseUp(object sender, MouseEventArgs e)
-        {
-            drag = false;
         }
     }
 }

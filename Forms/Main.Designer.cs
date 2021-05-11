@@ -142,12 +142,6 @@
             this.Name = "Main";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "New Card Set";
-            this.Load += new System.EventHandler(this.Main_Load);
-            this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Card_MouseUp);
-            this.DoubleClick += new System.EventHandler(this.Main_DoubleClick);
-            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Card_MouseDown);
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Main_FormClosing);
-            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Card_MouseMove);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -159,18 +153,6 @@
             form.SetDesktopLocation(this.Location.X, this.Location.Y);
             form.FormBorderStyle = this.FormBorderStyle;
             form.Show();
-        }
-
-        void Main_DoubleClick(object sender, System.EventArgs e)
-        {
-            if (this.FormBorderStyle == System.Windows.Forms.FormBorderStyle.None)
-            {
-                FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            }
-            else
-            {
-                FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            }
         }
 
         #endregion

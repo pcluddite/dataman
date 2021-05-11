@@ -120,10 +120,6 @@
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackgroundImage = global::VirtualFlashCards.Properties.Resources.index_card;
-            this.ClientSize = new System.Drawing.Size(425, 250);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
@@ -131,34 +127,12 @@
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MaximizeBox = false;
-            this.Name = "Form1";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Virtual Flash Cards";
-            this.Load += new System.EventHandler(this.Form1_Load);
-            this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Card_MouseUp);
-            this.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDoubleClick);
-            this.Activated += new System.EventHandler(this.Form1_Activated);
-            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Card_MouseDown);
-            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Card_MouseMove);
+            this.Name = "MainForm";
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
-        void Form1_MouseDoubleClick(object sender, System.Windows.Forms.MouseEventArgs e)
-        {
-            if (FormBorderStyle == System.Windows.Forms.FormBorderStyle.None)
-            {
-                FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            }
-            else
-            {
-                FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            }
-        }
         #endregion
 
         private System.Windows.Forms.Label label1;

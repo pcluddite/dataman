@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace VirtualFlashCards.Forms
 {
-    public partial class Card : Form
+    public partial class Card : CardForm
     {
         private Quiz quiz;
         private Question current;

@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace VirtualFlashCards.Forms
 {
-    public partial class Main : Form
+    public partial class Main : CardForm
     {
         public int current = 0;
         public Quiz quiz;
@@ -130,30 +130,6 @@ namespace VirtualFlashCards.Forms
             this.SetDesktopLocation(form.Location.X, form.Location.Y);
             this.FormBorderStyle = form.FormBorderStyle;
             control.SetDesktopLocation(this.Location.X + 500, this.Location.Y + 50);
-        }
-
-        private void Card_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (drag)
-            {
-                Point endPoint = PointToScreen(e.Location);
-                Location = new Point(endPoint.X - startPoint.X,
-                                     endPoint.Y - startPoint.Y);
-            }
-        }
-
-        private bool drag = false;
-        private Point startPoint;
-
-        private void Card_MouseDown(object sender, MouseEventArgs e)
-        {
-            drag = true;
-            startPoint = e.Location;
-        }
-
-        private void Card_MouseUp(object sender, MouseEventArgs e)
-        {
-            drag = false;
         }
     }
 }
