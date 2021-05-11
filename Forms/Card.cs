@@ -78,7 +78,7 @@ namespace VirtualFlashCards.Forms
             if (current == null)
             {
                 Close();
-                Finished fin = new Finished(quiz.Wrong(), correct, incorrect, form);
+                FinishedForm fin = new FinishedForm(quiz.Wrong(), correct, incorrect, form);
                 fin.Show();
             }
             else {
