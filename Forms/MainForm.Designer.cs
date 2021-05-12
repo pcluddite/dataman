@@ -28,16 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.label1 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
-            this.label2 = new System.Windows.Forms.Label();
+            this.btnStart = new System.Windows.Forms.Button();
+            this.btnNew = new System.Windows.Forms.Button();
+            this.btnEdit = new System.Windows.Forms.Button();
+            this.lblTitle = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.button4 = new System.Windows.Forms.Button();
-            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
+            this.btnExit = new System.Windows.Forms.Button();
+            this.openQuizDialog = new System.Windows.Forms.OpenFileDialog();
             this.SuspendLayout();
             // 
             // label1
@@ -50,45 +48,45 @@
             this.label1.TabIndex = 1;
             this.label1.Text = "What would you like to do?";
             // 
-            // button1
+            // btnStart
             // 
-            this.button1.Location = new System.Drawing.Point(206, 69);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(157, 23);
-            this.button1.TabIndex = 2;
-            this.button1.Text = "Use a set of Flash Cards";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.btnStart.Location = new System.Drawing.Point(206, 69);
+            this.btnStart.Name = "btnStart";
+            this.btnStart.Size = new System.Drawing.Size(157, 23);
+            this.btnStart.TabIndex = 2;
+            this.btnStart.Text = "Use a set of Flash Cards";
+            this.btnStart.UseVisualStyleBackColor = true;
+            this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
             // 
-            // button2
+            // btnNew
             // 
-            this.button2.Location = new System.Drawing.Point(206, 98);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(157, 23);
-            this.button2.TabIndex = 3;
-            this.button2.Text = "Create a set of Flash Cards";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.btnNew.Location = new System.Drawing.Point(206, 98);
+            this.btnNew.Name = "btnNew";
+            this.btnNew.Size = new System.Drawing.Size(157, 23);
+            this.btnNew.TabIndex = 3;
+            this.btnNew.Text = "Create a set of Flash Cards";
+            this.btnNew.UseVisualStyleBackColor = true;
+            this.btnNew.Click += new System.EventHandler(this.btnNew_Click);
             // 
-            // button3
+            // btnEdit
             // 
-            this.button3.Location = new System.Drawing.Point(206, 127);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(157, 23);
-            this.button3.TabIndex = 4;
-            this.button3.Text = "Change a of set Flash Cards";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.btnEdit.Location = new System.Drawing.Point(206, 127);
+            this.btnEdit.Name = "btnEdit";
+            this.btnEdit.Size = new System.Drawing.Size(157, 23);
+            this.btnEdit.TabIndex = 4;
+            this.btnEdit.Text = "Change a of set Flash Cards";
+            this.btnEdit.UseVisualStyleBackColor = true;
+            this.btnEdit.Click += new System.EventHandler(this.btnEdit_Click);
             // 
-            // label2
+            // lblTitle
             // 
-            this.label2.AutoSize = true;
-            this.label2.BackColor = System.Drawing.SystemColors.HighlightText;
-            this.label2.Location = new System.Drawing.Point(167, 9);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(103, 13);
-            this.label2.TabIndex = 5;
-            this.label2.Text = "Virtual Flash Cards 3";
+            this.lblTitle.AutoSize = true;
+            this.lblTitle.BackColor = System.Drawing.SystemColors.HighlightText;
+            this.lblTitle.Location = new System.Drawing.Point(167, 9);
+            this.lblTitle.Name = "lblTitle";
+            this.lblTitle.Size = new System.Drawing.Size(103, 13);
+            this.lblTitle.TabIndex = 0;
+            this.lblTitle.Text = "Virtual Flash Cards 3";
             // 
             // label3
             // 
@@ -100,32 +98,30 @@
             this.label3.TabIndex = 6;
             this.label3.Text = "Copyright (c) 2009-2015 Timothy Baxendale";
             // 
-            // button4
+            // btnExit
             // 
-            this.button4.Location = new System.Drawing.Point(206, 156);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(157, 23);
-            this.button4.TabIndex = 7;
-            this.button4.Text = "Exit Application";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
+            this.btnExit.Location = new System.Drawing.Point(206, 156);
+            this.btnExit.Name = "btnExit";
+            this.btnExit.Size = new System.Drawing.Size(157, 23);
+            this.btnExit.TabIndex = 5;
+            this.btnExit.Text = "Exit Application";
+            this.btnExit.UseVisualStyleBackColor = true;
+            this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
             // 
-            // openFileDialog1
+            // openQuizDialog
             // 
-            this.openFileDialog1.Filter = "Virtual Flash Card Set (*.quiz)|*.quiz";
+            this.openQuizDialog.Filter = "Virtual Flash Card Set (*.quiz)|*.quiz";
             // 
-            // saveFileDialog1
+            // MainForm
             // 
-            this.saveFileDialog1.Filter = "Virtual Flash Card Set (*.quiz)|*.quiz";
-            // 
-            // Form1
-            // 
-            this.Controls.Add(this.button4);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.ClientSize = new System.Drawing.Size(425, 250);
+            this.Controls.Add(this.btnExit);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.button3);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.lblTitle);
+            this.Controls.Add(this.btnEdit);
+            this.Controls.Add(this.btnNew);
+            this.Controls.Add(this.btnStart);
             this.Controls.Add(this.label1);
             this.Name = "MainForm";
             this.ResumeLayout(false);
@@ -136,14 +132,13 @@
         #endregion
 
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Button btnStart;
+        private System.Windows.Forms.Button btnNew;
+        private System.Windows.Forms.Button btnEdit;
+        private System.Windows.Forms.Label lblTitle;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Button button4;
-        private System.Windows.Forms.OpenFileDialog openFileDialog1;
-        private System.Windows.Forms.SaveFileDialog saveFileDialog1;
+        private System.Windows.Forms.Button btnExit;
+        private System.Windows.Forms.OpenFileDialog openQuizDialog;
     }
 }
 

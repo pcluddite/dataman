@@ -11,25 +11,25 @@ namespace VirtualFlashCards.Forms
 
         public MainForm(AppContext context)
         {
-            InitializeComponent();
             this.context = context;
+            InitializeComponent();
         }
 
-        private void button4_Click(object sender, EventArgs e)
+        private void btnExit_Click(object sender, EventArgs e)
         {
             Close();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void btnStart_Click(object sender, EventArgs e)
         {
-            if (openFileDialog1.ShowDialog() == DialogResult.Cancel)
+            if (openQuizDialog.ShowDialog() == DialogResult.Cancel)
                 return;
 
             Quiz q = null;
 
             try
             {
-                q = Quiz.FromFile(openFileDialog1.FileName);
+                q = Quiz.FromFile(openQuizDialog.FileName);
             }
             catch(Exception ex)
             {
@@ -44,21 +44,21 @@ namespace VirtualFlashCards.Forms
             }
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void btnNew_Click(object sender, EventArgs e)
         {
             context.EditQuiz(null);
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private void btnEdit_Click(object sender, EventArgs e)
         {
-            if (context.CurrentQuiz == null && openFileDialog1.ShowDialog() == DialogResult.Cancel)
+            if (openQuizDialog.ShowDialog() == DialogResult.Cancel)
                 return;
 
             Quiz q = null;
 
             try
             {
-                q = Quiz.FromFile(openFileDialog1.FileName);
+                q = Quiz.FromFile(openQuizDialog.FileName);
             }
             catch (Exception ex)
             {
