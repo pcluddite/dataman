@@ -1,0 +1,200 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Quiz>
+  <Question1>
+    <Question>First Person Present Singular (Irregular)
+
+á é í ó ú</Question>
+    <Answer>Estoy</Answer>
+    <UserAnswer>
+    </UserAnswer>
+  </Question1>
+  <Question2>
+    <Question>Second Person Present Singular (Irregular)
+
+á é í ó ú</Question>
+    <Answer>Estás</Answer>
+    <UserAnswer>
+    </UserAnswer>
+  </Question2>
+  <Question3>
+    <Question>Third Person Present Singular (Irregular)
+
+á é í ó ú</Question>
+    <Answer>Está</Answer>
+    <UserAnswer>0</UserAnswer>
+  </Question3>
+  <Question4>
+    <Question>First Person Present Plural
+
+á é í ó ú</Question>
+    <Answer>Estamos</Answer>
+    <UserAnswer>estámos</UserAnswer>
+  </Question4>
+  <Question5>
+    <Question>Third Person Present Plural (Irregular)
+
+á é í ó ú</Question>
+    <Answer>Están</Answer>
+    <UserAnswer>0</UserAnswer>
+  </Question5>
+  <Question6>
+    <Question>First Person Preterit Singular (Irregular)
+
+á é í ó ú</Question>
+    <Answer>Estuve</Answer>
+    <UserAnswer>
+    </UserAnswer>
+  </Question6>
+  <Question7>
+    <Question>Second Person Preterit Singular (Irregular)
+
+á é í ó ú</Question>
+    <Answer>Estuviste</Answer>
+    <UserAnswer>
+    </UserAnswer>
+  </Question7>
+  <Question8>
+    <Question>Third Person Preterit Singular (Irregular)
+
+á é í ó ú</Question>
+    <Answer>Estuvo</Answer>
+    <UserAnswer>
+    </UserAnswer>
+  </Question8>
+  <Question9>
+    <Question>First Person Preterit Plural (Irregular)
+
+á é í ó ú</Question>
+    <Answer>Estuvimos</Answer>
+    <UserAnswer>
+    </UserAnswer>
+  </Question9>
+  <Question10>
+    <Question>Third Person Preterit Plural (Irregular)
+
+á é í ó ú</Question>
+    <Answer>Estuvieron</Answer>
+    <UserAnswer>
+    </UserAnswer>
+  </Question10>
+  <Question11>
+    <Question>First Person Imperfect Singular
+
+á é í ó ú</Question>
+    <Answer>Estaba</Answer>
+    <UserAnswer>
+    </UserAnswer>
+  </Question11>
+  <Question12>
+    <Question>Second Person Imperfect Singular
+
+á é í ó ú</Question>
+    <Answer>Estabas</Answer>
+    <UserAnswer>
+    </UserAnswer>
+  </Question12>
+  <Question13>
+    <Question>Third Person Imperfect Singular
+
+á é í ó ú</Question>
+    <Answer>Estaba</Answer>
+    <UserAnswer>
+    </UserAnswer>
+  </Question13>
+  <Question14>
+    <Question>First Person Imperfect Plural
+
+á é í ó ú</Question>
+    <Answer>Estábamos</Answer>
+    <UserAnswer>
+    </UserAnswer>
+  </Question14>
+  <Question15>
+    <Question>Third Person Imperfect Plural
+
+á é í ó ú</Question>
+    <Answer>Estaban</Answer>
+    <UserAnswer>
+    </UserAnswer>
+  </Question15>
+  <Question16>
+    <Question>First Person Conditional Singular
+
+á é í ó ú</Question>
+    <Answer>Estaría</Answer>
+    <UserAnswer>
+    </UserAnswer>
+  </Question16>
+  <Question17>
+    <Question>Second Person Conditional Singular
+
+á é í ó ú</Question>
+    <Answer>Estarías</Answer>
+    <UserAnswer>
+    </UserAnswer>
+  </Question17>
+  <Question18>
+    <Question>Third Person Conditional Singular
+
+á é í ó ú</Question>
+    <Answer>Estaría</Answer>
+    <UserAnswer>
+    </UserAnswer>
+  </Question18>
+  <Question19>
+    <Question>First Person Conditional Plural
+
+á é í ó ú</Question>
+    <Answer>Estaríamos</Answer>
+    <UserAnswer>
+    </UserAnswer>
+  </Question19>
+  <Question20>
+    <Question>Third Person Conditional Plural
+
+á é í ó ú</Question>
+    <Answer>Estarían</Answer>
+    <UserAnswer>
+    </UserAnswer>
+  </Question20>
+  <Question21>
+    <Question>First Person Conditional Singular
+
+á é í ó ú</Question>
+    <Answer>Estaré</Answer>
+    <UserAnswer>
+    </UserAnswer>
+  </Question21>
+  <Question22>
+    <Question>Second Person Conditional Singular
+
+á é í ó ú</Question>
+    <Answer>Estarás</Answer>
+    <UserAnswer>
+    </UserAnswer>
+  </Question22>
+  <Question23>
+    <Question>Third Person Conditional Singular
+
+á é í ó ú</Question>
+    <Answer>Estará</Answer>
+    <UserAnswer>
+    </UserAnswer>
+  </Question23>
+  <Question24>
+    <Question>First Person Conditional Plural
+
+á é í ó ú</Question>
+    <Answer>Estaremos</Answer>
+    <UserAnswer>
+    </UserAnswer>
+  </Question24>
+  <Question25>
+    <Question>Third Person Conditional Plural
+
+á é í ó ú</Question>
+    <Answer>Estarán</Answer>
+    <UserAnswer>
+    </UserAnswer>
+  </Question25>
+</Quiz>
