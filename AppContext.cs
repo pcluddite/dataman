@@ -1,17 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
-using VirtualFlashCards.Forms;
 using System.IO;
+using System.Windows.Forms;
 using System.Xml;
+using VirtualFlashCards.Forms;
+using VirtualFlashCards.QuizData;
 
 namespace VirtualFlashCards
 {
     public class AppContext : ApplicationContext
     {
-        private EditorForm editForm;
+        //private EditorForm editForm;
         private QuizForm quizForm;
 
         public Quiz CurrentQuiz { get; private set; }
@@ -59,6 +57,15 @@ namespace VirtualFlashCards
             }
         }
 
+        public void StartQuiz(string path)
+        {
+            Quiz q = OpenQuiz(path);
+            if (q != null)
+            {
+                StartQuiz(q);
+            }
+        }
+
         public void StartQuiz(Quiz q)
         {
             CurrentQuiz = q;
@@ -76,21 +83,35 @@ namespace VirtualFlashCards
             quizForm.Show();
         }
 
+        public void EditQuiz(string path)
+        {
+            Quiz q = OpenQuiz(path);
+            if (q != null)
+            {
+                EditQuiz(q);
+            }
+        }
+
         public void EditQuiz(Quiz q)
         {
-            CurrentQuiz = q;
-            if (editForm == null)
-            {
-                editForm = new EditorForm(this);
-                editForm.FormClosing += new FormClosingEventHandler(FormClosing);
-            }
-            if (MainForm.Visible)
-            {
-                MainForm.Hide();
-            }
-            editForm.SetDesktopLocation(MainForm.Location.X, MainForm.Location.Y);
-            editForm.FormBorderStyle = MainForm.FormBorderStyle;
-            editForm.Show();
+            //CurrentQuiz = q;
+            //if (editForm == null)
+            //{
+            //    editForm = new EditorForm(this);
+            //    editForm.FormClosing += new FormClosingEventHandler(FormClosing);
+            //}
+            //if (MainForm.Visible)
+            //{
+            //    MainForm.Hide();
+            //}
+            //editForm.SetDesktopLocation(MainForm.Location.X, MainForm.Location.Y);
+            //editForm.FormBorderStyle = MainForm.FormBorderStyle;
+            //editForm.Show();
+        }
+
+        public void NewQuiz()
+        {
+            EditQuiz((Quiz)null);
         }
 
         public void ShowError(string message)
@@ -111,5 +132,19 @@ namespace VirtualFlashCards
             }
         }
 
+        public Quiz OpenQuiz(string path)
+        {
+            try
+            {
+                return Quiz.FromFile(path);
+            }
+            catch (Exception ex)
+            {
+                if (!(ex is IOException || ex is XmlException))
+                    throw;
+                ShowError(ex.Message);
+                return null;
+            }
+        }
     }
 }

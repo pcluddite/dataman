@@ -26,26 +26,26 @@ namespace VirtualFlashCards.Forms
 
         public void showCurrent()
         {
-            textBox1.Text = fin.wrongAns[current].Prompt;
-            textBox2.Text = fin.wrongAns[current].AnswerHistory.Last();
-            textBox3.Text = fin.wrongAns[current].CorrectAnswer;
-            numericUpDown1.Value = current + 1;
+            //textBox1.Text = fin.wrongAns[current].Prompt;
+            //textBox2.Text = fin.wrongAns[current].AnswerHistory.Last();
+            //textBox3.Text = fin.wrongAns[current].CorrectAnswer;
+            //numericUpDown1.Value = current + 1;
         }
 
         public void saveCurrent()
         {
-            switch (MessageBox.Show(this, "You changed the correct answer. Would you like to save your changes?", "Virtual Flash Cards", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question))
-            {
-                case DialogResult.Yes:
-                    fin.wrongAns[current].CorrectAnswer = textBox3.Text;
-                    break;
-                case DialogResult.Cancel:
-                    return;
-            }
-            if (textBox2.Text.Equals(fin.wrongAns[current].CorrectAnswer))
-            {
-                correctCurrent();
-            }
+            //switch (MessageBox.Show(this, "You changed the correct answer. Would you like to save your changes?", "Virtual Flash Cards", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question))
+            //{
+            //    case DialogResult.Yes:
+            //        fin.wrongAns[current].CorrectAnswer = textBox3.Text;
+            //        break;
+            //    case DialogResult.Cancel:
+            //        return;
+            //}
+            //if (textBox2.Text.Equals(fin.wrongAns[current].CorrectAnswer))
+            //{
+            //    correctCurrent();
+            //}
         }
 
         private void perfect()
@@ -63,14 +63,14 @@ namespace VirtualFlashCards.Forms
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if (textBox3.Text.Equals(fin.wrongAns[current].CorrectAnswer))
-            {
-                showNext();
-            }
-            else
-            {
-                saveCurrent();
-            }
+            //if (textBox3.Text.Equals(fin.wrongAns[current].CorrectAnswer))
+            //{
+            //    showNext();
+            //}
+            //else
+            //{
+            //    saveCurrent();
+            //}
         }
 
         private void button2_Click(object sender, EventArgs e)

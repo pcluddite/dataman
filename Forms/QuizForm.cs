@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
+using VirtualFlashCards.QuizData;
 
 namespace VirtualFlashCards.Forms
 {
@@ -49,33 +44,33 @@ namespace VirtualFlashCards.Forms
 
         private void button2_Click(object sender, EventArgs e)
         {
-            if (current.IsCorrect(textBox2.Text))
-            {
-                correct++;
-                score.label6.Text = "Correct!";
-                score.label6.ForeColor = System.Drawing.Color.Green;
-            }
-            else
-            {
-                incorrect++;
-                quiz.AddWrong(current);
-                score.label6.Text = "Incorrect!";
-                score.label6.ForeColor = System.Drawing.Color.Red;
-            }
-            current = quiz.Next();
-            if (current == null)
-            {
-                Close();
-                FinishedForm fin = new FinishedForm(quiz.Wrong(), correct, incorrect, context);
-                fin.Show();
-            }
-            else {
-                textBox1.Text = current.Prompt;
-                textBox2.Text = "";
-                textBox2.Focus();
-                textBox2.Select();
-                score.updateScore(correct, incorrect, quiz.Current);
-            }
+            //if (current.IsCorrect(textBox2.Text))
+            //{
+            //    correct++;
+            //    score.label6.Text = "Correct!";
+            //    score.label6.ForeColor = System.Drawing.Color.Green;
+            //}
+            //else
+            //{
+            //    incorrect++;
+            //    quiz.AddWrong(current);
+            //    score.label6.Text = "Incorrect!";
+            //    score.label6.ForeColor = System.Drawing.Color.Red;
+            //}
+            //current = quiz.Next();
+            //if (current == null)
+            //{
+            //    Close();
+            //    FinishedForm fin = new FinishedForm(quiz.Wrong(), correct, incorrect, context);
+            //    fin.Show();
+            //}
+            //else {
+            //    textBox1.Text = current.Prompt;
+            //    textBox2.Text = "";
+            //    textBox2.Focus();
+            //    textBox2.Select();
+            //    score.updateScore(correct, incorrect, quiz.Current);
+            //}
         }
 
         private void button3_Click(object sender, EventArgs e)

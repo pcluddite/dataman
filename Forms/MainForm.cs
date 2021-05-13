@@ -24,53 +24,19 @@ namespace VirtualFlashCards.Forms
         {
             if (openQuizDialog.ShowDialog() == DialogResult.Cancel)
                 return;
-
-            Quiz q = null;
-
-            try
-            {
-                q = Quiz.FromFile(openQuizDialog.FileName);
-            }
-            catch(Exception ex)
-            {
-                if (!(ex is IOException || ex is XmlException))
-                    throw;
-                context.ShowError(ex.Message);
-            }
-
-            if (q != null)
-            {
-                context.StartQuiz(q);
-            }
+            context.StartQuiz(openQuizDialog.FileName);
         }
 
         private void btnNew_Click(object sender, EventArgs e)
         {
-            context.EditQuiz(null);
+            context.NewQuiz();
         }
 
         private void btnEdit_Click(object sender, EventArgs e)
         {
             if (openQuizDialog.ShowDialog() == DialogResult.Cancel)
                 return;
-
-            Quiz q = null;
-
-            try
-            {
-                q = Quiz.FromFile(openQuizDialog.FileName);
-            }
-            catch (Exception ex)
-            {
-                if (!(ex is IOException || ex is XmlException))
-                    throw;
-                context.ShowError(ex.Message);
-            }
-
-            if (q != null)
-            {
-                context.EditQuiz(q);
-            }
+            context.EditQuiz(openQuizDialog.FileName);
         }
     }
 }

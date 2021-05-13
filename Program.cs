@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows.Forms;
-using VirtualFlashCards.Forms;
 
 namespace VirtualFlashCards
 {

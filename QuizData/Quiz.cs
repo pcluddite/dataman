@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Xml;
+using VirtualFlashCards.Xml;
 
-namespace VirtualFlashCards
+namespace VirtualFlashCards.QuizData
 {
     public class Quiz
     {
+        private const int VERSION = 4;
+
         public int Current { get; set; }
 
         public int Count
@@ -100,19 +101,12 @@ namespace VirtualFlashCards
 
         public static Quiz FromXml(XmlNode n)
         {
-            if (n == null)
+            List<Question> questions = new List<Question>();
+            foreach (XmlNode child in n.SelectNodes("question"))
             {
-                return new Quiz();
+                questions.Add(Question.FromXml(child));
             }
-            else
-            {
-                List<Question> questions = new List<Question>();
-                foreach (XmlNode child in n.SelectNodes("question"))
-                {
-                    questions.Add(Question.FromXml(child));
-                }
-                return new Quiz(questions);
-            }
+            return new Quiz(questions);
         }
 
         public static Quiz FromFile(string path)
@@ -121,7 +115,9 @@ namespace VirtualFlashCards
             doc.Load(path);
             XmlNode quizNode = doc.SelectSingleNode("quiz");
             if (quizNode == null)
-                throw new XmlException("File is not a valid quiz");
+                throw new XmlException("Could not find quiz node. This file may be corrupt.");
+            if (quizNode.Attributes("version").Value(0) != VERSION)
+                throw new XmlException("This quiz file is not compatible with this version of Flash Cards");
             return FromXml(quizNode);
         }
     }
