@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 using VirtualFlashCards.QuizData;
 
@@ -6,116 +7,95 @@ namespace VirtualFlashCards.Forms
 {
     public partial class QuizForm : CardForm
     {
-        private ScoreForm score = new ScoreForm();
-        private AppContext context;
+        private ScoreForm scoreForm;
+
+        public AppContext Context { get; private set; }
 
         public Quiz Quiz
         {
             get
             {
-                return context.CurrentQuiz;
+                return Context.CurrentQuiz;
             }
         }
-
-        public int Current { get; set; }
-        public int Correct { get; set; }
-        public int Incorrect { get; set; }
 
         public Question CurrentQuestion
         {
             get
             {
-                return Quiz[Correct];
+                return Quiz[scoreForm.Current];
             }
         }
+
+        public bool CloseError { get; private set; }
 
         public QuizForm(AppContext context)
         {
+            this.Context = context;
             InitializeComponent();
-            this.context = context;
-            score.label4.Text = "You are currently on question: " + (Current + 1) + " of " + Quiz.Count;
+            scoreForm = new ScoreForm(this);
         }
 
-        private void Card_Load(object sender, EventArgs e)
+        protected override void OnLoad(EventArgs e)
         {
-            if (FormBorderStyle == FormBorderStyle.FixedToolWindow)
-            {
-                button3.Visible = true;
-            }
+            base.OnLoad(e);
+            scoreForm.Show(this);
             if (Quiz.Count == 0)
             {
-                context.ShowError("There appear to be no questions in this quiz.");
+                Context.ShowError("There appear to be no questions in this quiz.");
+                CloseError = true;
                 Close();
             }
             else
             {
                 Quiz.Shuffle();
-                textBox1.Text = Quiz[++Current].Prompt;
-                textBox2.Focus();
-                textBox2.Select();
+                txtPrompt.Text = CurrentQuestion.Prompt;
+                txtAnswer.Focus();
+                txtAnswer.Select();
             }
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void btnNext_Click(object sender, EventArgs e)
         {
             Answer answer = CurrentQuestion.Answer;
-            if (answer.IsCorrect(textBox2.Text))
+            if (answer.IsCorrect(txtAnswer.Text))
             {
-                Correct++;
-                score.label6.Text = "Correct!";
-                score.label6.ForeColor = System.Drawing.Color.Green;
+                scoreForm.AddCorrect();
             }
             else
             {
-                Incorrect++;
-                Quiz.AddWrongAnswer(Current, answer.CloneWithNewInput(textBox2.Text));
-                score.label6.Text = "Incorrect!";
-                score.label6.ForeColor = System.Drawing.Color.Red;
+                Quiz.AddWrongAnswer(scoreForm.Current, answer.CloneWithNewInput(txtAnswer.Text));
+                scoreForm.AddIncorrect();
             }
-            if (++Current < Quiz.Count)
+            if (scoreForm.NextQuestion())
             {
-                textBox1.Text = CurrentQuestion.Prompt;
-                textBox2.Text = "";
-                textBox2.Focus();
-                textBox2.Select();
-                score.updateScore(Correct, Incorrect, Current);
+                txtPrompt.Text = CurrentQuestion.Prompt;
+                txtAnswer.Text = "";
+                txtAnswer.Focus();
+                txtAnswer.Select();
             }
             else
             {
                 Close();
-                FinishedForm fin = new FinishedForm(Quiz.WrongQuiz(), Correct, Incorrect, context);
+                FinishedForm fin = new FinishedForm(Quiz.WrongQuiz(), scoreForm.Correct, scoreForm.Incorrect, Context);
                 fin.Show();
             }
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        protected override void OnMouseDoubleClick(MouseEventArgs e)
         {
-            if (MessageBox.Show(this, "Are you sure you want to stop the quiz?", "Virtual Flash Cards", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            base.OnMouseDoubleClick(e);
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            if (e.CloseReason == CloseReason.UserClosing 
+                && !CloseError 
+                && Context.AskYesNo(this, "Are you sure you want to stop the quiz?") == DialogResult.No)
             {
-                Close();
+                e.Cancel = true;
             }
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            score.BringToFront();
-        }
-
-        private void button4_Click(object sender, EventArgs e)
-        {
-            MessageBox.Show(this, "This feature is not yet avalible in this version.", "Virtual Flash Cards", MessageBoxButtons.OK, MessageBoxIcon.Information); 
-            /*
-            if (saveFileDialog1.ShowDialog() != DialogResult.Cancel)
-            {
-                EasyXml state = new EasyXml(saveFileDialog1.FileName);
-                System.IO.File.Copy(Program.flash.path, saveFileDialog1.FileName, true);
-                string order = "";
-                foreach (int i in questions)
-                {
-                    order += "|" + i;
-                }
-                state.CreateChild("Quiz", "Order", order);
-            } */
+            base.OnFormClosing(e);
         }
     }
 }

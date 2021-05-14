@@ -114,11 +114,6 @@ namespace VirtualFlashCards
             EditQuiz((Quiz)null);
         }
 
-        public void ShowError(string message)
-        {
-            MessageBox.Show(MainForm, message, MainForm.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-
         private void FormClosing(object sender, FormClosingEventArgs e)
         {
             if (e.CloseReason == CloseReason.UserClosing)
@@ -129,6 +124,8 @@ namespace VirtualFlashCards
                 MainForm.FormBorderStyle = form.FormBorderStyle;
                 form.Hide();
                 MainForm.Show();
+                MainForm.BringToFront();
+                MainForm.Activate();
             }
         }
 
@@ -145,6 +142,26 @@ namespace VirtualFlashCards
                 ShowError(ex.Message);
                 return null;
             }
+        }
+
+        public void ShowError(string text)
+        {
+            ShowError(MainForm, text);
+        }
+
+        public void ShowError(IWin32Window owner, string text)
+        {
+            MessageBox.Show(owner, text, MainForm.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+        public DialogResult AskYesNo(string text)
+        {
+            return AskYesNo(MainForm, text);
+        }
+
+        public DialogResult AskYesNo(IWin32Window owner, string text)
+        {
+            return MessageBox.Show(owner, "Are you sure you want to stop the quiz?", MainForm.Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
         }
     }
 }

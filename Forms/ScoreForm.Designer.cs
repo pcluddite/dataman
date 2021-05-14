@@ -29,90 +29,89 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ScoreForm));
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
+            this.lblRight = new System.Windows.Forms.Label();
+            this.lblWrong = new System.Windows.Forms.Label();
+            this.lblPct = new System.Windows.Forms.Label();
+            this.lblMessage = new System.Windows.Forms.Label();
+            this.lblGrade = new System.Windows.Forms.Label();
+            this.lblLatest = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
-            // label1
+            // lblRight
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(32, 10);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(44, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Correct:";
+            this.lblRight.AutoSize = true;
+            this.lblRight.Location = new System.Drawing.Point(32, 10);
+            this.lblRight.Name = "lblRight";
+            this.lblRight.Size = new System.Drawing.Size(44, 13);
+            this.lblRight.TabIndex = 0;
+            this.lblRight.Text = "Correct:";
             // 
-            // label2
+            // lblWrong
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(24, 23);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(52, 13);
-            this.label2.TabIndex = 1;
-            this.label2.Text = "Incorrect:";
+            this.lblWrong.AutoSize = true;
+            this.lblWrong.Location = new System.Drawing.Point(24, 23);
+            this.lblWrong.Name = "lblWrong";
+            this.lblWrong.Size = new System.Drawing.Size(52, 13);
+            this.lblWrong.TabIndex = 1;
+            this.lblWrong.Text = "Incorrect:";
             // 
-            // label3
+            // lblPct
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(11, 36);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(65, 13);
-            this.label3.TabIndex = 2;
-            this.label3.Text = "Percentage:";
+            this.lblPct.AutoSize = true;
+            this.lblPct.Location = new System.Drawing.Point(11, 36);
+            this.lblPct.Name = "lblPct";
+            this.lblPct.Size = new System.Drawing.Size(65, 13);
+            this.lblPct.TabIndex = 2;
+            this.lblPct.Text = "Percentage:";
             // 
-            // label4
+            // lblMessage
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(48, 58);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(148, 13);
-            this.label4.TabIndex = 3;
-            this.label4.Text = "You are currently on question:";
+            this.lblMessage.AutoSize = true;
+            this.lblMessage.Location = new System.Drawing.Point(37, 58);
+            this.lblMessage.Name = "lblMessage";
+            this.lblMessage.Size = new System.Drawing.Size(148, 13);
+            this.lblMessage.TabIndex = 3;
+            this.lblMessage.Text = "You are currently on question:";
             // 
-            // label5
+            // lblGrade
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(152, 23);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(76, 13);
-            this.label5.TabIndex = 4;
-            this.label5.Text = "Current Grade:";
+            this.lblGrade.AutoSize = true;
+            this.lblGrade.Location = new System.Drawing.Point(152, 23);
+            this.lblGrade.Name = "lblGrade";
+            this.lblGrade.Size = new System.Drawing.Size(76, 13);
+            this.lblGrade.TabIndex = 4;
+            this.lblGrade.Text = "Current Grade:";
             // 
-            // label6
+            // lblLatest
             // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.ForeColor = System.Drawing.Color.LimeGreen;
-            this.label6.Location = new System.Drawing.Point(161, 10);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(0, 13);
-            this.label6.TabIndex = 5;
+            this.lblLatest.AutoSize = true;
+            this.lblLatest.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblLatest.ForeColor = System.Drawing.Color.LimeGreen;
+            this.lblLatest.Location = new System.Drawing.Point(161, 10);
+            this.lblLatest.Name = "lblLatest";
+            this.lblLatest.Size = new System.Drawing.Size(0, 13);
+            this.lblLatest.TabIndex = 5;
             // 
-            // Score
+            // ScoreForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(264, 85);
             this.ControlBox = false;
-            this.Controls.Add(this.label6);
-            this.Controls.Add(this.label5);
-            this.Controls.Add(this.label4);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.lblLatest);
+            this.Controls.Add(this.lblGrade);
+            this.Controls.Add(this.lblMessage);
+            this.Controls.Add(this.lblPct);
+            this.Controls.Add(this.lblWrong);
+            this.Controls.Add(this.lblRight);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "Score";
+            this.Name = "ScoreForm";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Current Statistics";
-            this.Load += new System.EventHandler(this.Score_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -120,11 +119,11 @@
 
         #endregion
 
-        public System.Windows.Forms.Label label1;
-        public System.Windows.Forms.Label label2;
-        public System.Windows.Forms.Label label3;
-        public System.Windows.Forms.Label label4;
-        public System.Windows.Forms.Label label5;
-        public System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label lblLatest;
+        private System.Windows.Forms.Label lblMessage;
+        private System.Windows.Forms.Label lblRight;
+        private System.Windows.Forms.Label lblWrong;
+        private System.Windows.Forms.Label lblPct;
+        private System.Windows.Forms.Label lblGrade;
     }
 }

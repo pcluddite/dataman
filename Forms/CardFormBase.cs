@@ -16,14 +16,22 @@ namespace VirtualFlashCards.Forms
         protected override void OnMouseDoubleClick(MouseEventArgs e)
         {
             base.OnMouseDoubleClick(e);
+            SuspendLayout();
             if (FormBorderStyle == FormBorderStyle.None)
             {
+                Rectangle oldBounds = DesktopBounds;
                 FormBorderStyle = FormBorderStyle.FixedSingle;
+                Point diff = new Point(DesktopBounds.Width - oldBounds.Width, DesktopBounds.Height - oldBounds.Height);
+                SetDesktopLocation(DesktopLocation.X - diff.X, DesktopLocation.Y - diff.Y);
             }
             else
             {
+                Rectangle oldBounds = DesktopBounds;
                 FormBorderStyle = FormBorderStyle.None;
+                Point diff = new Point(oldBounds.Width - DesktopBounds.Width, oldBounds.Height - DesktopBounds.Height);
+                SetDesktopLocation(DesktopLocation.X + diff.X, DesktopLocation.Y + diff.Y);
             }
+            ResumeLayout();
         }
 
         protected override void OnMouseMove(MouseEventArgs e)

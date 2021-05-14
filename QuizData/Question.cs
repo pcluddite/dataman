@@ -28,6 +28,11 @@ namespace VirtualFlashCards.QuizData
             return new Question(n.Attributes("prompt").Value, a);
         }
 
+        public override string ToString()
+        {
+            return Prompt;
+        }
+
         public override bool Equals(object obj)
         {
             Question q = obj as Question;

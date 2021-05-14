@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <quiz version="4">
   <question prompt="What is the acronym for Universal Serial Bus?">
-    <answer type="text" value="USB" />
+    <answer type="text" value="USB" matchCase="true"/>
   </question>
-  <question prompt="What is the capital of Mexico?" />
+  <question prompt="What is the capital of Mexico?" >
     <answer type="text" value="Mexico City" />
   </question>
-  <question prompt="The absolute value of -3 is what?" />
+  <question prompt="The absolute value of -3 is what?" >
     <answer type="text" value="3" />
   </question>
-  <question prompt="The center of an atom is called the what?" />
+  <question prompt="The center of an atom is called the what?" >
     <answer type="text" value="Nucleus" />
   </question>
 </quiz>

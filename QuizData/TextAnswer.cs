@@ -72,5 +72,10 @@ namespace VirtualFlashCards.QuizData
         {
             return (Value == null ? 0 : Value.GetHashCode()) ^ MatchCase.GetHashCode();
         }
+
+        public override string ToString()
+        {
+            return Value;
+        }
     }
 }

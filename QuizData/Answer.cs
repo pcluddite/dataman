@@ -32,6 +32,8 @@ namespace VirtualFlashCards.QuizData
 
         public abstract override int GetHashCode();
 
+        public abstract override string ToString();
+
         public static bool operator ==(Answer left, Answer right)
         {
             if (ReferenceEquals(left, right))

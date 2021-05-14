@@ -33,7 +33,6 @@
             this.btnNew = new System.Windows.Forms.Button();
             this.btnEdit = new System.Windows.Forms.Button();
             this.lblTitle = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
             this.btnExit = new System.Windows.Forms.Button();
             this.openQuizDialog = new System.Windows.Forms.OpenFileDialog();
             this.SuspendLayout();
@@ -41,16 +40,17 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.BackColor = System.Drawing.SystemColors.HighlightText;
-            this.label1.Location = new System.Drawing.Point(53, 98);
+            this.label1.BackColor = System.Drawing.Color.Transparent;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(23, 104);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(136, 13);
+            this.label1.Size = new System.Drawing.Size(197, 20);
             this.label1.TabIndex = 1;
             this.label1.Text = "What would you like to do?";
             // 
             // btnStart
             // 
-            this.btnStart.Location = new System.Drawing.Point(206, 69);
+            this.btnStart.Location = new System.Drawing.Point(237, 72);
             this.btnStart.Name = "btnStart";
             this.btnStart.Size = new System.Drawing.Size(157, 23);
             this.btnStart.TabIndex = 2;
@@ -60,7 +60,7 @@
             // 
             // btnNew
             // 
-            this.btnNew.Location = new System.Drawing.Point(206, 98);
+            this.btnNew.Location = new System.Drawing.Point(237, 101);
             this.btnNew.Name = "btnNew";
             this.btnNew.Size = new System.Drawing.Size(157, 23);
             this.btnNew.TabIndex = 3;
@@ -70,7 +70,7 @@
             // 
             // btnEdit
             // 
-            this.btnEdit.Location = new System.Drawing.Point(206, 127);
+            this.btnEdit.Location = new System.Drawing.Point(237, 130);
             this.btnEdit.Name = "btnEdit";
             this.btnEdit.Size = new System.Drawing.Size(157, 23);
             this.btnEdit.TabIndex = 4;
@@ -81,26 +81,17 @@
             // lblTitle
             // 
             this.lblTitle.AutoSize = true;
-            this.lblTitle.BackColor = System.Drawing.SystemColors.HighlightText;
-            this.lblTitle.Location = new System.Drawing.Point(167, 9);
+            this.lblTitle.BackColor = System.Drawing.Color.Transparent;
+            this.lblTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTitle.Location = new System.Drawing.Point(135, 9);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(103, 13);
+            this.lblTitle.Size = new System.Drawing.Size(156, 20);
             this.lblTitle.TabIndex = 0;
-            this.lblTitle.Text = "Virtual Flash Cards 3";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.BackColor = System.Drawing.Color.Transparent;
-            this.label3.Location = new System.Drawing.Point(110, 228);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(213, 13);
-            this.label3.TabIndex = 6;
-            this.label3.Text = "Copyright (c) 2009-2015 Timothy Baxendale";
+            this.lblTitle.Text = "Virtual Flash Cards 4";
             // 
             // btnExit
             // 
-            this.btnExit.Location = new System.Drawing.Point(206, 156);
+            this.btnExit.Location = new System.Drawing.Point(237, 159);
             this.btnExit.Name = "btnExit";
             this.btnExit.Size = new System.Drawing.Size(157, 23);
             this.btnExit.TabIndex = 5;
@@ -117,7 +108,6 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.ClientSize = new System.Drawing.Size(425, 250);
             this.Controls.Add(this.btnExit);
-            this.Controls.Add(this.label3);
             this.Controls.Add(this.lblTitle);
             this.Controls.Add(this.btnEdit);
             this.Controls.Add(this.btnNew);
@@ -136,7 +126,6 @@
         private System.Windows.Forms.Button btnNew;
         private System.Windows.Forms.Button btnEdit;
         private System.Windows.Forms.Label lblTitle;
-        private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button btnExit;
         private System.Windows.Forms.OpenFileDialog openQuizDialog;
     }
