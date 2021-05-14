@@ -111,6 +111,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="QuizData\Answer.cs" />
+    <Compile Include="QuizData\MultiAnswer.cs" />
     <Compile Include="QuizData\Question.cs" />
     <Compile Include="QuizData\QuestionAnswerMap.cs" />
     <Compile Include="QuizData\Quiz.cs" />

@@ -10,7 +10,7 @@ namespace VirtualFlashCards.QuizData
     {
         public abstract bool IsCorrect(string input);
 
-        public abstract Answer CloneWithNewInput(string input);
+        public abstract Answer CloneWithNewInput(params string[] input);
 
         public virtual XmlElement ToXml(XmlDocument doc)
         {

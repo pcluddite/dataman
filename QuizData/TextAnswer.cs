@@ -40,9 +40,13 @@ namespace VirtualFlashCards.QuizData
             }
         }
 
-        public override Answer CloneWithNewInput(string input)
+        public override Answer CloneWithNewInput(params string[] input)
         {
-            return new TextAnswer(input, MatchCase);
+            if (input == null)
+                throw new ArgumentNullException();
+            if (input.Length != 1)
+                throw new ArgumentException();
+            return new TextAnswer(input[0], MatchCase);
         }
 
         public override XmlElement ToXml(XmlDocument doc)
