@@ -7,18 +7,28 @@ namespace VirtualFlashCards.Forms
     public partial class QuizForm : CardForm
     {
         private Quiz quiz;
-        private Question current;
         private ScoreForm score = new ScoreForm();
         private AppContext context;
-        private int correct = 0;
-        private int incorrect = 0;
+
+        public Quiz Quiz { get; private set; }
+        public int Current { get; set; }
+        public int Correct { get; set; }
+        public int Incorrect { get; set; }
+
+        public Question CurrentQuestion
+        {
+            get
+            {
+                return quiz[Correct];
+            }
+        }
 
         public QuizForm(AppContext context)
         {
             InitializeComponent();
             this.context = context;
             quiz = context.CurrentQuiz;
-            score.label4.Text = "You are currently on question: " + (quiz.Current + 1) + " of " + quiz.Count;
+            score.label4.Text = "You are currently on question: " + (Current + 1) + " of " + Quiz.Count;
         }
 
         private void Card_Load(object sender, EventArgs e)
@@ -27,7 +37,7 @@ namespace VirtualFlashCards.Forms
             {
                 button3.Visible = true;
             }
-            if (quiz.Count == 0)
+            if (Quiz.Count == 0)
             {
                 context.ShowError("There appear to be no questions in this quiz.");
                 Close();
@@ -35,8 +45,7 @@ namespace VirtualFlashCards.Forms
             else
             {
                 quiz.Shuffle();
-                current = quiz.Next();
-                textBox1.Text = current.Prompt;
+                textBox1.Text = Quiz[++Current].Prompt;
                 textBox2.Focus();
                 textBox2.Select();
             }
@@ -44,33 +53,35 @@ namespace VirtualFlashCards.Forms
 
         private void button2_Click(object sender, EventArgs e)
         {
-            //if (current.IsCorrect(textBox2.Text))
-            //{
-            //    correct++;
-            //    score.label6.Text = "Correct!";
-            //    score.label6.ForeColor = System.Drawing.Color.Green;
-            //}
-            //else
-            //{
-            //    incorrect++;
-            //    quiz.AddWrong(current);
-            //    score.label6.Text = "Incorrect!";
-            //    score.label6.ForeColor = System.Drawing.Color.Red;
-            //}
-            //current = quiz.Next();
-            //if (current == null)
-            //{
-            //    Close();
-            //    FinishedForm fin = new FinishedForm(quiz.Wrong(), correct, incorrect, context);
-            //    fin.Show();
-            //}
-            //else {
-            //    textBox1.Text = current.Prompt;
-            //    textBox2.Text = "";
-            //    textBox2.Focus();
-            //    textBox2.Select();
-            //    score.updateScore(correct, incorrect, quiz.Current);
-            //}
+            Answer answer = CurrentQuestion.Answer;
+            if (answer.IsCorrect(textBox2.Text))
+            {
+                Correct++;
+                score.label6.Text = "Correct!";
+                score.label6.ForeColor = System.Drawing.Color.Green;
+            }
+            else
+            {
+                Incorrect++;
+                quiz.AddWrongAnswer(Current, Answer.Create(answer.GetType(), textBox2.Text));
+                score.label6.Text = "Incorrect!";
+                score.label6.ForeColor = System.Drawing.Color.Red;
+            }
+            current = quiz.Next();
+            if (current == null)
+            {
+                Close();
+                FinishedForm fin = new FinishedForm(quiz.Wrong(), correct, incorrect, context);
+                fin.Show();
+            }
+            else
+            {
+                textBox1.Text = current.Prompt;
+                textBox2.Text = "";
+                textBox2.Focus();
+                textBox2.Select();
+                score.updateScore(correct, incorrect, quiz.Current);
+            }
         }
 
         private void button3_Click(object sender, EventArgs e)

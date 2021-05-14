@@ -17,6 +17,33 @@ namespace VirtualFlashCards.QuizData
             return elem;
         }
 
+        public sealed override bool Equals(object obj)
+        {
+            if (obj == null)
+                return false;
+            if (ReferenceEquals(obj, this))
+                return true;
+            return Equals(obj as Answer);
+        }
+
+        public abstract bool Equals(Answer other);
+
+        public abstract override int GetHashCode();
+
+        public static bool operator ==(Answer left, Answer right)
+        {
+            if (ReferenceEquals(left, right))
+                return true;
+            if ((object)left == null)
+                return false;
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(Answer left, Answer right)
+        {
+            return !(left == right);
+        }
+
         public static Answer FromXml(XmlNode node)
         {
             if (node.Name != "answer")
@@ -25,7 +52,8 @@ namespace VirtualFlashCards.QuizData
             Type t = Type.GetType(GetAnswerClassNameFromType(ansTypeName));
             if (t == null)
                 throw new ArgumentException("Encountered unknown answer type '" + ansTypeName + "'. The document may not be supported by this version of Flash Cards");
-            return (Answer)Activator.CreateInstance(t, node);
+            ConstructorInfo ctor = t.GetConstructor(BindingFlags.Instance | BindingFlags.NonPublic, null, new Type[] { typeof(XmlNode) }, null);
+            return (Answer)ctor.Invoke(new object[] { node });
         }
 
         private static string GetAnswerType(Type ansType)
@@ -50,6 +78,10 @@ namespace VirtualFlashCards.QuizData
             }
             sb.Append("Answer");
             return sb.ToString();
+        }
+
+        public static Answer Create(Type answerType, string text)
+        {
         }
     }
 }

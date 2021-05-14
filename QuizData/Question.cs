@@ -31,5 +31,41 @@ namespace VirtualFlashCards.QuizData
             Answer a = Answer.FromXml(n.SelectSingleNode("answer"));
             return new Question(n.Attributes("prompt").Value, a);
         }
+
+        public override bool Equals(object obj)
+        {
+            Question q = obj as Question;
+            if ((object)q == null)
+                return false;
+            return Equals(q);
+        }
+
+        public bool Equals(Question q)
+        {
+            if (ReferenceEquals(q, this))
+                return true;
+            if ((object)q == null)
+                return false;
+            return Prompt == q.Prompt && Answer == q.Answer;
+        }
+
+        public static bool operator ==(Question left, Question right)
+        {
+            if (ReferenceEquals(left, right))
+                return true;
+            if ((object)left == null)
+                return false;
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(Question left, Question right)
+        {
+            return !(left == right);
+        }
+
+        public override int GetHashCode()
+        {
+            return (Prompt == null ? 0 : Prompt.GetHashCode()) | (Answer == null ? 0 : Answer.GetHashCode());
+        }
     }
 }

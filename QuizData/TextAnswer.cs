@@ -11,7 +11,7 @@ namespace VirtualFlashCards.QuizData
         public string Value { get; set; }
         public bool MatchCase { get; set; }
 
-        public TextAnswer(XmlNode node)
+        protected TextAnswer(XmlNode node)
         {
             Value = node.Attributes("value").Value;
             MatchCase = node.Attributes("matchCase").Value(false);
@@ -47,6 +47,25 @@ namespace VirtualFlashCards.QuizData
             if (MatchCase)
                 node.Attributes("matchCase").Value = MatchCase.ToString();
             return node;
+        }
+
+        public override bool Equals(Answer other)
+        {
+            return Equals(other as TextAnswer);
+        }
+
+        public virtual bool Equals(TextAnswer other)
+        {
+            if (ReferenceEquals(other, this))
+                return true;
+            if ((object)other == null)
+                return false;
+            return Value == other.Value && MatchCase == other.MatchCase;
+        }
+
+        public override int GetHashCode()
+        {
+            return (Value == null ? 0 : Value.GetHashCode()) ^ MatchCase.GetHashCode();
         }
     }
 }
