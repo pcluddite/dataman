@@ -10,7 +10,7 @@ namespace VirtualFlashCards.QuizData
         private const int VERSION = 4;
 
         private List<Question> allQuestions = new List<Question>();
-        private Dictionary<int, Answer> incorrect = new Dictionary<int, Answer>();
+        private QuestionAnswerMap incorrect = new QuestionAnswerMap();
 
         public int Count
         {
@@ -38,52 +38,39 @@ namespace VirtualFlashCards.QuizData
 
         public Quiz(IEnumerable<Question> questions)
         {
-            allQuestions.AddRange(questions);
+            AddRange(questions);
         }
 
         public void Shuffle()
         {
+            List<Question> oldQuestionList = allQuestions;
+            List<Question> newQuestionList = new List<Question>(oldQuestionList.Count);
             Random r = new Random();
-            List<Question> old = allQuestions;
-            allQuestions = new List<Question>();
-            while (old.Count > 0)
+            while (oldQuestionList.Count > 0)
             {
-                int index = r.Next(0, old.Count);
-                Question q = old[index];
-                old.RemoveAt(index);
-                allQuestions.Add(q);
+                int oldIndex = r.Next(0, oldQuestionList.Count);
+                Question q = oldQuestionList[oldIndex];
+                oldQuestionList.RemoveAt(oldIndex);
+                newQuestionList.Add(q);
             }
-        }
-
-        public void RemoveAt(int index)
-        {
-            Question q = allQuestions[index];
-            allQuestions.RemoveAt(index);
-            incorrect.Remove(index);
+            allQuestions = newQuestionList;
         }
 
         public void AddWrongAnswer(int questionIndex, Answer wrongAnswer)
         {
-            incorrect.Add(questionIndex, wrongAnswer);
+            if (wrongAnswer == null)
+                throw new ArgumentNullException();
+            incorrect.Add(allQuestions[questionIndex], wrongAnswer);
         }
 
         public Answer GetWrongAnswer(int questionIndex)
         {
-            return allQuestions[questionIndex];
+            return incorrect[allQuestions[questionIndex]];
         }
 
-        public Quiz WrongToQuiz()
+        public Quiz WrongQuiz()
         {
-            return new Quiz(GetWrongEnumerator());
-        }
-
-        public IEnumerable<Question> GetWrongEnumerator()
-        {
-            for (int idx = 0; idx < allQuestions.Count; ++idx)
-            {
-                if (incorrect.ContainsKey(idx))
-                    yield return allQuestions[idx];
-            }
+            return new Quiz(incorrect.Questions);
         }
 
         public XmlNode ToXml(XmlDocument doc)
@@ -118,13 +105,21 @@ namespace VirtualFlashCards.QuizData
             return FromXml(quizNode);
         }
 
+        public void AddRange(IEnumerable<Question> questions)
+        {
+            foreach (Question q in questions)
+            {
+                Add(q);
+            }
+        }
+
         #region IList<Question> Members
 
         int IList<Question>.IndexOf(Question item)
         {
             for (int idx = 0; idx < allQuestions.Count; ++idx)
             {
-                if (ReferenceEquals(item, allQuestions[idx]))
+                if (item == allQuestions[idx])
                     return idx;
             }
             return -1;
@@ -132,46 +127,52 @@ namespace VirtualFlashCards.QuizData
 
         void IList<Question>.Insert(int index, Question item)
         {
-            throw new NotImplementedException();
+            allQuestions.Insert(index, item);
+        }
+
+        public void RemoveAt(int index)
+        {
+            Question q = allQuestions[index];
+            allQuestions.RemoveAt(index);
+            incorrect.Remove(q);
         }
 
         #endregion
 
         #region ICollection<Question> Members
 
-        void ICollection<Question>.Add(Question item)
+        public void Add(Question question)
         {
-            throw new NotImplementedException();
+            allQuestions.Add(question);
         }
 
-        void ICollection<Question>.Clear()
+        public void Clear()
         {
-            throw new NotImplementedException();
+            allQuestions.Clear();
+            incorrect.Clear();
         }
 
-        bool ICollection<Question>.Contains(Question item)
+        public bool Contains(Question question)
         {
-            throw new NotImplementedException();
+            return allQuestions.Contains(question);
         }
 
-        void ICollection<Question>.CopyTo(Question[] array, int arrayIndex)
+        public void CopyTo(Question[] array, int arrayIndex)
         {
-            throw new NotImplementedException();
-        }
-
-        int ICollection<Question>.Count
-        {
-            get { throw new NotImplementedException(); }
+            allQuestions.CopyTo(array, arrayIndex);
         }
 
         bool ICollection<Question>.IsReadOnly
         {
-            get { throw new NotImplementedException(); }
+            get { return false; }
         }
 
-        bool ICollection<Question>.Remove(Question item)
+        public bool Remove(Question question)
         {
-            throw new NotImplementedException();
+            if (!allQuestions.Remove(question))
+                return false;
+            incorrect.Remove(question);
+            return true;
         }
 
         #endregion

@@ -10,6 +10,8 @@ namespace VirtualFlashCards.QuizData
     {
         public abstract bool IsCorrect(string input);
 
+        public abstract Answer CloneWithNewInput(string input);
+
         public virtual XmlElement ToXml(XmlDocument doc)
         {
             XmlElement elem = doc.CreateElement("answer");
@@ -78,10 +80,6 @@ namespace VirtualFlashCards.QuizData
             }
             sb.Append("Answer");
             return sb.ToString();
-        }
-
-        public static Answer Create(Type answerType, string text)
-        {
         }
     }
 }

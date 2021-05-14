@@ -6,11 +6,17 @@ namespace VirtualFlashCards.Forms
 {
     public partial class QuizForm : CardForm
     {
-        private Quiz quiz;
         private ScoreForm score = new ScoreForm();
         private AppContext context;
 
-        public Quiz Quiz { get; private set; }
+        public Quiz Quiz
+        {
+            get
+            {
+                return context.CurrentQuiz;
+            }
+        }
+
         public int Current { get; set; }
         public int Correct { get; set; }
         public int Incorrect { get; set; }
@@ -19,7 +25,7 @@ namespace VirtualFlashCards.Forms
         {
             get
             {
-                return quiz[Correct];
+                return Quiz[Correct];
             }
         }
 
@@ -27,7 +33,6 @@ namespace VirtualFlashCards.Forms
         {
             InitializeComponent();
             this.context = context;
-            quiz = context.CurrentQuiz;
             score.label4.Text = "You are currently on question: " + (Current + 1) + " of " + Quiz.Count;
         }
 
@@ -44,7 +49,7 @@ namespace VirtualFlashCards.Forms
             }
             else
             {
-                quiz.Shuffle();
+                Quiz.Shuffle();
                 textBox1.Text = Quiz[++Current].Prompt;
                 textBox2.Focus();
                 textBox2.Select();
@@ -63,24 +68,23 @@ namespace VirtualFlashCards.Forms
             else
             {
                 Incorrect++;
-                quiz.AddWrongAnswer(Current, Answer.Create(answer.GetType(), textBox2.Text));
+                Quiz.AddWrongAnswer(Current, answer.CloneWithNewInput(textBox2.Text));
                 score.label6.Text = "Incorrect!";
                 score.label6.ForeColor = System.Drawing.Color.Red;
             }
-            current = quiz.Next();
-            if (current == null)
+            if (++Current < Quiz.Count)
             {
-                Close();
-                FinishedForm fin = new FinishedForm(quiz.Wrong(), correct, incorrect, context);
-                fin.Show();
-            }
-            else
-            {
-                textBox1.Text = current.Prompt;
+                textBox1.Text = CurrentQuestion.Prompt;
                 textBox2.Text = "";
                 textBox2.Focus();
                 textBox2.Select();
-                score.updateScore(correct, incorrect, quiz.Current);
+                score.updateScore(Correct, Incorrect, Current);
+            }
+            else
+            {
+                Close();
+                FinishedForm fin = new FinishedForm(Quiz.WrongQuiz(), Correct, Incorrect, context);
+                fin.Show();
             }
         }
 

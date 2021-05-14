@@ -40,6 +40,11 @@ namespace VirtualFlashCards.QuizData
             }
         }
 
+        public override Answer CloneWithNewInput(string input)
+        {
+            return new TextAnswer(input, MatchCase);
+        }
+
         public override XmlElement ToXml(XmlDocument doc)
         {
             XmlElement node = base.ToXml(doc);
