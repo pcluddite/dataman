@@ -28,7 +28,7 @@ namespace VirtualFlashCards.Forms
         public void SetAnswerControl(Control control)
         {
             SuspendLayout();
-            control.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Italic, GraphicsUnit.Point, 0);
+            control.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             control.Location = new Point(10, 10);
             control.Width = ClientRectangle.Width - 20;
             btnSubmit.Location = new Point(btnSubmit.Left, control.Location.Y + control.Height + 5);

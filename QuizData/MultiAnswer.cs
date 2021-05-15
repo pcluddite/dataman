@@ -70,7 +70,7 @@ namespace VirtualFlashCards.QuizData
             CheckedListBox checkedListBox = (CheckedListBox)control;
             MultiAnswer answer = new MultiAnswer();
             answer.choices = new Dictionary<string, bool>(choices);
-            foreach(string option in answer.choices.Keys)
+            foreach(string option in choices.Keys)
             {
                 answer.choices[option] = false;
             }
@@ -85,7 +85,8 @@ namespace VirtualFlashCards.QuizData
         {
             CheckedListBox checkedListBox = new CheckedListBox() 
             {
-                Height = 15 * choices.Count
+                Height = 25 * choices.Count,
+                CheckOnClick = true
             };
             List<string> options = new List<string>(Options);
             Random r = new Random();
