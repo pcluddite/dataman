@@ -66,9 +66,8 @@ namespace VirtualFlashCards.QuizData
                 radio.Name = "radioAnswer" + i++;
                 radio.Text = option;
                 radio.Location = new Point(10, i * (radio.Height + 5));
-                radio.Width = 500;
+                radio.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
                 group.Controls.Add(radio);
-                radio.SendToBack();
             }
             return group;
         }
