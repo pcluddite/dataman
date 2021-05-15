@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Forms;
 using System.Xml;
 using VirtualFlashCards.Xml;
 
@@ -28,25 +29,27 @@ namespace VirtualFlashCards.QuizData
             MatchCase = matchCase;
         }
 
-        public override bool IsCorrect(string input)
+        public override bool IsCorrect(Control control)
         {
+            TextBox txtAnswer = (TextBox)control;
             if (MatchCase)
             {
-                return string.Equals(Value, input, StringComparison.CurrentCulture);
+                return string.Equals(Value, txtAnswer.Text, StringComparison.CurrentCulture);
             }
             else
             {
-                return string.Equals(Value, input, StringComparison.CurrentCultureIgnoreCase);
+                return string.Equals(Value, txtAnswer.Text, StringComparison.CurrentCultureIgnoreCase);
             }
         }
 
-        public override Answer CloneWithNewInput(params string[] input)
+        public override Answer CloneWithNewInput(Control control)
         {
-            if (input == null)
-                throw new ArgumentNullException();
-            if (input.Length != 1)
-                throw new ArgumentException();
-            return new TextAnswer(input[0], MatchCase);
+            return new TextAnswer(((TextBox)control).Text, MatchCase);
+        }
+
+        public override Control CreateFormControl()
+        {
+            return new TextBox() { Name = "txtAnswer" };
         }
 
         public override XmlElement ToXml(XmlDocument doc)

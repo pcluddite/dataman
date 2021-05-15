@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using System.Text;
+using System.Windows.Forms;
 using System.Xml;
 using VirtualFlashCards.Xml;
 
@@ -8,9 +9,11 @@ namespace VirtualFlashCards.QuizData
 {
     public abstract class Answer
     {
-        public abstract bool IsCorrect(string input);
+        public abstract bool IsCorrect(Control control);
 
-        public abstract Answer CloneWithNewInput(params string[] input);
+        public abstract Answer CloneWithNewInput(Control control);
+
+        public abstract Control CreateFormControl();
 
         public virtual XmlElement ToXml(XmlDocument doc)
         {

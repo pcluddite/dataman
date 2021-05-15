@@ -28,61 +28,34 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.txtAnswer = new System.Windows.Forms.TextBox();
-            this.btnNext = new System.Windows.Forms.Button();
-            this.txtPrompt = new System.Windows.Forms.TextBox();
+            this.lblPrompt = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
-            // txtAnswer
+            // lblPrompt
             // 
-            this.txtAnswer.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtAnswer.Location = new System.Drawing.Point(12, 198);
-            this.txtAnswer.Name = "txtAnswer";
-            this.txtAnswer.Size = new System.Drawing.Size(308, 26);
-            this.txtAnswer.TabIndex = 1;
-            // 
-            // btnNext
-            // 
-            this.btnNext.Location = new System.Drawing.Point(326, 199);
-            this.btnNext.Name = "btnNext";
-            this.btnNext.Size = new System.Drawing.Size(87, 23);
-            this.btnNext.TabIndex = 2;
-            this.btnNext.Text = "Submit";
-            this.btnNext.UseVisualStyleBackColor = true;
-            this.btnNext.Click += new System.EventHandler(this.btnNext_Click);
-            // 
-            // txtPrompt
-            // 
-            this.txtPrompt.BackColor = System.Drawing.SystemColors.Window;
-            this.txtPrompt.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtPrompt.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtPrompt.Location = new System.Drawing.Point(12, 41);
-            this.txtPrompt.Multiline = true;
-            this.txtPrompt.Name = "txtPrompt";
-            this.txtPrompt.ReadOnly = true;
-            this.txtPrompt.Size = new System.Drawing.Size(401, 146);
-            this.txtPrompt.TabIndex = 0;
-            this.txtPrompt.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.lblPrompt.BackColor = System.Drawing.Color.Transparent;
+            this.lblPrompt.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblPrompt.Location = new System.Drawing.Point(12, 28);
+            this.lblPrompt.Name = "lblPrompt";
+            this.lblPrompt.Size = new System.Drawing.Size(401, 213);
+            this.lblPrompt.TabIndex = 1;
+            this.lblPrompt.Text = "Lorem Ipsum Dolor Sit Amet";
+            this.lblPrompt.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // QuizForm
             // 
-            this.AcceptButton = this.btnNext;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.ClientSize = new System.Drawing.Size(425, 250);
-            this.Controls.Add(this.txtPrompt);
-            this.Controls.Add(this.btnNext);
-            this.Controls.Add(this.txtAnswer);
+            this.Controls.Add(this.lblPrompt);
             this.Name = "QuizForm";
             this.Text = "Quiz";
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
 
-        private System.Windows.Forms.TextBox txtAnswer;
-        private System.Windows.Forms.Button btnNext;
-        private System.Windows.Forms.TextBox txtPrompt;
+        private System.Windows.Forms.Label lblPrompt;
+
     }
 }

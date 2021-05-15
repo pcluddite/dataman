@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Windows.Forms;
 using System.Xml;
 using VirtualFlashCards.Xml;
+using System.Linq;
 
 namespace VirtualFlashCards.QuizData
 {
@@ -10,27 +12,24 @@ namespace VirtualFlashCards.QuizData
     {
         public const string TYPE = "multi";
 
-        private List<MultiAnswerOption> choices = new List<MultiAnswerOption>();
+        private Dictionary<string, bool> choices = new Dictionary<string, bool>();
 
-        public IEnumerable<string> Choices
+        public IEnumerable<string> Options
         {
             get
             {
-                foreach (MultiAnswerOption choice in choices)
-                {
-                    yield return choice.Text;
-                }
+                return choices.Keys;
             }
         }
 
-        public IEnumerable<string> CorrectChoices
+        public IEnumerable<string> CorrectOptions
         {
             get
             {
-                foreach (MultiAnswerOption choice in choices)
+                foreach (KeyValuePair<string, bool> choice in choices)
                 {
-                    if (choice.IsCorrect)
-                        yield return choice.Text;
+                    if (choice.Value)
+                        yield return choice.Key;
                 }
             }
         }
@@ -43,31 +42,60 @@ namespace VirtualFlashCards.QuizData
         {
             foreach (XmlNode optionNode in node.SelectNodes("option"))
             {
-                choices.Add(new MultiAnswerOption(optionNode));
+                MultiAnswerOption option = new MultiAnswerOption(optionNode);
+                choices.Add(option.Text, option.IsCorrect);
             }
         }
 
-        public override bool IsCorrect(string input)
+        public override bool IsCorrect(Control control)
         {
-            foreach (string option in CorrectChoices)
+            CheckedListBox checkedListBox = (CheckedListBox)control;
+            HashSet<string> selectedOptions = new HashSet<string>();
+            foreach (object checkedItem in checkedListBox.CheckedItems)
             {
-                if (input == option)
-                    return true;
+                if (!choices[(string)checkedItem])
+                    return false;
+                selectedOptions.Add((string)checkedItem);
             }
-            return false;
+            foreach (string correct in CorrectOptions)
+            {
+                if (!selectedOptions.Contains(correct))
+                    return false;
+            }
+            return true;
         }
 
-        public override Answer CloneWithNewInput(params string[] input)
+        public override Answer CloneWithNewInput(Control control)
         {
-            if (input == null)
-                throw new ArgumentNullException();
+            CheckedListBox checkedListBox = (CheckedListBox)control;
             MultiAnswer answer = new MultiAnswer();
-            foreach (MultiAnswerOption option in answer.choices)
+            answer.choices = new Dictionary<string, bool>(choices);
+            foreach(string option in answer.choices.Keys)
             {
-                bool correct = Array.IndexOf(input, option.Text) > -1;
-                answer.choices.Add(new MultiAnswerOption(option.Text, correct));
+                answer.choices[option] = false;
+            }
+            foreach (object checkedItem in checkedListBox.CheckedItems)
+            {
+                answer.choices[(string)checkedItem] = true;
             }
             return answer;
+        }
+
+        public override Control CreateFormControl()
+        {
+            CheckedListBox checkedListBox = new CheckedListBox() 
+            {
+                Height = 15 * choices.Count
+            };
+            List<string> options = new List<string>(Options);
+            Random r = new Random();
+            while (options.Count > 0)
+            {
+                int idx = r.Next(0, options.Count);
+                checkedListBox.Items.Add(options[idx]);
+                options.RemoveAt(idx);
+            }
+            return checkedListBox;
         }
 
         public override bool Equals(Answer other)
@@ -83,12 +111,7 @@ namespace VirtualFlashCards.QuizData
                 return false;
             if (other.choices.Count != choices.Count)
                 return false;
-            for (int idx = 0; idx < choices.Count; ++idx)
-            {
-                if (other.choices[idx] != choices[idx])
-                    return false;
-            }
-            return true;
+            return choices.Equals(other.choices);
         }
 
         public override int GetHashCode()
@@ -99,10 +122,10 @@ namespace VirtualFlashCards.QuizData
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            foreach (MultiAnswerOption option in choices)
+            foreach (KeyValuePair<string, bool> option in choices)
             {
-                sb.Append(option.IsCorrect ? "[*] " : "[ ] ");
-                sb.AppendLine(option.Text);
+                sb.Append(option.Value ? "[*] " : "[ ] ");
+                sb.AppendLine(option.Key);
             }
             return sb.ToString();
         }

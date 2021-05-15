@@ -50,6 +50,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppContext.cs" />
+    <Compile Include="Forms\AnswerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\AnswerForm.Designer.cs">
+      <DependentUpon>AnswerForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\CardForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -67,6 +73,10 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Forms\AnswerForm.resx">
+      <DependentUpon>AnswerForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\CardFormBase.resx">
       <DependentUpon>CardFormBase.cs</DependentUpon>
       <SubType>Designer</SubType>
