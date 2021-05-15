@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
@@ -64,51 +65,53 @@ namespace VirtualFlashCards.QuizData
 
         public override bool IsCorrect(Control control)
         {
-            CheckedListBox checkedListBox = (CheckedListBox)control;
-            HashSet<string> selectedOptions = new HashSet<string>();
-            foreach (object checkedItem in checkedListBox.CheckedItems)
+            GroupBox group = (GroupBox)control;
+            foreach (CheckBox check in group.Controls.Cast<CheckBox>())
             {
-                if (!OptionDictionary[(string)checkedItem])
+                if ((check.Checked && !OptionDictionary[check.Text])
+                     || (!check.Checked && OptionDictionary[check.Text]))
+                {
                     return false;
-                selectedOptions.Add((string)checkedItem);
-            }
-            foreach (string correct in CorrectOptions)
-            {
-                if (!selectedOptions.Contains(correct))
-                    return false;
+                }
             }
             return true;
         }
 
         public override Answer CloneWithNewInput(Control control)
         {
-            CheckedListBox checkedListBox = (CheckedListBox)control;
+            GroupBox group = (GroupBox)control;
             MultiAnswer answer = new MultiAnswer();
-            answer.OptionDictionary = new Dictionary<string, bool>(OptionDictionary);
-            foreach(string option in OptionDictionary.Keys)
+            foreach (CheckBox check in group.Controls.Cast<CheckBox>())
             {
-                answer.OptionDictionary[option] = false;
-            }
-            foreach (object checkedItem in checkedListBox.CheckedItems)
-            {
-                answer.OptionDictionary[(string)checkedItem] = true;
+                answer.OptionDictionary[check.Text] = check.Checked;
             }
             return answer;
         }
 
         public override Control CreateFormControl(Font font)
         {
-            CheckedListBox checkedListBox = new CheckedListBox() 
+            GroupBox group = new GroupBox()
             {
-                Height = font.Height * OptionDictionary.Count,
-                Font = font,
-                CheckOnClick = true
+                Name = "grpMulti",
+                Text = "Select All That Apply",
+                Font = font
             };
+            int i = 0;
             foreach (string option in OptionsRandomized)
             {
-                checkedListBox.Items.Add(option);
+                CheckBox checkAnswer = new CheckBox();
+                checkAnswer.Name = "checkAnswer" + i++;
+                checkAnswer.Text = option;
+                checkAnswer.Location = new Point(10, i * (checkAnswer.Height + 5));
+                checkAnswer.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+                group.Controls.Add(checkAnswer);
             }
-            return checkedListBox;
+            if (group.Controls.Count > 0)
+            {
+                Control lastControl = group.Controls[group.Controls.Count - 1];
+                group.Height = lastControl.Height + lastControl.Location.Y + 10;
+            }
+            return group;
         }
 
         public override XmlElement ToXml(XmlDocument doc)
