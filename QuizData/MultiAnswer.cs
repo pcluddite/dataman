@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using VirtualFlashCards.Xml;
-using System.Linq;
 
 namespace VirtualFlashCards.QuizData
 {
@@ -96,11 +96,12 @@ namespace VirtualFlashCards.QuizData
             return answer;
         }
 
-        public override Control CreateFormControl()
+        public override Control CreateFormControl(Font font)
         {
             CheckedListBox checkedListBox = new CheckedListBox() 
             {
-                Height = 25 * OptionDictionary.Count,
+                Height = font.Height * OptionDictionary.Count,
+                Font = font,
                 CheckOnClick = true
             };
             foreach (string option in OptionsRandomized)

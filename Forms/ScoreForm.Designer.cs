@@ -33,8 +33,8 @@
             this.lblWrong = new System.Windows.Forms.Label();
             this.lblPct = new System.Windows.Forms.Label();
             this.lblMessage = new System.Windows.Forms.Label();
-            this.lblGrade = new System.Windows.Forms.Label();
             this.lblLatest = new System.Windows.Forms.Label();
+            this.lblGrade = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // lblRight
@@ -73,15 +73,6 @@
             this.lblMessage.TabIndex = 3;
             this.lblMessage.Text = "You are currently on question:";
             // 
-            // lblGrade
-            // 
-            this.lblGrade.AutoSize = true;
-            this.lblGrade.Location = new System.Drawing.Point(152, 23);
-            this.lblGrade.Name = "lblGrade";
-            this.lblGrade.Size = new System.Drawing.Size(76, 13);
-            this.lblGrade.TabIndex = 4;
-            this.lblGrade.Text = "Current Grade:";
-            // 
             // lblLatest
             // 
             this.lblLatest.AutoSize = true;
@@ -91,6 +82,15 @@
             this.lblLatest.Name = "lblLatest";
             this.lblLatest.Size = new System.Drawing.Size(0, 13);
             this.lblLatest.TabIndex = 5;
+            // 
+            // lblGrade
+            // 
+            this.lblGrade.AutoSize = true;
+            this.lblGrade.Location = new System.Drawing.Point(152, 23);
+            this.lblGrade.Name = "lblGrade";
+            this.lblGrade.Size = new System.Drawing.Size(76, 13);
+            this.lblGrade.TabIndex = 4;
+            this.lblGrade.Text = "Current Grade:";
             // 
             // ScoreForm
             // 

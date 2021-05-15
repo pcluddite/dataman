@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 using System.Xml;
 using VirtualFlashCards.Xml;
@@ -47,9 +48,13 @@ namespace VirtualFlashCards.QuizData
             return new TextAnswer(((TextBox)control).Text, MatchCase);
         }
 
-        public override Control CreateFormControl()
+        public override Control CreateFormControl(Font font)
         {
-            return new TextBox() { Name = "txtAnswer" };
+            return new TextBox()
+            {
+                Name = "txtAnswer",
+                Font = font
+            };
         }
 
         public override XmlElement ToXml(XmlDocument doc)

@@ -51,13 +51,13 @@ namespace VirtualFlashCards.QuizData
             return answer;
         }
 
-        public override Control CreateFormControl()
+        public override Control CreateFormControl(Font font)
         {
             GroupBox group = new GroupBox()
             {
                 Name = "grpSelect",
                 Text = "Select One",
-                Height = 25 * OptionDictionary.Count + 20
+                Font = font
             };
             int i = 0;
             foreach (string option in OptionsRandomized)
@@ -68,6 +68,11 @@ namespace VirtualFlashCards.QuizData
                 radio.Location = new Point(10, i * (radio.Height + 5));
                 radio.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
                 group.Controls.Add(radio);
+            }
+            if (group.Controls.Count > 0)
+            {
+                Control lastControl = group.Controls[group.Controls.Count - 1];
+                group.Height = lastControl.Height + lastControl.Location.Y + 10;
             }
             return group;
         }

@@ -4,6 +4,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using VirtualFlashCards.Xml;
+using System.Drawing;
 
 namespace VirtualFlashCards.QuizData
 {
@@ -13,7 +14,7 @@ namespace VirtualFlashCards.QuizData
 
         public abstract Answer CloneWithNewInput(Control control);
 
-        public abstract Control CreateFormControl();
+        public abstract Control CreateFormControl(Font font);
 
         public virtual XmlElement ToXml(XmlDocument doc)
         {

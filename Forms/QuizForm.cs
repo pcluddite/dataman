@@ -85,7 +85,7 @@ namespace VirtualFlashCards.Forms
         private void ShowCurrentQuestion()
         {
             lblPrompt.Text = CurrentQuestion.Prompt;
-            answerForm.SetAnswerControl(CurrentQuestion.Answer.CreateFormControl());
+            answerForm.SetAnswerControl(CurrentQuestion.Answer);
             answerForm.Activate();
         }
 

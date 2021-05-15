@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using VirtualFlashCards.QuizData;
 
 namespace VirtualFlashCards.Forms
 {
@@ -25,10 +26,10 @@ namespace VirtualFlashCards.Forms
             SetDesktopLocation(underQuiz.X, underQuiz.Y);
         }
 
-        public void SetAnswerControl(Control control)
+        public void SetAnswerControl(Answer answer)
         {
             SuspendLayout();
-            control.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            Control control = answer.CreateFormControl(new Font("Microsoft Sans Serif", 12F, FontStyle.Regular, GraphicsUnit.Point, 0));
             control.Location = new Point(10, 10);
             control.Width = ClientRectangle.Width - 20;
             btnSubmit.Location = new Point(btnSubmit.Left, control.Location.Y + control.Height + 5);
