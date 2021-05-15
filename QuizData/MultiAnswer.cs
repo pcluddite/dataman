@@ -12,21 +12,21 @@ namespace VirtualFlashCards.QuizData
     {
         public const string TYPE = "multi";
 
-        private Dictionary<string, bool> choices = new Dictionary<string, bool>();
+        protected Dictionary<string, bool> OptionDictionary = new Dictionary<string, bool>();
 
-        public IEnumerable<string> Options
+        public virtual IEnumerable<string> Options
         {
             get
             {
-                return choices.Keys;
+                return OptionDictionary.Keys;
             }
         }
 
-        public IEnumerable<string> CorrectOptions
+        public virtual IEnumerable<string> CorrectOptions
         {
             get
             {
-                foreach (KeyValuePair<string, bool> choice in choices)
+                foreach (KeyValuePair<string, bool> choice in OptionDictionary)
                 {
                     if (choice.Value)
                         yield return choice.Key;
@@ -34,7 +34,22 @@ namespace VirtualFlashCards.QuizData
             }
         }
 
-        private MultiAnswer()
+        public virtual IEnumerable<string> OptionsRandomized
+        {
+            get
+            {
+                List<string> options = new List<string>(Options);
+                Random r = new Random();
+                while (options.Count > 0)
+                {
+                    int idx = r.Next(0, options.Count);
+                    yield return options[idx];
+                    options.RemoveAt(idx);
+                }
+            }
+        }
+
+        protected MultiAnswer()
         {
         }
 
@@ -43,7 +58,7 @@ namespace VirtualFlashCards.QuizData
             foreach (XmlNode optionNode in node.SelectNodes("option"))
             {
                 MultiAnswerOption option = new MultiAnswerOption(optionNode);
-                choices.Add(option.Text, option.IsCorrect);
+                OptionDictionary.Add(option.Text, option.IsCorrect);
             }
         }
 
@@ -53,7 +68,7 @@ namespace VirtualFlashCards.QuizData
             HashSet<string> selectedOptions = new HashSet<string>();
             foreach (object checkedItem in checkedListBox.CheckedItems)
             {
-                if (!choices[(string)checkedItem])
+                if (!OptionDictionary[(string)checkedItem])
                     return false;
                 selectedOptions.Add((string)checkedItem);
             }
@@ -69,14 +84,14 @@ namespace VirtualFlashCards.QuizData
         {
             CheckedListBox checkedListBox = (CheckedListBox)control;
             MultiAnswer answer = new MultiAnswer();
-            answer.choices = new Dictionary<string, bool>(choices);
-            foreach(string option in choices.Keys)
+            answer.OptionDictionary = new Dictionary<string, bool>(OptionDictionary);
+            foreach(string option in OptionDictionary.Keys)
             {
-                answer.choices[option] = false;
+                answer.OptionDictionary[option] = false;
             }
             foreach (object checkedItem in checkedListBox.CheckedItems)
             {
-                answer.choices[(string)checkedItem] = true;
+                answer.OptionDictionary[(string)checkedItem] = true;
             }
             return answer;
         }
@@ -85,18 +100,24 @@ namespace VirtualFlashCards.QuizData
         {
             CheckedListBox checkedListBox = new CheckedListBox() 
             {
-                Height = 25 * choices.Count,
+                Height = 25 * OptionDictionary.Count,
                 CheckOnClick = true
             };
-            List<string> options = new List<string>(Options);
-            Random r = new Random();
-            while (options.Count > 0)
+            foreach (string option in OptionsRandomized)
             {
-                int idx = r.Next(0, options.Count);
-                checkedListBox.Items.Add(options[idx]);
-                options.RemoveAt(idx);
+                checkedListBox.Items.Add(option);
             }
             return checkedListBox;
+        }
+
+        public override XmlElement ToXml(XmlDocument doc)
+        {
+            XmlElement elem = base.ToXml(doc);
+            foreach (KeyValuePair<string, bool> option in OptionDictionary)
+            {
+                elem.AppendChild(new MultiAnswerOption(option.Key, option.Value).ToXml(doc));
+            }
+            return elem;
         }
 
         public override bool Equals(Answer other)
@@ -110,20 +131,20 @@ namespace VirtualFlashCards.QuizData
                 return true;
             if ((object)other == null)
                 return false;
-            if (other.choices.Count != choices.Count)
+            if (other.OptionDictionary.Count != OptionDictionary.Count)
                 return false;
-            return choices.Equals(other.choices);
+            return OptionDictionary.Equals(other.OptionDictionary);
         }
 
         public override int GetHashCode()
         {
-            return choices.GetHashCode();
+            return OptionDictionary.GetHashCode();
         }
 
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            foreach (KeyValuePair<string, bool> option in choices)
+            foreach (KeyValuePair<string, bool> option in OptionDictionary)
             {
                 sb.Append(option.Value ? "[*] " : "[ ] ");
                 sb.AppendLine(option.Key);

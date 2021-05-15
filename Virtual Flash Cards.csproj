@@ -149,6 +149,7 @@
     <Compile Include="Forms\WrongAnswerForm.Designer.cs">
       <DependentUpon>WrongAnswerForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="QuizData\SelectAnswer.cs" />
     <Compile Include="QuizData\TextAnswer.cs" />
     <Compile Include="Xml\Extensions.cs" />
   </ItemGroup>
