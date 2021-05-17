@@ -7,7 +7,15 @@
     <answer type="text" value="Mexico City" />
   </question>
   <question prompt="The absolute value of -3 is what?">
-    <answer type="text" value="3" />
+    <answer type="combo">
+		<option text="-3" value="false"/>
+		<option text="3" value="true"/>
+		<option text="0" value="false"/>
+		<option text="2" value="false"/>
+		<option text="-2" value="false"/>
+		<option text="4" value="false"/>
+		<option text="-4" value="false"/>
+	</answer>
   </question>
   <question prompt="The center of an atom is called the what?">
     <answer type="text" value="Nucleus" />

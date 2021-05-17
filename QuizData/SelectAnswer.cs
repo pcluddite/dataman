@@ -89,5 +89,21 @@ namespace VirtualFlashCards.QuizData
             }
             return false;
         }
+
+        public override bool Equals(MultiAnswer other)
+        {
+            return Equals(other as SelectAnswer);
+        }
+
+        public virtual bool Equals(SelectAnswer other)
+        {
+            if (ReferenceEquals(this, other))
+                return true;
+            if ((object)other == null)
+                return false;
+            if (other.OptionDictionary.Count != OptionDictionary.Count)
+                return false;
+            return OptionDictionary.Equals(other.OptionDictionary);
+        }
     }
 }
