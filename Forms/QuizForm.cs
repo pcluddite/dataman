@@ -101,5 +101,25 @@ namespace VirtualFlashCards.Forms
             scoreForm.Close();
             answerForm.Close();
         }
+
+        private void lblPrompt_MouseDown(object sender, MouseEventArgs e)
+        {
+            OnMouseDown(e);
+        }
+
+        private void lblPrompt_MouseUp(object sender, MouseEventArgs e)
+        {
+            OnMouseUp(e);
+        }
+
+        private void lblPrompt_MouseMove(object sender, MouseEventArgs e)
+        {
+            OnMouseMove(e);
+        }
+
+        private void lblPrompt_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            OnMouseDoubleClick(e);
+        }
     }
 }

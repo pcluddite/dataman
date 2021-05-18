@@ -41,6 +41,10 @@
             this.lblPrompt.TabIndex = 1;
             this.lblPrompt.Text = "Lorem Ipsum Dolor Sit Amet";
             this.lblPrompt.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.lblPrompt.MouseMove += new System.Windows.Forms.MouseEventHandler(this.lblPrompt_MouseMove);
+            this.lblPrompt.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.lblPrompt_MouseDoubleClick);
+            this.lblPrompt.MouseDown += new System.Windows.Forms.MouseEventHandler(this.lblPrompt_MouseDown);
+            this.lblPrompt.MouseUp += new System.Windows.Forms.MouseEventHandler(this.lblPrompt_MouseUp);
             // 
             // QuizForm
             // 
