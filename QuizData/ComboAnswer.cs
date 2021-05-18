@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using System.Drawing;
 using System.Xml;
 
 namespace VirtualFlashCards.QuizData
 {
     public class ComboAnswer : SelectAnswer
     {
-        public const string TYPE = "combo";
+        public new const string TYPE = "combo";
         
         protected ComboAnswer()
             : base()
@@ -26,7 +23,6 @@ namespace VirtualFlashCards.QuizData
         {
             return base.ToXml(doc);
         }
-
 
         public override bool IsCorrect(Control control)
         {

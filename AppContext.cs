@@ -9,9 +9,6 @@ namespace VirtualFlashCards
 {
     public class AppContext : ApplicationContext
     {
-        //private EditorForm editForm;
-        private QuizForm quizForm;
-
         public Quiz CurrentQuiz { get; private set; }
 
         public AppContext(string[] args)
@@ -69,17 +66,11 @@ namespace VirtualFlashCards
         public void StartQuiz(Quiz q)
         {
             CurrentQuiz = q;
-            if (quizForm == null)
-            {
-                quizForm = new QuizForm(this);
-                quizForm.FormClosing += new FormClosingEventHandler(FormClosing);
-            }
-            if (MainForm.Visible)
-            {
-                MainForm.Hide();
-            }
+            QuizForm quizForm = new QuizForm(this);
+            quizForm.FormClosing += new FormClosingEventHandler(FormClosing);
             quizForm.SetDesktopLocation(MainForm.Location.X, MainForm.Location.Y);
             quizForm.FormBorderStyle = MainForm.FormBorderStyle;
+            MainForm.Hide();
             quizForm.Show();
         }
 
@@ -94,19 +85,11 @@ namespace VirtualFlashCards
 
         public void EditQuiz(Quiz q)
         {
-            //CurrentQuiz = q;
-            //if (editForm == null)
-            //{
-            //    editForm = new EditorForm(this);
-            //    editForm.FormClosing += new FormClosingEventHandler(FormClosing);
-            //}
-            //if (MainForm.Visible)
-            //{
-            //    MainForm.Hide();
-            //}
-            //editForm.SetDesktopLocation(MainForm.Location.X, MainForm.Location.Y);
-            //editForm.FormBorderStyle = MainForm.FormBorderStyle;
-            //editForm.Show();
+            CurrentQuiz = q;
+            EditForm editForm = new EditForm(this);
+            editForm.FormClosing += new FormClosingEventHandler(FormClosing);
+            MainForm.Hide();
+            editForm.Show();
         }
 
         public void NewQuiz()
@@ -118,14 +101,19 @@ namespace VirtualFlashCards
         {
             if (e.CloseReason == CloseReason.UserClosing)
             {
-                Form form = (Form)sender;
-                e.Cancel = true;
-                MainForm.SetDesktopLocation(form.Location.X, form.Location.Y);
-                MainForm.FormBorderStyle = form.FormBorderStyle;
-                form.Hide();
+                CardForm cardForm = sender as CardForm;
+                if (cardForm != null)
+                {
+                    MainForm.SetDesktopLocation(cardForm.Location.X, cardForm.Location.Y);
+                    MainForm.FormBorderStyle = cardForm.FormBorderStyle;
+                }
                 MainForm.Show();
                 MainForm.BringToFront();
                 MainForm.Activate();
+            }
+            else if (MainForm != null && !MainForm.IsDisposed)
+            {
+                MainForm.Close();
             }
         }
 
