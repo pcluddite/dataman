@@ -84,8 +84,8 @@ namespace VirtualFlashCards.Xml
         public DynamicArray()
         {
             elements = new T[0];
-            lengths = new int[0];
-            lengths.Add(0);
+            lengths = new int[1];
+            lengths[0] = 1;
             rank = lengths.Length;
         }
 

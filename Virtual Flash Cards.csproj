@@ -167,6 +167,7 @@
     <Compile Include="QuizData\TextAnswer.cs" />
     <Compile Include="Xml\ArrayExtensions.cs" />
     <Compile Include="Xml\DynamicArray.cs" />
+    <Compile Include="Xml\SerializedXmlObject.cs" />
     <Compile Include="Xml\XmlExtensions.cs" />
     <Compile Include="Xml\IXmlSerializable.cs" />
     <Compile Include="Xml\ReflectionExtensions.cs" />
