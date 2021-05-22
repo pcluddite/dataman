@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="Collections\ArrayExtensions.cs" />
     <Compile Include="Collections\DynamicArray.cs" />
+    <Compile Include="Collections\Vector.cs" />
     <Compile Include="Reflection\ReflectionExtensions.cs" />
     <Compile Include="Xml\XmlExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
