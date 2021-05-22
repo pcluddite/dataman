@@ -88,13 +88,45 @@ namespace Baxendale.DataManagement.Xml
         {
             if (rank == 1)
                 return DeserializeSingleDimArray(name, (Func<T[]>)defaultValue);
-            return DeserializeMultiDimArray(name, rank);
+            return DeserializeMultiDimArray(name, rank, defaultValue);
         }
 
-        public Array DeserializeMultiDimArray(XName name, int rank)
+        public Array DeserializeMultiDimArray(XName name, int rank, Delegate defaultValue)
         {
-            DynamicArray<T> arr = new DynamicArray<T>();
-            
+            XElement arrNode = node.Element(name);
+            if (arrNode == null)
+                return (Array)defaultValue.DynamicInvoke();
+            DynamicArray<T> arr = new DynamicArray<T>(new int[rank]);
+            int[] indices = arr.LowerBound;
+            int dim = 0;
+            XElement parentNode = arrNode;
+            XElement elementNode = (XElement)arrNode.FirstNode;
+            while (elementNode != null)
+            {
+                if (elementNode.Name == XmlSerializer.SpecialNS + "a")
+                {
+                    arr[indices] = Deserialize(elementNode, XmlSerializer.SpecialNS + "v", () => default(T));
+                    elementNode = (XElement)elementNode.NextNode;
+                    ++indices[dim];
+                    if (elementNode == null)
+                    {
+                        elementNode = (XElement)parentNode.NextNode;
+                        if (--dim >= 0)
+                        {
+                            indices[dim + 1] = 0;
+                        }
+                    }
+                }
+                else if (elementNode.Name == XmlSerializer.SpecialNS + "d")
+                {
+                    if (++dim < rank)
+                    {
+                        indices[dim - 1] = 0;
+                    }
+                    parentNode = elementNode;
+                    elementNode = (XElement)elementNode.FirstNode;
+                }
+            }
             return arr.ToArray();
         }
 

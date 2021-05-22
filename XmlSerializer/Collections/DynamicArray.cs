@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace Baxendale.DataManagement.Collections
 {
@@ -336,6 +337,38 @@ namespace Baxendale.DataManagement.Collections
                     return true;
             }
             return false;
+        }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("DynamicArray<");
+            sb.Append(typeof(T).Name);
+            sb.Append(">[");
+            sb.Append(lengths[0]);
+            for (int i = 1; i < rank; ++i)
+                sb.Append(",").Append(lengths[i]);
+            sb.Append("]");
+            return sb.ToString();
+        }
+
+        public unsafe string ToElementString()
+        {
+            StringBuilder sb = new StringBuilder();
+            int* indices = stackalloc int[rank];
+            fixed (int* lpLens = lengths.InternalArray)
+            {
+                for (int i = 0, len = Size; i < len; ++i)
+                {
+                    sb.Append("[").Append(indices[0]);
+                    for (int dim = 1; dim < rank; ++dim)
+                        sb.Append(",").Append(indices[dim]);
+                    sb.Append("] = ");
+                    sb.Append(elements[i]);
+                    IncrementIndex(indices, lpLens, rank);
+                }
+            }
+            return sb.ToString();
         }
 
         #region ICollection<T> Members

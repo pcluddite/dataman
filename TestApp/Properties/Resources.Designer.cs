@@ -63,16 +63,23 @@ namespace TestApp.Properties {
         /// <summary>
         ///   Looks up a localized string similar to &lt;root xmlns:q=&quot;http://quizfile/2021/xhtml&quot;&gt;
         ///  &lt;testNode foo=&quot;fart&quot; seven=&quot;6&quot;&gt;
-        ///	  &lt;intArray&gt;
-        ///      &lt;q:a q:v=&quot;5&quot;/&gt;
-        ///      &lt;q:a q:v=&quot;4&quot;/&gt;
-        ///      &lt;q:a q:v=&quot;3&quot;/&gt;
-        ///      &lt;q:a q:v=&quot;2&quot;/&gt;
-        ///      &lt;q:a q:v=&quot;1&quot;/&gt;
-        ///	  &lt;/intArray&gt;
-        ///  &lt;/testNode&gt;
-        ///&lt;/root&gt;
-        ///.
+        ///        &lt;intArray&gt;
+        ///            &lt;q:a q:v=&quot;5&quot;/&gt;
+        ///            &lt;q:a q:v=&quot;4&quot;/&gt;
+        ///            &lt;q:a q:v=&quot;3&quot;/&gt;
+        ///            &lt;q:a q:v=&quot;2&quot;/&gt;
+        ///            &lt;q:a q:v=&quot;1&quot;/&gt;
+        ///        &lt;/intArray&gt;
+        ///        &lt;multiIntArray&gt;
+        ///            &lt;q:d&gt;
+        ///                &lt;q:a q:v=&quot;5&quot;/&gt;
+        ///                &lt;q:a q:v=&quot;4&quot;/&gt;
+        ///                &lt;q:a q:v=&quot;3&quot;/&gt;
+        ///                &lt;q:a q:v=&quot;2&quot;/&gt;
+        ///                &lt;q:a q:v=&quot;1&quot;/&gt;
+        ///            &lt;/q:d&gt;
+        ///            &lt;q:d&gt;
+        ///         [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string TextXml {
             get {

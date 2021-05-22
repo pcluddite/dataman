@@ -1,11 +1,32 @@
 ﻿<root xmlns:q="http://quizfile/2021/xhtml">
   <testNode foo="fart" seven="6">
-	  <intArray>
-      <q:a q:v="5"/>
-      <q:a q:v="4"/>
-      <q:a q:v="3"/>
-      <q:a q:v="2"/>
-      <q:a q:v="1"/>
-	  </intArray>
+        <intArray>
+            <q:a q:v="5"/>
+            <q:a q:v="4"/>
+            <q:a q:v="3"/>
+            <q:a q:v="2"/>
+            <q:a q:v="1"/>
+        </intArray>
+        <multiIntArray>
+            <q:d>
+                <q:a q:v="5"/>
+                <q:a q:v="4"/>
+                <q:a q:v="3"/>
+                <q:a q:v="2"/>
+                <q:a q:v="1"/>
+            </q:d>
+            <q:d>
+                <q:a q:v="6"/>
+                <q:a q:v="7"/>
+            </q:d>
+            <q:d>
+                <q:d>
+                    <q:a q:v="8"/>
+                </q:d>
+                <q:d>
+                    <q:a q:v="9"/>
+                </q:d>
+            </q:d>
+      </multiIntArray>
   </testNode>
 </root>

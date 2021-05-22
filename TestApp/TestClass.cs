@@ -11,6 +11,8 @@ namespace TestApp
         [XmlSerialize(DefaultValue = new int[0])]
         private int[] intArray;
 
+        private int[,,] multiIntArray;
+
         public TestClass()
         {
         }
