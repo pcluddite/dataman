@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Baxendale.DataManagement.Serialization.Xml
+namespace Baxendale.DataManagement.Xml
 {
     public class XmlDoNotSerializeAttribute : Attribute
     {

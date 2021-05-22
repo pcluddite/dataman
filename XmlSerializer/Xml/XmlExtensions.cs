@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Xml;
 
-namespace Baxendale.DataManagement.Extensions
+namespace Baxendale.DataManagement.Xml
 {
-    internal static class XmlExtensions
+    public static class XmlExtensions
     {
         public static XmlAttribute Attributes(this XmlNode node, string name)
         {

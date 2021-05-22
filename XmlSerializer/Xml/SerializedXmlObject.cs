@@ -5,9 +5,9 @@ using System.Reflection;
 using System.Xml;
 using System.Xml.Linq;
 using Baxendale.DataManagement.Collections;
-using Baxendale.DataManagement.Extensions;
+using Baxendale.DataManagement.Reflection;
 
-namespace Baxendale.DataManagement.Serialization.Xml
+namespace Baxendale.DataManagement.Xml
 {
     internal interface ISerializedXmlObject
     {

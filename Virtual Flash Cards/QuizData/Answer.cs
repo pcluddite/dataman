@@ -1,10 +1,10 @@
 ﻿using System;
+using System.Drawing;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
-using Baxendale.DataManagement.Extensions;
-using System.Drawing;
+using Baxendale.DataManagement.Xml;
 
 namespace VirtualFlashCards.QuizData
 {

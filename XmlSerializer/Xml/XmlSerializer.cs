@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Xml;
 using System.Xml.Linq;
 
-namespace Baxendale.DataManagement.Serialization.Xml
+namespace Baxendale.DataManagement.Xml
 {
     public static class XmlSerializer
     {

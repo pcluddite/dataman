@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
-using Baxendale.DataManagement.Extensions;
+using Baxendale.DataManagement.Xml;
 
 namespace VirtualFlashCards.QuizData
 {

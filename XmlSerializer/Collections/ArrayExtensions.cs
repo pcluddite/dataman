@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Baxendale.DataManagement.Extensions
+namespace Baxendale.DataManagement.Collections
 {
-    internal static class ArrayExtensions
+    public static class ArrayExtensions
     {
         public static int[] GetLengths(this Array array)
         {

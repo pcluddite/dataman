@@ -1,5 +1,5 @@
 ﻿
-namespace Baxendale.DataManagement.Serialization.Xml
+namespace Baxendale.DataManagement.Xml
 {
     public interface IXmlSerializable
     {

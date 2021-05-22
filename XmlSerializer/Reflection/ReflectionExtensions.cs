@@ -2,9 +2,9 @@
 using System.Collections;
 using System.Reflection;
 
-namespace Baxendale.DataManagement.Extensions
+namespace Baxendale.DataManagement.Reflection
 {
-    internal static class ReflectionExtensions
+    public static class ReflectionExtensions
     {
         public static T Convert<T>(this IConvertible c) where T : IConvertible
         {
