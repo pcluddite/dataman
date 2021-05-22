@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace VirtualFlashCards.Xml
+namespace Baxendale.DataManagement.Serialization.Xml
 {
     public class XmlDoNotSerializeAttribute : Attribute
     {

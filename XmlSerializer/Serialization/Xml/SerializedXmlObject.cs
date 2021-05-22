@@ -4,8 +4,10 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Xml;
 using System.Xml.Linq;
+using Baxendale.DataManagement.Collections;
+using Baxendale.DataManagement.Extensions;
 
-namespace VirtualFlashCards.Xml
+namespace Baxendale.DataManagement.Serialization.Xml
 {
     internal interface ISerializedXmlObject
     {

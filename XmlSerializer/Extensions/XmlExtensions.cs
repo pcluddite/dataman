@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Xml;
 
-namespace VirtualFlashCards.Xml
+namespace Baxendale.DataManagement.Extensions
 {
     internal static class XmlExtensions
     {

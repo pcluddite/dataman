@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Windows.Forms;
 using System.Xml;
-using VirtualFlashCards.Xml;
+using Baxendale.DataManagement.Extensions;
 
 namespace VirtualFlashCards.QuizData
 {

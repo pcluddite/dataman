@@ -1,5 +1,5 @@
 ﻿using System.Xml;
-using VirtualFlashCards.Xml;
+using Baxendale.DataManagement.Extensions;
 
 namespace VirtualFlashCards.QuizData
 {

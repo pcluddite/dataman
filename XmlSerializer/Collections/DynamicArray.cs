@@ -2,10 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Baxendale.DataManagement.Extensions;
 
-namespace VirtualFlashCards.Xml
+namespace Baxendale.DataManagement.Collections
 {
-    internal class DynamicArray<T> : IList<T>
+    public class DynamicArray<T> : IList<T>
     {
         private Vector<int> lengths;
         private Vector<T> elements;

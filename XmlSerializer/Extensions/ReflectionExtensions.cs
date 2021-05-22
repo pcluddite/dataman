@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Reflection;
 
-namespace VirtualFlashCards.Xml
+namespace Baxendale.DataManagement.Extensions
 {
     internal static class ReflectionExtensions
     {

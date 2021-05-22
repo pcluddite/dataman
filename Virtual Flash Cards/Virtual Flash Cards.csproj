@@ -165,19 +165,16 @@
     </Compile>
     <Compile Include="QuizData\SelectAnswer.cs" />
     <Compile Include="QuizData\TextAnswer.cs" />
-    <Compile Include="Xml\ArrayExtensions.cs" />
-    <Compile Include="Xml\DynamicArray.cs" />
-    <Compile Include="Xml\SerializedXmlObject.cs" />
-    <Compile Include="Xml\XmlExtensions.cs" />
-    <Compile Include="Xml\IXmlSerializable.cs" />
-    <Compile Include="Xml\ReflectionExtensions.cs" />
-    <Compile Include="Xml\XmlDoNotSerializeAttribute.cs" />
-    <Compile Include="Xml\XmlSerializeAttribute.cs" />
-    <Compile Include="Xml\XmlSerializer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Bitmaps\index_card.bmp" />
     <Content Include="FlashCard.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\XmlSerializer\DataMan.csproj">
+      <Project>{26D9068F-CF73-4B51-8F17-3CF2AADF5CB4}</Project>
+      <Name>DataMan</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

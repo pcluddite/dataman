@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace VirtualFlashCards.Xml
+namespace Baxendale.DataManagement.Extensions
 {
     internal static class ArrayExtensions
     {
