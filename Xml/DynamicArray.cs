@@ -152,9 +152,7 @@ namespace VirtualFlashCards.Xml
                 throw new RankException();
             int[] indices = new int[rank];
             fixed (int* lpIndices = indices, lpLens = lengths.InternalArray)
-            {
                 ToIndices(index, rank, lpLens, lpIndices);
-            }
             return indices;
         }
 
@@ -168,34 +166,54 @@ namespace VirtualFlashCards.Xml
             }
         }
 
-        public void IncrementIndex(params int[] indices)
+        public unsafe int[] IncrementIndex(params int[] indices)
         {
+            if (indices == null)
+                throw new NullReferenceException();
             if (indices.Length != rank)
                 throw new RankException();
-            ++indices[rank - 1];
-            for (int dim = rank - 1; dim > 0; --dim)
+            int[] newIndices = indices.BlockCopy();
+            fixed (int* lpIndices = newIndices, lpLens = lengths.InternalArray)
+                IncrementIndex(lpIndices, lpLens, rank);
+            return newIndices;
+        }
+
+        private static unsafe void IncrementIndex(int* lpIndices, int* lpLens, int nRank)
+        {
+            ++lpIndices[nRank - 1];
+            for (int dim = nRank - 1; dim > 0; --dim)
             {
-                if (indices[dim] >= lengths[dim])
+                if (lpIndices[dim] >= lpLens[dim])
                 {
-                    for (int i = dim; i < rank; ++i)
-                        indices[i] = 0;
-                    ++indices[dim - 1];
+                    for (int i = dim; i < nRank; ++i)
+                        lpIndices[i] = 0;
+                    ++lpIndices[dim - 1];
                 }
             }
         }
 
-        public void DecrementIndex(params int[] indices)
+        public unsafe int[] DecrementIndex(params int[] indices)
         {
+            if (indices == null)
+                throw new NullReferenceException();
             if (indices.Length != rank)
                 throw new RankException();
-            --indices[rank - 1];
-            for (int dim = rank - 1; dim > 0; --dim)
+            int[] newIndices = indices.BlockCopy();
+            fixed (int* lpIndices = newIndices, lpLens = lengths.InternalArray)
+                DecrementIndex(lpIndices, lpLens, rank);
+            return newIndices;
+        }
+
+        private static unsafe void DecrementIndex(int* lpIndices, int* lpLens, int nRank)
+        {
+            --lpIndices[nRank - 1];
+            for (int dim = nRank - 1; dim > 0; --dim)
             {
-                if (indices[dim] < 0)
+                if (lpIndices[dim] < 0)
                 {
-                    for (int i = dim; i < rank; ++i)
-                        indices[i] = lengths[i] - 1;
-                    --indices[dim - 1];
+                    for (int i = dim; i < nRank; ++i)
+                        lpIndices[i] = lpLens[i] - 1;
+                    --lpIndices[dim - 1];
                 }
             }
         }
