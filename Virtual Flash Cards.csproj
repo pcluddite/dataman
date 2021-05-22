@@ -165,9 +165,11 @@
     </Compile>
     <Compile Include="QuizData\SelectAnswer.cs" />
     <Compile Include="QuizData\TextAnswer.cs" />
+    <Compile Include="Xml\ArrayExtensions.cs" />
     <Compile Include="Xml\DynamicArray.cs" />
-    <Compile Include="Xml\Extensions.cs" />
+    <Compile Include="Xml\XmlExtensions.cs" />
     <Compile Include="Xml\IXmlSerializable.cs" />
+    <Compile Include="Xml\ReflectionExtensions.cs" />
     <Compile Include="Xml\XmlDoNotSerializeAttribute.cs" />
     <Compile Include="Xml\XmlSerializeAttribute.cs" />
     <Compile Include="Xml\XmlSerializer.cs" />
