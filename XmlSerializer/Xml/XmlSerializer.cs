@@ -19,13 +19,21 @@ namespace Baxendale.DataManagement.Xml
             SerializableTypes[name.ToString()] = typeof(T);
         }
 
-        public static object Deserialize(this XElement node)
+        public static object Deserialize(XElement node)
         {
+            if (node == null)
+                throw new NullReferenceException();
             Type t = SerializableTypes[node.Name.ToString()];
             if (t == null)
                 ThrowUnknownTag(node.Name);
-            
-            return node.CreateSerializerObject(t);
+            return node.CreateSerializerObject(t).Deserialize();
+        }
+
+        public static T Deserialize<T>(XElement node)
+        {
+            if (node == null)
+                throw new NullReferenceException();
+            return (T)node.CreateSerializerObject(typeof(T)).Deserialize();
         }
 
         internal static ISerializedXmlObject CreateSerializerObject(this XElement node, Type t)

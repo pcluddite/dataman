@@ -1,0 +1,11 @@
+﻿<root xmlns:q="http://quizfile/2021/xhtml">
+  <testNode foo="fart" seven="6">
+	  <intArray>
+      <q:a q:v="5"/>
+      <q:a q:v="4"/>
+      <q:a q:v="3"/>
+      <q:a q:v="2"/>
+      <q:a q:v="1"/>
+	  </intArray>
+  </testNode>
+</root>

@@ -17,7 +17,6 @@ namespace Baxendale.DataManagement.Xml
     }
 
     internal class SerializedXmlObject<T> : ISerializedXmlObject
-        where T : new()
     {
         private XElement node;
 
@@ -28,7 +27,7 @@ namespace Baxendale.DataManagement.Xml
 
         public object Deserialize()
         {
-            T obj = new T();
+            T obj = Activator.CreateInstance<T>();
             foreach (MemberInfo member in typeof(T).GetMembers(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
             {
                 if (member.MemberType != MemberTypes.Field && member.MemberType != MemberTypes.Property)
@@ -100,7 +99,7 @@ namespace Baxendale.DataManagement.Xml
             List<T> elements = new List<T>();
             foreach (XElement child in node.Elements("{q}a"))
             {
-                object o = child.Deserialize();
+                object o = XmlSerializer.Deserialize(node);
                 if (o == null)
                     elements.Add(default(T));
                 if (o.GetType().IsAssignableFrom(typeof(T)))
