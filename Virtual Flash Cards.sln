@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Virtual Flash Cards", "Virtual Flash Cards.csproj", "{156019A2-89B5-4564-9D1E-9ADEFF6D58F2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Virtual Flash Cards", "Virtual Flash Cards\Virtual Flash Cards.csproj", "{156019A2-89B5-4564-9D1E-9ADEFF6D58F2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
