@@ -7,6 +7,8 @@ namespace Baxendale.DataManagement.Xml
 {
     public static class XmlSerializer
     {
+        internal static readonly XNamespace SpecialNS = XNamespace.Get("http://quizfile/2021/xhtml");
+
         private static readonly IDictionary<string, Type> SerializableTypes = new Dictionary<string, Type>();
 
         public static void RegisterType<T>(string name) where T : IXmlSerializable, new()

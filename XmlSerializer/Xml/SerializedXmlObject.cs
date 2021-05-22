@@ -13,7 +13,7 @@ namespace Baxendale.DataManagement.Xml
     {
         object Deserialize();
         object Deserialize(XmlSerializeAttribute attr);
-        object DeserializeArray(int rank);
+        object DeserializeArray(XName name, int rank, Delegate defaultValue);
     }
 
     internal class SerializedXmlObject<T> : ISerializedXmlObject
@@ -40,6 +40,8 @@ namespace Baxendale.DataManagement.Xml
                 if (attribs.Length > 0)
                 {
                     attr = (XmlSerializeAttribute)attribs[attribs.Length - 1];
+                    if (attr.Name == null)
+                        attr.Name = member.Name;
                 }
                 else
                 {
@@ -56,18 +58,20 @@ namespace Baxendale.DataManagement.Xml
         public object Deserialize(XmlSerializeAttribute attr)
         {
             Func<T> defaultValue = () => attr.DefaultValue == null ? default(T) : (T)attr.DefaultValue;
-            return Deserialize(attr.Name, defaultValue);
+            return Deserialize(node, attr.Name, defaultValue);
         }
 
-        public T Deserialize(XName attrName, Func<T> defaultValue)
+        public static T Deserialize(XElement node, XName attrName, Func<T> defaultValue)
         {
-            if (node.Attribute(attrName) == null)
-                return defaultValue.Invoke();
             Type memberType = typeof(T);
             if (memberType.IsArray)
             {
                 ISerializedXmlObject xmlObj = node.CreateSerializerObject(memberType.GetElementType());
-                return (T)xmlObj.DeserializeArray(memberType.GetArrayRank());
+                return (T)xmlObj.DeserializeArray(attrName, memberType.GetArrayRank(), defaultValue);
+            }
+            else if (node.Attribute(attrName) == null)
+            {
+                return defaultValue.Invoke();
             }
             else if (typeof(IConvertible).IsAssignableFrom(memberType))
             {
@@ -80,30 +84,30 @@ namespace Baxendale.DataManagement.Xml
             throw new XmlException(typeof(T) + " is unsupported");
         }
 
-        public object DeserializeArray(int rank)
+        public object DeserializeArray(XName name, int rank, Delegate defaultValue)
         {
             if (rank == 1)
-                return DeserializeSingleDimArray();
-            return DeserializeMultiDimArray(rank);
+                return DeserializeSingleDimArray(name, (Func<T[]>)defaultValue);
+            return DeserializeMultiDimArray(name, rank);
         }
 
-        public Array DeserializeMultiDimArray(int rank)
+        public Array DeserializeMultiDimArray(XName name, int rank)
         {
             DynamicArray<T> arr = new DynamicArray<T>();
             
             return arr.ToArray();
         }
 
-        private T[] DeserializeSingleDimArray()
+        private T[] DeserializeSingleDimArray(XName name, Func<T[]> defaultValue)
         {
+            XElement arrNode = node.Element(name);
+            if (arrNode == null)
+                return defaultValue.Invoke();
             List<T> elements = new List<T>();
-            foreach (XElement child in node.Elements("{q}a"))
+            foreach (XElement child in arrNode.Elements(XmlSerializer.SpecialNS + "a"))
             {
-                object o = XmlSerializer.Deserialize(node);
-                if (o == null)
-                    elements.Add(default(T));
-                if (o.GetType().IsAssignableFrom(typeof(T)))
-                    elements.Add((T)o);
+                T obj = Deserialize(child, XmlSerializer.SpecialNS + "v", () => default(T));
+                elements.Add(obj);
             }
             return elements.ToArray();
         }
