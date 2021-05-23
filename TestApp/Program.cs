@@ -15,7 +15,7 @@ namespace TestApp
             XDocument doc = XDocument.Parse(Resources.TextXml);
 
             XmlSerializer.RegisterType<TestClass>("testNode");
-            TestClass test = XmlSerializer.Deserialize<TestClass>(doc.Root.Element("testNode"));
+            TestClass test = (TestClass)XmlSerializer.Deserialize(doc.Root);
 
             Console.WriteLine(test);
             Console.ReadKey(true);

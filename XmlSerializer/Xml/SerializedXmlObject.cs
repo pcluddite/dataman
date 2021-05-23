@@ -88,9 +88,9 @@ namespace Baxendale.DataManagement.Xml
                 return defaultGetter == null ? null : defaultGetter.Invoke();
             DynamicArray<T> arr = new DynamicArray<T>(new int[rank]);
             int[] indices = arr.LowerBound;
-            foreach (XElement child in arrNode.Elements(XmlSerializer.SpecialNS + "a"))
+            foreach (XElement child in arrNode.Elements("a"))
             {
-                XAttribute indexAttribute = child.Attribute(XmlSerializer.SpecialNS + "i");
+                XAttribute indexAttribute = child.Attribute("i");
                 if (indexAttribute == null)
                 {
                     indices = arr.IncrementIndex(indices);
@@ -99,7 +99,7 @@ namespace Baxendale.DataManagement.Xml
                 {
                     SetIndices(indices, indexAttribute.Value);
                 }
-                arr[indices] = Deserialize(child, XmlSerializer.SpecialNS + "v", () => default(T));
+                arr[indices] = Deserialize(child, "v", () => default(T));
             }
             return arr.ToArray();
         }
