@@ -8,7 +8,7 @@ namespace TestApp
         private string foo = "test123";
         private int seven = 7;
 
-        [XmlSerialize(DefaultValue = new int[0])]
+        [XmlSerialize(Default = new int[0])]
         private int[] intArray;
 
         private int[,,] multiIntArray;

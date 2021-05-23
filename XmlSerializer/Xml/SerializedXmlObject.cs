@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Reflection;
 using System.Xml;
 using System.Xml.Linq;
@@ -13,7 +12,7 @@ namespace Baxendale.DataManagement.Xml
     {
         object Deserialize();
         object Deserialize(XmlSerializeAttribute attr);
-        object DeserializeArray(XName name, int rank, Delegate defaultValue);
+        object DeserializeArray(XName name, int rank, Func<object> defaultGetter);
     }
 
     internal class SerializedXmlObject<T> : ISerializedXmlObject
@@ -51,27 +50,25 @@ namespace Baxendale.DataManagement.Xml
                 ISerializedXmlObject xmlObj = node.CreateSerializerObject(member.GetReturnType());
                 member.SetValue(obj, xmlObj.Deserialize(attr));
             }
-
             return obj;
         }
 
         public object Deserialize(XmlSerializeAttribute attr)
         {
-            Func<T> defaultValue = () => attr.DefaultValue == null ? default(T) : (T)attr.DefaultValue;
-            return Deserialize(node, attr.Name, defaultValue);
+            return Deserialize(node, attr.Name, () => attr.Default);
         }
 
-        public static T Deserialize(XElement node, XName attrName, Func<T> defaultValue)
+        public static T Deserialize(XElement node, XName attrName, Func<object> defaultGetter)
         {
             Type memberType = typeof(T);
             if (memberType.IsArray)
             {
                 ISerializedXmlObject xmlObj = node.CreateSerializerObject(memberType.GetElementType());
-                return (T)xmlObj.DeserializeArray(attrName, memberType.GetArrayRank(), defaultValue);
+                return (T)xmlObj.DeserializeArray(attrName, memberType.GetArrayRank(), defaultGetter);
             }
             else if (node.Attribute(attrName) == null)
             {
-                return defaultValue.Invoke();
+                return defaultGetter == null ? default(T) : (T)defaultGetter.Invoke();
             }
             else if (typeof(IConvertible).IsAssignableFrom(memberType))
             {
@@ -84,11 +81,11 @@ namespace Baxendale.DataManagement.Xml
             throw new XmlException(typeof(T) + " is unsupported");
         }
 
-        public object DeserializeArray(XName name, int rank, Delegate defaultValue)
+        public object DeserializeArray(XName name, int rank, Func<object> defaultGetter)
         {
             XElement arrNode = node.Element(name);
             if (arrNode == null)
-                return defaultValue.DynamicInvoke();
+                return defaultGetter == null ? null : defaultGetter.Invoke();
             DynamicArray<T> arr = new DynamicArray<T>(new int[rank]);
             int[] indices = arr.LowerBound;
             foreach (XElement child in arrNode.Elements(XmlSerializer.SpecialNS + "a"))
