@@ -33,13 +33,19 @@ namespace Baxendale.DataManagement.Xml
         {
             if (node == null)
                 throw new NullReferenceException();
-            return (T)CreateSerializerObject(typeof(T), node).Deserialize();
+            return new SerializedXmlObject<T>(node).Deserialize();
         }
 
         internal static ISerializedXmlObject CreateSerializerObject(Type t, XElement node)
         {
             Type serializedXmlObject = typeof(SerializedXmlObject<>).MakeGenericType(t);
             return (ISerializedXmlObject)Activator.CreateInstance(serializedXmlObject, node);
+        }
+
+        internal static ISerializedXmlObject CreateSerializerObject(Type t, XElement node, XmlSerializeAttribute attrib)
+        {
+            Type serializedXmlObject = typeof(SerializedXmlObject<>).MakeGenericType(t);
+            return (ISerializedXmlObject)Activator.CreateInstance(serializedXmlObject, node, attrib);
         }
     }
 }
