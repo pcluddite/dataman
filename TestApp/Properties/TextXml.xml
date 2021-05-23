@@ -8,25 +8,15 @@
             <q:a q:v="1"/>
         </intArray>
         <multiIntArray>
-            <q:d>
-                <q:a q:v="5"/>
-                <q:a q:v="4"/>
-                <q:a q:v="3"/>
-                <q:a q:v="2"/>
-                <q:a q:v="1"/>
-            </q:d>
-            <q:d>
-                <q:a q:v="6"/>
-                <q:a q:v="7"/>
-            </q:d>
-            <q:d>
-                <q:d>
-                    <q:a q:v="8"/>
-                </q:d>
-                <q:d>
-                    <q:a q:v="9"/>
-                </q:d>
-            </q:d>
+            <q:a q:i="0,0" q:v="5"/>
+            <q:a q:i="0,1" q:v="4"/>
+            <q:a q:i="0,2" q:v="3"/>
+            <q:a q:i="0,3" q:v="2"/>
+            <q:a q:i="0,4" q:v="1"/>
+            <q:a q:i="1,0" q:v="6"/>
+            <q:a q:i="1,1" q:v="7"/>
+            <q:a q:i="2,0,0" q:v="8"/>
+            <q:a q:i="2,0,1" q:v="9"/>
       </multiIntArray>
   </testNode>
 </root>

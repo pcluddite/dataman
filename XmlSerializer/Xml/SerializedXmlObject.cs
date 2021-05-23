@@ -86,62 +86,40 @@ namespace Baxendale.DataManagement.Xml
 
         public object DeserializeArray(XName name, int rank, Delegate defaultValue)
         {
-            if (rank == 1)
-                return DeserializeSingleDimArray(name, (Func<T[]>)defaultValue);
-            return DeserializeMultiDimArray(name, rank, defaultValue);
-        }
-
-        public Array DeserializeMultiDimArray(XName name, int rank, Delegate defaultValue)
-        {
             XElement arrNode = node.Element(name);
             if (arrNode == null)
-                return (Array)defaultValue.DynamicInvoke();
+                return defaultValue.DynamicInvoke();
             DynamicArray<T> arr = new DynamicArray<T>(new int[rank]);
             int[] indices = arr.LowerBound;
-            int dim = 0;
-            XElement parentNode = arrNode;
-            XElement elementNode = (XElement)arrNode.FirstNode;
-            while (elementNode != null)
+            foreach (XElement child in arrNode.Elements(XmlSerializer.SpecialNS + "a"))
             {
-                if (elementNode.Name == XmlSerializer.SpecialNS + "a")
+                XAttribute indexAttribute = child.Attribute(XmlSerializer.SpecialNS + "i");
+                if (indexAttribute == null)
                 {
-                    arr[indices] = Deserialize(elementNode, XmlSerializer.SpecialNS + "v", () => default(T));
-                    elementNode = (XElement)elementNode.NextNode;
-                    ++indices[dim];
-                    if (elementNode == null)
-                    {
-                        elementNode = (XElement)parentNode.NextNode;
-                        if (--dim >= 0)
-                        {
-                            indices[dim + 1] = 0;
-                        }
-                    }
+                    indices = arr.IncrementIndex(indices);
                 }
-                else if (elementNode.Name == XmlSerializer.SpecialNS + "d")
+                else
                 {
-                    if (++dim < rank)
-                    {
-                        indices[dim - 1] = 0;
-                    }
-                    parentNode = elementNode;
-                    elementNode = (XElement)elementNode.FirstNode;
+                    SetIndices(indices, indexAttribute.Value);
                 }
+                arr[indices] = Deserialize(child, XmlSerializer.SpecialNS + "v", () => default(T));
             }
             return arr.ToArray();
         }
 
-        private T[] DeserializeSingleDimArray(XName name, Func<T[]> defaultValue)
+        private void SetIndices(int[] indices, string value)
         {
-            XElement arrNode = node.Element(name);
-            if (arrNode == null)
-                return defaultValue.Invoke();
-            List<T> elements = new List<T>();
-            foreach (XElement child in arrNode.Elements(XmlSerializer.SpecialNS + "a"))
+            int start = 0;
+            int stop = 0;
+            int dim = 0;
+            for (; stop <= value.Length; ++stop)
             {
-                T obj = Deserialize(child, XmlSerializer.SpecialNS + "v", () => default(T));
-                elements.Add(obj);
+                if (stop == value.Length || value[stop] == ',')
+                {
+                     indices[dim++] = int.Parse(value.Substring(start, stop - start));
+                     start = stop + 1;
+                }
             }
-            return elements.ToArray();
         }
     }
 }
