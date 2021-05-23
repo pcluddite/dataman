@@ -13,6 +13,8 @@ namespace Baxendale.DataManagement.Xml
     {
         object Deserialize();
         Array DeserializeArray(int rank);
+        object DeserializeGenericCollection(Type collectionType);
+        object DeserializeCollection(Type collectionType);
     }
 
     internal class SerializedXmlObject<T> : ISerializedXmlObject
@@ -94,6 +96,32 @@ namespace Baxendale.DataManagement.Xml
                 ISerializedXmlObject xmlObj = XmlSerializer.CreateSerializerObject(memberType.GetElementType(), arrNode);
                 return (T)((object)xmlObj.DeserializeArray(memberType.GetArrayRank()));
             }
+            else if (memberType.IsSubClassOfGeneric(typeof(ICollection<>)))
+            {
+                XElement collectionNode = Node.Element(AttributeName);
+                if (collectionNode == null)
+                    return DefaultValue;
+                ISerializedXmlObject xmlObj = XmlSerializer.CreateSerializerObject(memberType.GetGenericArguments()[0], collectionNode);
+                return (T)xmlObj.DeserializeGenericCollection(memberType);
+            }
+            
+            if (typeof(ICollection).IsAssignableFrom(memberType))
+            {
+                XElement collectionNode = Node.Element(AttributeName);
+                if (collectionNode == null)
+                    return DefaultValue;
+                ISerializedXmlObject xmlObj = XmlSerializer.CreateSerializerObject(typeof(object), collectionNode);
+                return (T)xmlObj.DeserializeCollection(memberType);
+            }
+            else if (typeof(object) == memberType)
+            {
+                XAttribute typeAttr = Node.Attribute("t");
+                if (typeAttr == null)
+                    throw new UnregisteredTypeException(Node.Name);
+                Type foundType = Type.GetType(typeAttr.Value, true);
+                ISerializedXmlObject xmlObj = XmlSerializer.CreateSerializerObject(foundType, Node, AttributeName,  DefaultValue);
+                return (T)xmlObj.Deserialize();
+            }
             else if (Node.Attribute(AttributeName) == null)
             {
                 return DefaultValue;
@@ -101,10 +129,6 @@ namespace Baxendale.DataManagement.Xml
             else if (typeof(IConvertible).IsAssignableFrom(memberType))
             {
                 return (T)Convert.ChangeType(Node.Attribute(AttributeName).Value, memberType);
-            }
-            else if (typeof(ICollection).IsAssignableFrom(memberType))
-            {
-                return (T)DeserializeCollection(AttributeName, DefaultValue);
             }
             throw new UnsupportedTypeException(typeof(T));
         }
@@ -148,9 +172,28 @@ namespace Baxendale.DataManagement.Xml
             }
         }
 
-        public ICollection DeserializeCollection(XName attrName, T @default)
+        public ICollection<T> DeserializeGenericCollection(Type collectionType)
         {
-            throw new NotImplementedException();
+            ICollection<T> collection = (ICollection<T>)Activator.CreateInstance(collectionType);
+            if (collection.IsReadOnly)
+                throw new UnsupportedTypeException(typeof(ICollection<T>));
+            foreach (XElement child in Node.Elements("a"))
+            {
+                collection.Add(new SerializedXmlObject<T>(child, "v", default(T)).Deserialize());
+            }
+            return collection;
+        }
+
+        public ICollection DeserializeCollection(Type collectionType)
+        {
+            ICollection collection = (ICollection)Activator.CreateInstance(collectionType);
+            if (collection.IsReadOnly() == true)
+                throw new UnsupportedTypeException(collectionType);
+            foreach (XElement child in Node.Elements("a"))
+            {
+                collection.Add(new SerializedXmlObject<object>(child, "v", null).Deserialize());
+            }
+            return collection;
         }
 
         #region ISerializedXmlObject Members
@@ -158,6 +201,16 @@ namespace Baxendale.DataManagement.Xml
         object ISerializedXmlObject.Deserialize()
         {
             return Deserialize();
+        }
+
+        object ISerializedXmlObject.DeserializeGenericCollection(Type collectionType)
+        {
+            return DeserializeGenericCollection(collectionType);
+        }
+
+        object ISerializedXmlObject.DeserializeCollection(Type collectionType)
+        {
+            return DeserializeCollection(collectionType);
         }
 
         #endregion

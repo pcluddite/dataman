@@ -11,5 +11,10 @@ namespace Baxendale.DataManagement.Xml
         {
             UnsupportedType = type;
         }
+
+        public UnsupportedTypeException(string typeName)
+            : base(typeName + " is unsupported for deserialization")
+        {
+        }
     }
 }

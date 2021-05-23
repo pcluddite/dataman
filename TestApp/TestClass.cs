@@ -1,5 +1,7 @@
 ﻿using System.Text;
 using Baxendale.DataManagement.Xml;
+using System.Collections.Generic;
+using System.Collections;
 
 namespace TestApp
 {
@@ -12,6 +14,9 @@ namespace TestApp
         private int[] intArray;
 
         private int[,,] multiIntArray;
+
+        [XmlSerialize(Name = "list")]
+        public List<string> testList;
 
         public TestClass()
         {

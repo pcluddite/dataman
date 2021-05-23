@@ -17,4 +17,9 @@
           <a i="2,0,0" v="8"/>
           <a i="2,0,1" v="9"/>
     </multiIntArray>
+    <list>
+      <a v="hi"/>
+      <a v="hello"/>
+      <a v="hey"/>
+    </list>
 </testNode>

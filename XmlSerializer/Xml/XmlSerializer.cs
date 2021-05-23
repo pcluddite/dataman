@@ -47,5 +47,11 @@ namespace Baxendale.DataManagement.Xml
             Type serializedXmlObject = typeof(SerializedXmlObject<>).MakeGenericType(t);
             return (ISerializedXmlObject)Activator.CreateInstance(serializedXmlObject, node, attrib);
         }
+
+        internal static ISerializedXmlObject CreateSerializerObject(Type t, XElement node, XName attrName, object defaultValue)
+        {
+            Type serializedXmlObject = typeof(SerializedXmlObject<>).MakeGenericType(t);
+            return (ISerializedXmlObject)Activator.CreateInstance(serializedXmlObject, node, attrName, defaultValue);
+        }
     }
 }
