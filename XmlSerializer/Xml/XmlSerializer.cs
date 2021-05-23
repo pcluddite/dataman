@@ -27,31 +27,21 @@ namespace Baxendale.DataManagement.Xml
                 throw new NullReferenceException();
             Type t = SerializableTypes[node.Name.ToString()];
             if (t == null)
-                ThrowUnknownTag(node.Name);
-            return node.CreateSerializerObject(t).Deserialize();
+                throw new UnregisteredTypeException(node.Name);
+            return CreateSerializerObject(t, node).Deserialize();
         }
 
         public static T Deserialize<T>(XElement node)
         {
             if (node == null)
                 throw new NullReferenceException();
-            return (T)node.CreateSerializerObject(typeof(T)).Deserialize();
+            return (T)CreateSerializerObject(typeof(T), node).Deserialize();
         }
 
-        internal static ISerializedXmlObject CreateSerializerObject(this XElement node, Type t)
+        internal static ISerializedXmlObject CreateSerializerObject(Type t, XElement node)
         {
             Type serializedXmlObject = typeof(SerializedXmlObject<>).MakeGenericType(t);
             return (ISerializedXmlObject)Activator.CreateInstance(serializedXmlObject, node);
-        }
-
-        private static void ThrowUnknownTag(XName name)
-        {
-            ThrowUnknownTag(name.ToString());
-        }
-
-        private static void ThrowUnknownTag(string tagName)
-        {
-            throw new XmlException("<" + tagName + "> tag is not recognized as a valid element");
         }
     }
 }

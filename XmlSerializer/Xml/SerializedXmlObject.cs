@@ -44,10 +44,10 @@ namespace Baxendale.DataManagement.Xml
                 }
                 else
                 {
-                    attr = new XmlSerializeAttribute() { Name = member.Name };
+                    attr = new XmlSerializeAttribute() { Name = member.Name, Default = default(T) };
                 }
 
-                ISerializedXmlObject xmlObj = node.CreateSerializerObject(member.GetReturnType());
+                ISerializedXmlObject xmlObj = XmlSerializer.CreateSerializerObject(member.GetReturnType(), node);
                 member.SetValue(obj, xmlObj.Deserialize(attr));
             }
             return obj;
@@ -63,7 +63,7 @@ namespace Baxendale.DataManagement.Xml
             Type memberType = typeof(T);
             if (memberType.IsArray)
             {
-                ISerializedXmlObject xmlObj = node.CreateSerializerObject(memberType.GetElementType());
+                ISerializedXmlObject xmlObj = XmlSerializer.CreateSerializerObject(memberType.GetElementType(), node);
                 return (T)xmlObj.DeserializeArray(attrName, memberType.GetArrayRank(), defaultGetter);
             }
             else if (node.Attribute(attrName) == null)
@@ -78,7 +78,7 @@ namespace Baxendale.DataManagement.Xml
             {
 
             }
-            throw new XmlException(typeof(T) + " is unsupported");
+            throw new UnsupportedTypeException(typeof(T));
         }
 
         public object DeserializeArray(XName name, int rank, Func<object> defaultGetter)
