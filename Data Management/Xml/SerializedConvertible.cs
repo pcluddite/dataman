@@ -21,7 +21,7 @@ namespace Baxendale.DataManagement.Xml
 
             public override V Deserialize()
             {
-                XAttribute attr = Node.Attribute(AttributeName);
+                XAttribute attr = Node.Attribute(Name);
                 if (attr == null)
                     return DefaultValue;
                 return (V)Convert.ChangeType(attr.Value, typeof(V));

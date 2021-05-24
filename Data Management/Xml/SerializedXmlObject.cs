@@ -14,13 +14,13 @@ namespace Baxendale.DataManagement.Xml
     internal abstract partial class SerializedXmlObject<T> : ISerializedXmlObject
     {
         public XElement Node { get; private set; }
-        public XName AttributeName { get; private set; }
+        public XName Name { get; private set; }
         public T DefaultValue { get; private set; }
 
         protected SerializedXmlObject(XElement node, XName attrName, T defaultValue)
         {
             Node = node;
-            AttributeName = attrName;
+            Name = attrName;
             DefaultValue = defaultValue;
         }
 

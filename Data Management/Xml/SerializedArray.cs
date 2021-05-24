@@ -29,7 +29,7 @@ namespace Baxendale.DataManagement.Xml
 
             public override Array Deserialize()
             {
-                XElement node = AttributeName == null ? Node : Node.Element(AttributeName);
+                XElement node = Name == null ? Node : Node.Element(Name);
                 if (node == null)
                     return DefaultValue;
 
