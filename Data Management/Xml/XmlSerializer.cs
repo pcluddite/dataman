@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Xml;
 using System.Xml.Linq;
+using System.Reflection;
 
 namespace Baxendale.DataManagement.Xml
 {
@@ -26,7 +27,7 @@ namespace Baxendale.DataManagement.Xml
             Type t = SerializableTypes[node.Name.ToString()];
             if (t == null)
                 throw new UnregisteredTypeException(node.Name);
-            return CreateSerializerObject(t, node).Deserialize();
+            return CreateSerializedObject(t, node).Deserialize();
         }
 
         public static T Deserialize<T>(XElement node)
@@ -36,22 +37,34 @@ namespace Baxendale.DataManagement.Xml
             return new SerializedXmlObject<T>(node).Deserialize();
         }
 
-        internal static ISerializedXmlObject CreateSerializerObject(Type t, XElement node)
+        internal static ISerializedXmlObject CreateSerializedObject(Type t, XElement node)
         {
             Type serializedXmlObject = typeof(SerializedXmlObject<>).MakeGenericType(t);
             return (ISerializedXmlObject)Activator.CreateInstance(serializedXmlObject, node);
         }
 
-        internal static ISerializedXmlObject CreateSerializerObject(Type t, XElement node, XmlSerializeAttribute attrib)
+        internal static ISerializedXmlObject CreateSerializedObject(Type t, XElement node, XmlSerializeAttribute attrib)
         {
             Type serializedXmlObject = typeof(SerializedXmlObject<>).MakeGenericType(t);
             return (ISerializedXmlObject)Activator.CreateInstance(serializedXmlObject, node, attrib);
         }
 
-        internal static ISerializedXmlObject CreateSerializerObject(Type t, XElement node, XName attrName, object defaultValue)
+        internal static ISerializedXmlObject CreateSerializedObject(Type t, XElement node, XName attrName, object defaultValue)
         {
             Type serializedXmlObject = typeof(SerializedXmlObject<>).MakeGenericType(t);
             return (ISerializedXmlObject)Activator.CreateInstance(serializedXmlObject, node, attrName, defaultValue);
+        }
+
+        internal static IDeserializedXmlObject CreateDeserializedObject(Type t, object obj, XmlSerializeAttribute attrib)
+        {
+            return CreateDeserializedObject(t, obj, attrib.Name);
+        }
+
+        internal static IDeserializedXmlObject CreateDeserializedObject(Type t, object obj, XName attrName)
+        {
+            Type deserializedXmlObject = typeof(DeserializedXmlObject<>).MakeGenericType(t);
+            MethodInfo factoryMethod = deserializedXmlObject.GetMethod("CreateDeserializedObject", new Type[] { t, typeof(XName) });
+            return (IDeserializedXmlObject)factoryMethod.Invoke(null, new object[] { obj, attrName });
         }
     }
 }

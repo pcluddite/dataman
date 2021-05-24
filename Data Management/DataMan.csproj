@@ -56,6 +56,22 @@
     <Compile Include="Collections\DynamicArray.cs" />
     <Compile Include="Collections\Vector.cs" />
     <Compile Include="Reflection\ReflectionExtensions.cs" />
+    <Compile Include="Xml\DeserializedArrayObject.cs">
+      <DependentUpon>DeserializedXmlObject.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Xml\DeserializedCollection.cs">
+      <DependentUpon>DeserializedXmlObject.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Xml\DeserializedConvertible.cs">
+      <DependentUpon>DeserializedXmlObject.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Xml\DeserializedCustomObject.cs">
+      <DependentUpon>DeserializedXmlObject.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Xml\DeserializedGenericCollection.cs">
+      <DependentUpon>DeserializedXmlObject.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Xml\DeserializedXmlObject.cs" />
     <Compile Include="Xml\UnregisteredTypeException.cs" />
     <Compile Include="Xml\UnsupportedTypeException.cs" />
     <Compile Include="Xml\XmlExtensions.cs" />

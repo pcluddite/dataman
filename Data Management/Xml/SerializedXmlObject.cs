@@ -79,7 +79,7 @@ namespace Baxendale.DataManagement.Xml
                     attrib = new XmlSerializeAttribute() { Name = member.Name, Default = memberType.CreateDefault() };
                 }
 
-                ISerializedXmlObject xmlObj = XmlSerializer.CreateSerializerObject(member.GetReturnType(), Node, attrib);
+                ISerializedXmlObject xmlObj = XmlSerializer.CreateSerializedObject(member.GetReturnType(), Node, attrib);
                 member.SetValue(obj, xmlObj.Deserialize());
             }
             return obj;
@@ -93,7 +93,7 @@ namespace Baxendale.DataManagement.Xml
                 XElement arrNode = Node.Element(AttributeName);
                 if (arrNode == null)
                     return DefaultValue;
-                ISerializedXmlObject xmlObj = XmlSerializer.CreateSerializerObject(memberType.GetElementType(), arrNode);
+                ISerializedXmlObject xmlObj = XmlSerializer.CreateSerializedObject(memberType.GetElementType(), arrNode);
                 return (T)((object)xmlObj.DeserializeArray(memberType.GetArrayRank()));
             }
             else if (memberType.IsSubClassOfGeneric(typeof(ICollection<>)))
@@ -101,7 +101,7 @@ namespace Baxendale.DataManagement.Xml
                 XElement collectionNode = Node.Element(AttributeName);
                 if (collectionNode == null)
                     return DefaultValue;
-                ISerializedXmlObject xmlObj = XmlSerializer.CreateSerializerObject(memberType.GetGenericArguments()[0], collectionNode);
+                ISerializedXmlObject xmlObj = XmlSerializer.CreateSerializedObject(memberType.GetGenericArguments()[0], collectionNode);
                 return (T)xmlObj.DeserializeGenericCollection(memberType);
             }
             
@@ -110,7 +110,7 @@ namespace Baxendale.DataManagement.Xml
                 XElement collectionNode = Node.Element(AttributeName);
                 if (collectionNode == null)
                     return DefaultValue;
-                ISerializedXmlObject xmlObj = XmlSerializer.CreateSerializerObject(typeof(object), collectionNode);
+                ISerializedXmlObject xmlObj = XmlSerializer.CreateSerializedObject(typeof(object), collectionNode);
                 return (T)xmlObj.DeserializeCollection(memberType);
             }
             else if (typeof(object) == memberType)
@@ -119,7 +119,7 @@ namespace Baxendale.DataManagement.Xml
                 if (typeAttr == null)
                     throw new UnregisteredTypeException(Node.Name);
                 Type foundType = Type.GetType(typeAttr.Value, true);
-                ISerializedXmlObject xmlObj = XmlSerializer.CreateSerializerObject(foundType, Node, AttributeName,  DefaultValue);
+                ISerializedXmlObject xmlObj = XmlSerializer.CreateSerializedObject(foundType, Node, AttributeName,  DefaultValue);
                 return (T)xmlObj.Deserialize();
             }
             else if (Node.Attribute(AttributeName) == null)

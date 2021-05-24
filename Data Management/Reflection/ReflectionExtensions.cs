@@ -47,6 +47,32 @@ namespace Baxendale.DataManagement.Reflection
             }
         }
 
+        // Adapted from https://stackoverflow.com/questions/457676/check-if-a-class-is-derived-from-a-generic-class/18828085#18828085
+
+        public static Type GetGenericBaseType(this Type type, Type interfaceType)
+        {
+            Type[] typeParamters = interfaceType.GetGenericArguments();
+            bool isParameterLessGeneric = !(typeParamters != null && typeParamters.Length > 0 &&
+                ((typeParamters[0].Attributes & TypeAttributes.BeforeFieldInit) == TypeAttributes.BeforeFieldInit));
+            do
+            {
+                Type cur = GetFullTypeDefinition(type);
+                if (interfaceType == cur || (isParameterLessGeneric && cur.GetInterfaces().Select(i => GetFullTypeDefinition(i)).Contains(GetFullTypeDefinition(interfaceType))))
+                {
+                    return cur;
+                }
+                else if (!isParameterLessGeneric)
+                {
+                    foreach (Type item in type.GetInterfaces().Where(i => GetFullTypeDefinition(interfaceType) == GetFullTypeDefinition(i)))
+                    {
+                        if (VerifyGenericArguments(interfaceType, item)) return item;
+                    }
+                }
+                type = type.BaseType;
+            }
+            while (type != null && type != typeof(object));
+            return null;
+        }
 
         // Stolen from https://stackoverflow.com/questions/457676/check-if-a-class-is-derived-from-a-generic-class/18828085#18828085
 
@@ -85,12 +111,12 @@ namespace Baxendale.DataManagement.Reflection
             return false;
         }
 
-        private static Type GetFullTypeDefinition(Type type)
+        public static Type GetFullTypeDefinition(this Type type)
         {
             return type.IsGenericType ? type.GetGenericTypeDefinition() : type;
         }
 
-        private static bool VerifyGenericArguments(Type parent, Type child)
+        public static bool VerifyGenericArguments(this Type parent, Type child)
         {
             Type[] childArguments = child.GetGenericArguments();
             Type[] parentArguments = parent.GetGenericArguments();

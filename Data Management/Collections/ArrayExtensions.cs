@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Reflection;
+using System.Collections.Generic;
+using System.Text;
 
 namespace Baxendale.DataManagement.Collections
 {
@@ -60,6 +62,33 @@ namespace Baxendale.DataManagement.Collections
             {
                 return null;
             }
+        }
+
+        public static string ToString<T>(this IEnumerable<T> e, string separator)
+        {
+            if (separator == null)
+                throw new ArgumentNullException();
+            return ToString<T, string>(e, separator);
+        }
+
+        public static string ToString<T>(this IEnumerable<T> e, char separator)
+        {
+            return ToString<T, char>(e, separator);
+        }
+
+        private static string ToString<T, V>(IEnumerable<T> e, V separator)
+        {
+            if (e == null)
+                throw new ArgumentNullException();
+            StringBuilder sb = new StringBuilder();
+            using (IEnumerator<T> enumerator = e.GetEnumerator())
+            {
+                if (enumerator.MoveNext())
+                    sb.Append(enumerator.Current);
+                while (enumerator.MoveNext())
+                    sb.Append(separator).Append(enumerator.Current);
+            }
+            return sb.ToString();
         }
     }
 }
