@@ -60,7 +60,7 @@
     <Compile Include="TestClass.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\XmlSerializer\DataMan.csproj">
+    <ProjectReference Include="..\Data Management\DataMan.csproj">
       <Project>{26D9068F-CF73-4B51-8F17-3CF2AADF5CB4}</Project>
       <Name>DataMan</Name>
     </ProjectReference>
