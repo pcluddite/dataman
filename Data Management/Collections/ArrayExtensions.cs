@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
-using System.Reflection;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 
 namespace Baxendale.DataManagement.Collections
@@ -89,6 +89,89 @@ namespace Baxendale.DataManagement.Collections
                     sb.Append(separator).Append(enumerator.Current);
             }
             return sb.ToString();
+        }
+
+        private static string ToString<V>(IEnumerable e, V separator)
+        {
+            if (e == null)
+                throw new ArgumentNullException();
+            StringBuilder sb = new StringBuilder();
+            IEnumerator enumerator = e.GetEnumerator();
+            if (enumerator.MoveNext())
+                sb.Append(enumerator.Current);
+            while (enumerator.MoveNext())
+                sb.Append(separator).Append(enumerator.Current);
+            
+            return sb.ToString();
+        }
+
+        public static string ArrayToString(this Array array, char separator)
+        {
+            return ArrayToString<char, char>(array, separator, separator);
+        }
+
+        public static string ArrayToString(this Array array, char separator, char groupSeparator)
+        {
+            return ArrayToString<char, char>(array, separator, groupSeparator);
+        }
+
+        public static string ArrayToString(this Array array, char separator, string groupSeparator)
+        {
+            return ArrayToString<char, string>(array, separator, groupSeparator);
+        }
+
+        public static string ArrayToString(this Array array, string separator)
+        {
+            return ArrayToString<string, string>(array, separator, separator);
+        }
+
+        public static string ArrayToString(this Array array, string separator, string groupSeparator)
+        {
+            return ArrayToString<string, string>(array, separator, groupSeparator);
+        }
+
+        public static string ArrayToString(this Array array, string separator, char groupSeparator)
+        {
+            return ArrayToString<string, char>(array, separator, groupSeparator);
+        }
+
+        private static string ArrayToString<T, V>(Array array, T separator, V groupSeparator)
+        {
+            if (array == null)
+                throw new ArgumentNullException();
+            StringBuilder sb = new StringBuilder();
+            int rank = array.Rank;
+            if (rank == 1)
+            {
+                sb.Append(ToString((IEnumerable)array, separator));
+            }
+            else
+            {
+                ArrayToString(sb, array, 0, new int[array.Rank], separator, groupSeparator);
+            }
+            return sb.ToString();
+        }
+
+        private static void ArrayToString<T, V>(StringBuilder sb, Array array, int dim, int[] indices, T separator, V groupSeparator)
+        {
+            for (int i = 0; i < array.GetLength(dim); ++i)
+            {
+                indices[dim] = i;
+                if (dim == array.Rank - 1)
+                {
+                    if (i > 0)
+                        sb.Append(separator);
+                    sb.Append(array.GetValue(indices));
+                }
+                else
+                {
+                    sb.Append('{');
+                    ArrayToString(sb, array, dim + 1, indices, separator, groupSeparator);
+                    sb.Append('}');
+                    if (indices[dim] < array.GetLength(dim) - 1)
+                        sb.Append(groupSeparator);
+                }
+            }
         }
     }
 }
