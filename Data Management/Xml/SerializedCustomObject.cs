@@ -14,7 +14,7 @@ namespace Baxendale.DataManagement.Xml
         }
 
         private class SerializedCustomObject<V> : SerializedXmlObject<V>
-            where V : IXmlSerializable
+            where V : IXmlSerializableObject
         {
             public SerializedCustomObject(XElement node, XName name, V defaultValue)
                 : base(node, name, defaultValue)

@@ -39,7 +39,7 @@ namespace Baxendale.DataManagement.Xml
         public static ISerializedXmlObject CreateSerializedObject(XElement node, XName name, T defaultValue)
         {
             Type memberType = typeof(T);
-            if (typeof(IXmlSerializable).IsAssignableFrom(memberType))
+            if (typeof(IXmlSerializableObject).IsAssignableFrom(memberType))
             {
                 return CreateSerializedCustomObject(node, name, defaultValue);
             }

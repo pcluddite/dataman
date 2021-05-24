@@ -36,7 +36,7 @@ namespace Baxendale.DataManagement.Xml
             {
                 return CreateDeserializedNullObject(name);
             }
-            else if (typeof(IXmlSerializable).IsAssignableFrom(memberType))
+            else if (typeof(IXmlSerializableObject).IsAssignableFrom(memberType))
             {
                 return CreateDeserializedCustomObject(obj, name);
             }

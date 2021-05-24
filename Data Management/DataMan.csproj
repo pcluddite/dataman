@@ -97,7 +97,7 @@
     <Compile Include="Xml\UnsupportedTypeException.cs" />
     <Compile Include="Xml\XmlExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Xml\IXmlSerializable.cs" />
+    <Compile Include="Xml\IXmlSerializableObject.cs" />
     <Compile Include="Xml\SerializedXmlObject.cs" />
     <Compile Include="Xml\XmlDoNotSerializeAttribute.cs" />
     <Compile Include="Xml\XmlSerializationException.cs" />

@@ -5,7 +5,7 @@ using System.Collections;
 
 namespace TestApp
 {
-    class TestClass : IXmlSerializable
+    class TestClass : IXmlSerializableObject
     {
         private string foo = "test123";
         private int seven = 7;

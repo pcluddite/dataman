@@ -10,12 +10,12 @@ namespace Baxendale.DataManagement.Xml
     {
         private static readonly IDictionary<string, Type> SerializableTypes = new Dictionary<string, Type>();
 
-        public static void RegisterType<T>(string name) where T : IXmlSerializable, new()
+        public static void RegisterType<T>(string name) where T : IXmlSerializableObject, new()
         {
             SerializableTypes[name] = typeof(T);
         }
 
-        public static void RegisterType<T>(XName name) where T : IXmlSerializable, new()
+        public static void RegisterType<T>(XName name) where T : IXmlSerializableObject, new()
         {
             SerializableTypes[name.ToString()] = typeof(T);
         }
