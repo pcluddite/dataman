@@ -17,14 +17,14 @@ namespace Baxendale.DataManagement.Xml
             return (IDeserializedXmlObject)Activator.CreateInstance(deserializedXmlObject, obj, name);
         }
 
-        private class DeserializedGenericCollection<V> : DeserializedXmlObject<ICollection<V>>
+        private class DeserializedGenericCollection<ItemType> : DeserializedXmlObject<ICollection<ItemType>>
         {
-            public DeserializedGenericCollection(ICollection<V> obj, XmlSerializeAttribute attrib)
+            public DeserializedGenericCollection(ICollection<ItemType> obj, XmlSerializeAttribute attrib)
                 : base(obj, attrib.Name)
             {
             }
 
-            public DeserializedGenericCollection(ICollection<V> obj, XName attrName)
+            public DeserializedGenericCollection(ICollection<ItemType> obj, XName attrName)
                 : base(obj, attrName)
             {
             }
@@ -32,13 +32,13 @@ namespace Baxendale.DataManagement.Xml
             public override XObject Serialize()
             {
                 if (DeserializedObject.IsReadOnly)
-                    throw new UnsupportedTypeException(typeof(ICollection<V>));
+                    throw new UnsupportedTypeException(typeof(ICollection<ItemType>));
 
                 XElement element = new XElement(Name);
-                foreach (V item in DeserializedObject)
+                foreach (ItemType item in DeserializedObject)
                 {
                     XElement a = new XElement("a");
-                    IDeserializedXmlObject xobj = XmlSerializer.CreateDeserializedObject(typeof(V), item, "v");
+                    IDeserializedXmlObject xobj = XmlSerializer.CreateDeserializedObject(typeof(ItemType), item, "v");
                     a.Add(xobj.Serialize());
                     element.Add(a);
                 }

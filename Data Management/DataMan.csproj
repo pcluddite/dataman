@@ -56,7 +56,7 @@
     <Compile Include="Collections\DynamicArray.cs" />
     <Compile Include="Collections\Vector.cs" />
     <Compile Include="Reflection\ReflectionExtensions.cs" />
-    <Compile Include="Xml\DeserializedArrayObject.cs">
+    <Compile Include="Xml\DeserializedArray.cs">
       <DependentUpon>DeserializedXmlObject.cs</DependentUpon>
     </Compile>
     <Compile Include="Xml\DeserializedCollection.cs">
@@ -71,7 +71,28 @@
     <Compile Include="Xml\DeserializedGenericCollection.cs">
       <DependentUpon>DeserializedXmlObject.cs</DependentUpon>
     </Compile>
+    <Compile Include="Xml\DeserializedNullObject.cs">
+      <DependentUpon>DeserializedXmlObject.cs</DependentUpon>
+    </Compile>
     <Compile Include="Xml\DeserializedXmlObject.cs" />
+    <Compile Include="Xml\SerializedArray.cs">
+      <DependentUpon>SerializedXmlObject.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Xml\SerializedCollection.cs">
+      <DependentUpon>SerializedXmlObject.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Xml\SerializedConvertible.cs">
+      <DependentUpon>SerializedXmlObject.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Xml\SerializedCustomObject.cs">
+      <DependentUpon>SerializedXmlObject.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Xml\SerializedGenericCollection.cs">
+      <DependentUpon>SerializedXmlObject.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Xml\SerializedNullObject.cs">
+      <DependentUpon>SerializedXmlObject.cs</DependentUpon>
+    </Compile>
     <Compile Include="Xml\UnregisteredTypeException.cs" />
     <Compile Include="Xml\UnsupportedTypeException.cs" />
     <Compile Include="Xml\XmlExtensions.cs" />

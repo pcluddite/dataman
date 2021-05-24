@@ -7,20 +7,20 @@ namespace Baxendale.DataManagement.Xml
 {
     internal partial class DeserializedXmlObject<T>
     {
-        private static IDeserializedXmlObject CreateDeserializedArrayObject(T obj, XName name)
+        private static IDeserializedXmlObject CreateDeserializedArray(T obj, XName name)
         {
-            Type deserializedXmlObject = typeof(DeserializedArrayObject<>).MakeGenericType(typeof(T).GetElementType());
+            Type deserializedXmlObject = typeof(DeserializedArray<>).MakeGenericType(typeof(T).GetElementType());
             return (IDeserializedXmlObject)Activator.CreateInstance(deserializedXmlObject, obj, name);
         }
 
-        private class DeserializedArrayObject<V> : DeserializedXmlObject<Array>
+        private class DeserializedArray<ElementType> : DeserializedXmlObject<Array>
         {
-            public DeserializedArrayObject(Array arr, XmlSerializeAttribute attrib)
+            public DeserializedArray(Array arr, XmlSerializeAttribute attrib)
                 : base(arr, attrib.Name)
             {
             }
 
-            public DeserializedArrayObject(Array arr, XName attrName)
+            public DeserializedArray(Array arr, XName attrName)
                 : base(arr, attrName)
             {
             }
@@ -32,11 +32,11 @@ namespace Baxendale.DataManagement.Xml
                 int rank = DeserializedObject.Rank;
                 int[] indices = new int[rank];
 
-                foreach (V item in DeserializedObject.Cast<V>())
+                foreach (ElementType item in DeserializedObject.Cast<ElementType>())
                 {
                     XElement a = new XElement("a");
 
-                    IDeserializedXmlObject xobj = XmlSerializer.CreateDeserializedObject(typeof(V), item, "v");
+                    IDeserializedXmlObject xobj = XmlSerializer.CreateDeserializedObject(typeof(ElementType), item, "v");
                     a.Add(xobj.Serialize());
 
                     if (rank > 1)

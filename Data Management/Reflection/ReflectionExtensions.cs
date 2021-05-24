@@ -59,7 +59,7 @@ namespace Baxendale.DataManagement.Reflection
                 Type cur = GetFullTypeDefinition(type);
                 if (interfaceType == cur || (isParameterLessGeneric && cur.GetInterfaces().Select(i => GetFullTypeDefinition(i)).Contains(GetFullTypeDefinition(interfaceType))))
                 {
-                    return cur;
+                    return type;
                 }
                 else if (!isParameterLessGeneric)
                 {

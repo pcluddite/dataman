@@ -32,13 +32,17 @@ namespace Baxendale.DataManagement.Xml
         public static IDeserializedXmlObject CreateDeserializedObject(T obj, XName name)
         {
             Type memberType = typeof(T);
-            if (typeof(IXmlSerializable).IsAssignableFrom(memberType))
+            if (!memberType.IsValueType && ((object)obj) == null)
+            {
+                return CreateDeserializedNullObject(name);
+            }
+            else if (typeof(IXmlSerializable).IsAssignableFrom(memberType))
             {
                 return CreateDeserializedCustomObject(obj, name);
             }
             else if (memberType.IsArray)
             {
-                return CreateDeserializedArrayObject(obj, name);
+                return CreateDeserializedArray(obj, name);
             }
             else if (memberType.IsSubClassOfGeneric(typeof(ICollection<>)))
             {
