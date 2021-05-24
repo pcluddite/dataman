@@ -7,7 +7,7 @@ namespace Baxendale.DataManagement.Xml
     {
         private static IDeserializedXmlObject CreateDeserializedConvertible(T obj, XName name)
         {
-            Type deserializedXmlObject = typeof(DeserializedArray<>).MakeGenericType(typeof(T));
+            Type deserializedXmlObject = typeof(DeserializedArray<>).MakeGenericType(typeof(T), typeof(T));
             return (IDeserializedXmlObject)Activator.CreateInstance(deserializedXmlObject, obj, name);
         }
 

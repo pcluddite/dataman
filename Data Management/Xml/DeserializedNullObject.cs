@@ -7,12 +7,11 @@ namespace Baxendale.DataManagement.Xml
     {
         private static IDeserializedXmlObject CreateDeserializedNullObject(XName name)
         {
-            Type deserializedXmlObject = typeof(DeserializedArray<>).MakeGenericType(typeof(T));
+            Type deserializedXmlObject = typeof(DeserializedNullObject).MakeGenericType(typeof(T));
             return (IDeserializedXmlObject)Activator.CreateInstance(deserializedXmlObject, name);
         }
 
-        private class DeserializedNullObject<V> : DeserializedXmlObject<V>
-            where V : class
+        private class DeserializedNullObject : DeserializedXmlObject<object>
         {
             public DeserializedNullObject(XmlSerializeAttribute attrib)
                 : base(null, attrib.Name)

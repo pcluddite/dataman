@@ -13,7 +13,7 @@ namespace Baxendale.DataManagement.Xml
             if (collectionType == null)
                 throw new UnsupportedTypeException(typeof(T));
 
-            Type deserializedXmlObject = typeof(DeserializedGenericCollection<>).MakeGenericType(collectionType.GetGenericArguments()[0]);
+            Type deserializedXmlObject = typeof(DeserializedGenericCollection<>).MakeGenericType(typeof(T), collectionType.GetGenericArguments()[0]);
             return (IDeserializedXmlObject)Activator.CreateInstance(deserializedXmlObject, obj, name);
         }
 
@@ -32,7 +32,7 @@ namespace Baxendale.DataManagement.Xml
             public override XObject Serialize()
             {
                 if (DeserializedObject.IsReadOnly)
-                    throw new UnsupportedTypeException(typeof(ICollection<ItemType>));
+                    throw new UnsupportedTypeException(typeof(T));
 
                 XElement element = new XElement(Name);
                 foreach (ItemType item in DeserializedObject)

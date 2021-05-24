@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Xml.Linq;
 using Baxendale.DataManagement.Collections;
 
@@ -14,7 +13,7 @@ namespace Baxendale.DataManagement.Xml
             return (IDeserializedXmlObject)Activator.CreateInstance(deserializedXmlObject, obj, name);
         }
 
-        private class DeserializedCollection<V> : DeserializedXmlObject<ICollection>
+        private class DeserializedCollection : DeserializedXmlObject<ICollection>
         {
             public DeserializedCollection(ICollection obj, XmlSerializeAttribute attrib)
                 : base(obj, attrib.Name)
@@ -29,15 +28,23 @@ namespace Baxendale.DataManagement.Xml
             public override XObject Serialize()
             {
                 if (DeserializedObject.IsReadOnly() == true)
-                    throw new UnsupportedTypeException(typeof(ICollection<V>));
+                    throw new UnsupportedTypeException(typeof(T));
 
                 XElement element = new XElement(Name);
-                foreach (V item in DeserializedObject)
+                foreach (object item in DeserializedObject)
                 {
-                    XElement a = new XElement("a");
-                    IDeserializedXmlObject xobj = XmlSerializer.CreateDeserializedObject(item.GetType(), item, "v");
-                    a.SetAttributeValue("t", item.GetType().FullName);
-                    a.Add(xobj.Serialize());
+                    XElement a;
+                    if (item == null)
+                    {
+                        a = (XElement)CreateDeserializedNullObject("a").Serialize();
+                    }
+                    else
+                    {
+                        a = new XElement("a");
+                        IDeserializedXmlObject xobj = XmlSerializer.CreateDeserializedObject(item.GetType(), item, "v");
+                        a.SetAttributeValue("t", item.GetType().FullName);
+                        a.Add(xobj.Serialize());
+                    }
                     element.Add(a);
                 }
                 return element;
