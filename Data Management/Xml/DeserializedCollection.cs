@@ -15,13 +15,8 @@ namespace Baxendale.DataManagement.Xml
 
         private class DeserializedCollection : DeserializedXmlObject<ICollection>
         {
-            public DeserializedCollection(ICollection obj, XmlSerializeAttribute attrib)
-                : base(obj, attrib.Name)
-            {
-            }
-
-            public DeserializedCollection(ICollection obj, XName attrName)
-                : base(obj, attrName)
+            public DeserializedCollection(ICollection obj, XName name)
+                : base(obj, name)
             {
             }
 

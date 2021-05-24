@@ -16,13 +16,8 @@ namespace Baxendale.DataManagement.Xml
         private class DeserializedCustomObject<V> : DeserializedXmlObject<V>
             where V : IXmlSerializableObject
         {
-            public DeserializedCustomObject(V obj, XmlSerializeAttribute attrib)
-                : base(obj, attrib.Name)
-            {
-            }
-
-            public DeserializedCustomObject(V obj, XName attrName)
-                : base(obj, attrName)
+            public DeserializedCustomObject(V obj, XName name)
+                : base(obj, name)
             {
             }
 

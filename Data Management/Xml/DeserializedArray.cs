@@ -15,13 +15,8 @@ namespace Baxendale.DataManagement.Xml
 
         private class DeserializedArray<ElementType> : DeserializedXmlObject<Array>
         {
-            public DeserializedArray(Array arr, XmlSerializeAttribute attrib)
-                : base(arr, attrib.Name)
-            {
-            }
-
-            public DeserializedArray(Array arr, XName attrName)
-                : base(arr, attrName)
+            public DeserializedArray(Array arr, XName name)
+                : base(arr, name)
             {
             }
 

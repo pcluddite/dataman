@@ -15,19 +15,19 @@ namespace Baxendale.DataManagement.Xml
     {
         public virtual T DeserializedObject { get; protected set; }
         public virtual XName Name { get; protected set; }
-
-        protected DeserializedXmlObject(T obj, XmlSerializeAttribute attrib)
-            : this(obj, attrib.Name)
-        {
-        }
-
-        protected DeserializedXmlObject(T obj, XName attrName)
+        
+        protected DeserializedXmlObject(T obj, XName name)
         {
             DeserializedObject = obj;
-            Name = attrName;
+            Name = name;
         }
 
         public abstract XObject Serialize();
+
+        public static IDeserializedXmlObject CreateDeserializedObject(T obj, XmlSerializeAttribute attrib)
+        {
+            return CreateDeserializedObject(obj, attrib.Name);
+        }
 
         public static IDeserializedXmlObject CreateDeserializedObject(T obj, XName name)
         {

@@ -19,13 +19,8 @@ namespace Baxendale.DataManagement.Xml
 
         private class DeserializedGenericCollection<ItemType> : DeserializedXmlObject<ICollection<ItemType>>
         {
-            public DeserializedGenericCollection(ICollection<ItemType> obj, XmlSerializeAttribute attrib)
-                : base(obj, attrib.Name)
-            {
-            }
-
-            public DeserializedGenericCollection(ICollection<ItemType> obj, XName attrName)
-                : base(obj, attrName)
+            public DeserializedGenericCollection(ICollection<ItemType> obj, XName name)
+                : base(obj, name)
             {
             }
 

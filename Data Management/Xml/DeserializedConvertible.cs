@@ -14,13 +14,8 @@ namespace Baxendale.DataManagement.Xml
         private class DeserializedConvertible<V> : DeserializedXmlObject<V>
             where V : IConvertible
         {
-            public DeserializedConvertible(V obj, XmlSerializeAttribute attrib)
-                : base(obj, attrib.Name)
-            {
-            }
-
-            public DeserializedConvertible(V obj, XName attrName)
-                : base(obj, attrName)
+            public DeserializedConvertible(V obj, XName name)
+                : base(obj, name)
             {
             }
 

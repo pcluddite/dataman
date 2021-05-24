@@ -60,7 +60,9 @@ namespace Baxendale.DataManagement.Xml
 
         internal static IDeserializedXmlObject CreateDeserializedObject(Type t, object obj, XmlSerializeAttribute attrib)
         {
-            return CreateDeserializedObject(t, obj, attrib.Name);
+            Type deserializedXmlObject = typeof(DeserializedXmlObject<>).MakeGenericType(t);
+            MethodInfo factoryMethod = deserializedXmlObject.GetMethod("CreateDeserializedObject", new Type[] { t, typeof(XmlSerializeAttribute) });
+            return (IDeserializedXmlObject)factoryMethod.Invoke(null, new object[] { obj, attrib });
         }
 
         internal static IDeserializedXmlObject CreateDeserializedObject(Type t, object obj, XName name)
