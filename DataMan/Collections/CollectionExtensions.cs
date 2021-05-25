@@ -27,6 +27,8 @@ namespace Baxendale.DataManagement.Collections
 {
     public static class CollectionExtensions
     {
+        private static readonly Random RandomInstance = new Random();
+
         public static void Add(this ICollection collection, object item)
         {
             Type collectionType = collection.GetType();
@@ -78,6 +80,65 @@ namespace Baxendale.DataManagement.Collections
                     sb.Append(separator).Append(enumerator.Current);
             }
             return sb.ToString();
+        }
+
+        public static IEnumerable<TSource> Randomize<TSource>(this IEnumerable<TSource> e)
+        {
+            IList<TSource> options = new List<TSource>(e);
+            while (options.Count > 0)
+            {
+                int idx = RandomInstance.Next(0, options.Count);
+                yield return options[idx];
+                options.RemoveAt(idx);
+            }
+        }
+
+        public static bool ContainsOnly<TSource>(this IEnumerable<TSource> first, IEnumerable<TSource> second)
+        {
+            LinkedList<TSource> secondList = new LinkedList<TSource>(second);
+            foreach (TSource o1 in first)
+            {
+                int removed = 0;
+                LinkedListNode<TSource> node = secondList.First;
+                while(node != null)
+                {
+                    if (Equals(o1, node.Value))
+                    {
+                        ++removed;
+                        secondList.Remove(node);
+                    }
+                    node = node.Next;
+                }
+                if (removed == 0)
+                    return false;
+            }
+            return secondList.Count > 0;
+        }
+
+        public static IEnumerable<char> AlphaSequence(this char startChar)
+        {
+            if (char.IsLetter(startChar))
+            {
+                if (char.IsLower(startChar))
+                {
+                    return startChar.Sequence('z' - startChar + 1);
+                }
+                else
+                {
+                    return startChar.Sequence('Z' - startChar + 1);
+                }
+            }
+            else if (char.IsDigit(startChar))
+            {
+                return startChar.Sequence('9' - startChar + 1);
+            }
+            throw new ArgumentException("Character must be a number or a letter to sequence");
+        }
+
+        public static IEnumerable<char> Sequence(this char startChar, int count)
+        {
+            for (int i = 0; i < startChar; ++i)
+                yield return (char)(startChar + i);
         }
     }
 }
