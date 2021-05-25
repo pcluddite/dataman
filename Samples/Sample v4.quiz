@@ -8,34 +8,34 @@
   </question>
   <question prompt="The absolute value of -3 is what?">
     <answer type="combo">
-		<option text="-3" value="false"/>
-		<option text="3" value="true"/>
-		<option text="0" value="false"/>
-		<option text="2" value="false"/>
-		<option text="-2" value="false"/>
-		<option text="4" value="false"/>
-		<option text="-4" value="false"/>
-	</answer>
+        <option text="-3" value="false"/>
+        <option text="3" value="true"/>
+        <option text="0" value="false"/>
+        <option text="2" value="false"/>
+        <option text="-2" value="false"/>
+        <option text="4" value="false"/>
+        <option text="-4" value="false"/>
+    </answer>
   </question>
   <question prompt="The center of an atom is called the what?">
     <answer type="text" value="Nucleus" />
   </question>
   <question prompt="Which organelles are found in an animal cell?">
-	<answer type="multi">
-		<option text="Neutron" value="false"/>
-		<option text="Mitochondrion" value="true"/>
-		<option text="Endoplasmic Reticulum" value="true"/>
-		<option text="Chloroplast" value="false"/>
-		<option text="Fibula" value="false"/>
-	</answer>
+    <answer type="multi">
+        <option text="Neutron" value="false"/>
+        <option text="Mitochondrion" value="true"/>
+        <option text="Endoplasmic Reticulum" value="true"/>
+        <option text="Chloroplast" value="false"/>
+        <option text="Fibula" value="false"/>
+    </answer>
   </question>
   <question prompt="Who was the first President of the United States?">
-	<answer type="select">
-		<option text="George Washington" value="true"/>
-		<option text="Abraham Lincoln" value="false"/>
-		<option text="Ronald Reagan" value="false"/>
-		<option text="Herbie Hancock" value="false"/>
-		<option text="Benjamin Franklin" value="false"/>
-	</answer>
+    <answer type="select">
+        <option text="George Washington" value="true"/>
+        <option text="Abraham Lincoln" value="false"/>
+        <option text="Ronald Reagan" value="false"/>
+        <option text="Herbie Hancock" value="false"/>
+        <option text="Benjamin Franklin" value="false"/>
+    </answer>
   </question>
 </quiz>
