@@ -22,6 +22,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using System.Linq;
 
 namespace Baxendale.DataManagement.Collections
 {
@@ -57,73 +58,6 @@ namespace Baxendale.DataManagement.Collections
             return newArr;
         }
 
-        public static void Add(this ICollection collection, object item)
-        {
-            Type collectionType = collection.GetType();
-            MethodInfo addMethods = collectionType.GetMethod("Add", BindingFlags.Instance | BindingFlags.Public, null, new Type[] { typeof(object) }, null);
-            addMethods.Invoke(collection, new object[] { item });
-        }
-
-        public static bool? IsReadOnly(this ICollection collection)
-        {
-            Type collectionType = collection.GetType();
-            try
-            {
-                PropertyInfo readOnlyProperty = collectionType.GetProperty("IsReadOnly", BindingFlags.Instance | BindingFlags.Public, null, typeof(bool), new Type[0], null);
-                if (readOnlyProperty == null)
-                    return null;
-                MethodInfo getMethod = readOnlyProperty.GetGetMethod(false);
-                if (getMethod == null)
-                    return null;
-                return (bool)getMethod.Invoke(collection, new object[0]);
-            }
-            catch (AmbiguousMatchException)
-            {
-                return null;
-            }
-        }
-
-        public static string ToString<T>(this IEnumerable<T> e, string separator)
-        {
-            if (separator == null)
-                throw new ArgumentNullException();
-            return ToString<T, string>(e, separator);
-        }
-
-        public static string ToString<T>(this IEnumerable<T> e, char separator)
-        {
-            return ToString<T, char>(e, separator);
-        }
-
-        private static string ToString<T, V>(IEnumerable<T> e, V separator)
-        {
-            if (e == null)
-                throw new ArgumentNullException();
-            StringBuilder sb = new StringBuilder();
-            using (IEnumerator<T> enumerator = e.GetEnumerator())
-            {
-                if (enumerator.MoveNext())
-                    sb.Append(enumerator.Current);
-                while (enumerator.MoveNext())
-                    sb.Append(separator).Append(enumerator.Current);
-            }
-            return sb.ToString();
-        }
-
-        private static string ToString<V>(IEnumerable e, V separator)
-        {
-            if (e == null)
-                throw new ArgumentNullException();
-            StringBuilder sb = new StringBuilder();
-            IEnumerator enumerator = e.GetEnumerator();
-            if (enumerator.MoveNext())
-                sb.Append(enumerator.Current);
-            while (enumerator.MoveNext())
-                sb.Append(separator).Append(enumerator.Current);
-            
-            return sb.ToString();
-        }
-
         public static string ArrayToString(this Array array, char separator)
         {
             return ArrayToString<char, char>(array, separator, separator);
@@ -154,7 +88,7 @@ namespace Baxendale.DataManagement.Collections
             return ArrayToString<string, char>(array, separator, groupSeparator);
         }
 
-        private static string ArrayToString<T, V>(Array array, T separator, V groupSeparator)
+        internal static string ArrayToString<T, V>(Array array, T separator, V groupSeparator)
         {
             if (array == null)
                 throw new ArgumentNullException();
@@ -162,11 +96,11 @@ namespace Baxendale.DataManagement.Collections
             int rank = array.Rank;
             if (rank == 1)
             {
-                sb.Append(ToString((IEnumerable)array, separator));
+                sb.Append(array.Cast<object>().ToString(separator));
             }
             else
             {
-                ArrayToString(sb, array, 0, new int[array.Rank], separator, groupSeparator);
+                ArrayToString(sb, array, 0, new int[rank], separator, groupSeparator);
             }
             return sb.ToString();
         }
