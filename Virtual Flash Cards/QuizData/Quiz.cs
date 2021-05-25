@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Xml;
+using System.Xml.Linq;
 using Baxendale.DataManagement.Xml;
 
 namespace VirtualFlashCards.QuizData
 {
-    public class Quiz : IList<Question>
+    public class Quiz : IXmlSerializableObject, IList<Question>
     {
         private const int VERSION = 4;
 
@@ -73,36 +74,37 @@ namespace VirtualFlashCards.QuizData
             return new Quiz(incorrect.Questions);
         }
 
-        public XmlNode ToXml(XmlDocument doc)
-        {
-            XmlElement elem = doc.CreateElement("quiz");
-            foreach (Question q in allQuestions)
-            {
-                elem.AppendChild(q.ToXml(doc));
-            }
-            return elem;
-        }
-
-        public static Quiz FromXml(XmlNode n)
-        {
-            List<Question> questions = new List<Question>();
-            foreach (XmlNode child in n.SelectNodes("question"))
-            {
-                questions.Add(Question.FromXml(child));
-            }
-            return new Quiz(questions);
-        }
-
         public static Quiz FromFile(string path)
         {
-            XmlDocument doc = new XmlDocument();
-            doc.Load(path);
-            XmlNode quizNode = doc.SelectSingleNode("quiz");
+            XDocument doc = XDocument.Load(path);
+            return XmlSerializer.Deserialize<Quiz>(doc.Root);
+        }
+
+        public static Quiz FromXml(XElement quizNode, XName name)
+        {
+            if (name != null && quizNode != null)
+                quizNode = quizNode.Element(name);
             if (quizNode == null)
                 throw new XmlException("Could not find quiz node. This file may be corrupt.");
-            if (quizNode.Attributes("version").Value(0) != VERSION)
+            if (quizNode.Attribute("version").Value(0) != VERSION)
                 throw new XmlException("This quiz file is not compatible with this version of Flash Cards");
-            return FromXml(quizNode);
+            Quiz q = new Quiz();
+            foreach (XElement question in quizNode.Elements("question"))
+            {
+                q.Add(XmlSerializer.Deserialize<Question>(question));
+            }
+            return q;
+        }
+
+        public XElement ToXml(XName name)
+        {
+            XElement quizNode = new XElement(name);
+            quizNode.SetAttributeValue("version", VERSION);
+            foreach (Question q in allQuestions)
+            {
+                quizNode.Add(XmlSerializer.Serialize<Question>(q, "question"));
+            }
+            return quizNode;
         }
 
         public void AddRange(IEnumerable<Question> questions)

@@ -1,36 +1,27 @@
 ﻿using System;
 using System.Xml;
+using System.Xml.Linq;
 
 namespace Baxendale.DataManagement.Xml
 {
     public static class XmlExtensions
     {
-        public static XmlAttribute Attributes(this XmlNode node, string name)
-        {
-            XmlAttribute attr = node.Attributes[name];
-            if (attr == null)
-            {
-                attr = node.OwnerDocument.CreateAttribute(name);
-                attr.Value = "";
-                node.Attributes.Append(attr);
-            }
-            return attr;
-        }
-
-        public static T Value<T>(this XmlAttribute attr) where T : IConvertible
+        public static T Value<T>(this XAttribute attr) where T : IConvertible
         {
             return (T)System.Convert.ChangeType(attr.Value, typeof(T));
         }
 
-        public static T Value<T>(this XmlAttribute attr, T @default) where T : IConvertible
+        public static T Value<T>(this XAttribute attr, T @default) where T : IConvertible
         {
+            if (attr == null)
+                return @default;
             T value;
             if (attr.TryValue(out value))
                 return value;
             return @default;
         }
 
-        public static bool TryValue<T>(this XmlAttribute attr, out T value) where T : IConvertible
+        public static bool TryValue<T>(this XAttribute attr, out T value) where T : IConvertible
         {
             try
             {
@@ -43,7 +34,6 @@ namespace Baxendale.DataManagement.Xml
                     throw;
                 value = default(T);
                 return false;
-                
             }
         }
     }

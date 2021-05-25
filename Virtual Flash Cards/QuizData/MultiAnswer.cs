@@ -6,6 +6,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using Baxendale.DataManagement.Xml;
+using System.Xml.Linq;
 
 namespace VirtualFlashCards.QuizData
 {
@@ -54,11 +55,11 @@ namespace VirtualFlashCards.QuizData
         {
         }
 
-        protected MultiAnswer(XmlNode node)
+        protected MultiAnswer(XElement node)
         {
-            foreach (XmlNode optionNode in node.SelectNodes("option"))
+            foreach (XElement optionNode in node.Elements("option"))
             {
-                MultiAnswerOption option = new MultiAnswerOption(optionNode);
+                MultiAnswerOption option = XmlSerializer.Deserialize<MultiAnswerOption>(optionNode);
                 OptionDictionary.Add(option.Text, option.IsCorrect);
             }
         }
@@ -114,12 +115,12 @@ namespace VirtualFlashCards.QuizData
             return group;
         }
 
-        public override XmlElement ToXml(XmlDocument doc)
+        public override XElement ToXml(XName name)
         {
-            XmlElement elem = base.ToXml(doc);
+            XElement elem = base.ToXml(name);
             foreach (KeyValuePair<string, bool> option in OptionDictionary)
             {
-                elem.AppendChild(new MultiAnswerOption(option.Key, option.Value).ToXml(doc));
+                elem.Add(XmlSerializer.Serialize(new MultiAnswerOption(option.Key, option.Value), "option"));
             }
             return elem;
         }
@@ -156,10 +157,17 @@ namespace VirtualFlashCards.QuizData
             return sb.ToString();
         }
 
-        private struct MultiAnswerOption
+        private class MultiAnswerOption : IXmlSerializableObject
         {
+            [XmlSerialize(Name = "value", Default = false)]
             public readonly bool IsCorrect;
+
+            [XmlSerialize(Name = "text")]
             public readonly string Text;
+
+            public MultiAnswerOption()
+            {
+            }
 
             public MultiAnswerOption(string text, bool correct)
             {
@@ -167,34 +175,17 @@ namespace VirtualFlashCards.QuizData
                 IsCorrect = correct;
             }
 
-            public MultiAnswerOption(XmlNode node)
-            {
-                if (node.Attributes["text"] == null)
-                    throw new XmlException("Multi answer option had no text attribute");
-                Text = node.Attributes["text"].Value;
-                IsCorrect = node.Attributes("value").Value(false);
-            }
-
             public override string ToString()
             {
                 return Text;
             }
 
-            public XmlElement ToXml(XmlDocument doc)
-            {
-                XmlElement node = doc.CreateElement("option");
-                node.Attributes("text").Value = Text;
-                if (IsCorrect)
-                    node.Attributes("value").Value = IsCorrect.ToString();
-                return node;
-            }
-
             public override bool Equals(object obj)
             {
-                MultiAnswerOption? other = obj as MultiAnswerOption?;
+                MultiAnswerOption other = obj as MultiAnswerOption;
                 if (other == null)
                     return false;
-                return Equals(other.Value);
+                return Equals(other);
             }
 
             public bool Equals(MultiAnswerOption other)

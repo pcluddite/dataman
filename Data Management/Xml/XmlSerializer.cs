@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Xml;
-using System.Xml.Linq;
 using System.Reflection;
+using System.Xml.Linq;
 
 namespace Baxendale.DataManagement.Xml
 {
@@ -10,12 +9,12 @@ namespace Baxendale.DataManagement.Xml
     {
         private static readonly IDictionary<string, Type> SerializableTypes = new Dictionary<string, Type>();
 
-        public static void RegisterType<T>(string name) where T : IXmlSerializableObject, new()
+        public static void RegisterType<T>(string name) where T : IXmlSerializableObject
         {
             SerializableTypes[name] = typeof(T);
         }
 
-        public static void RegisterType<T>(XName name) where T : IXmlSerializableObject, new()
+        public static void RegisterType<T>(XName name) where T : IXmlSerializableObject
         {
             SerializableTypes[name.ToString()] = typeof(T);
         }
@@ -27,14 +26,53 @@ namespace Baxendale.DataManagement.Xml
             Type t = SerializableTypes[node.Name.ToString()];
             if (t == null)
                 throw new UnregisteredTypeException(node.Name);
-            return CreateSerializedObject(t, node).Deserialize();
+            try
+            {
+                return CreateSerializedObject(t, node).Deserialize();
+            }
+            catch (TargetInvocationException ex)
+            {
+                throw ex.GetBaseException();
+            }
         }
 
         public static T Deserialize<T>(XElement node)
         {
             if (node == null)
                 throw new NullReferenceException();
-            return (T)SerializedXmlObject<T>.CreateSerializedObject(node).Deserialize();
+            try
+            {
+                return (T)SerializedXmlObject<T>.CreateSerializedObject(node).Deserialize();
+            }
+            catch (TargetInvocationException ex)
+            {
+                throw ex.GetBaseException();
+            }
+        }
+
+        public static XObject Serialize<T>(T o, XName name)
+        {
+            try
+            {
+                return CreateDeserializedObject(typeof(T), o, name).Serialize();
+            }
+            catch (TargetInvocationException ex)
+            {
+                throw ex.GetBaseException();
+            }
+
+        }
+
+        public static XObject Serialize(Type t, object o, XName name)
+        {
+            try
+            {
+                return CreateDeserializedObject(t, o, name).Serialize();
+            }
+            catch (TargetInvocationException ex)
+            {
+                throw ex.GetBaseException();
+            }
         }
 
         internal static ISerializedXmlObject CreateSerializedObject(Type t, XElement node)

@@ -1,7 +1,7 @@
 ﻿using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using System.Xml;
+using System.Xml.Linq;
 
 namespace VirtualFlashCards.QuizData
 {
@@ -14,14 +14,14 @@ namespace VirtualFlashCards.QuizData
         {
         }
 
-        protected ComboAnswer(XmlNode node)
+        protected ComboAnswer(XElement node)
             : base(node)
         {
         }
 
-        public override XmlElement ToXml(XmlDocument doc)
+        public override XElement ToXml(XName name)
         {
-            return base.ToXml(doc);
+            return base.ToXml(name);
         }
 
         public override bool IsCorrect(Control control)

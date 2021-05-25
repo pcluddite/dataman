@@ -3,29 +3,22 @@ using Baxendale.DataManagement.Xml;
 
 namespace VirtualFlashCards.QuizData
 {
-    public class Question
+    public class Question : IXmlSerializableObject
     {
+        [XmlSerialize(Name = "prompt")]
         public string Prompt { get; set; }
+
+        [XmlSerialize(Name = "answer")]
         public Answer Answer { get; set; }
+
+        public Question()
+        {
+        }
 
         public Question(string prompt, Answer answer)
         {
             Prompt = prompt;
             Answer = answer;
-        }
-
-        public XmlNode ToXml(XmlDocument doc)
-        {
-            XmlElement elem = doc.CreateElement("question");
-            elem.Attributes("prompt").Value = Prompt;
-            elem.AppendChild(Answer.ToXml(doc));
-            return elem;
-        }
-
-        public static Question FromXml(XmlNode n)
-        {
-            Answer a = Answer.FromXml(n.SelectSingleNode("answer"));
-            return new Question(n.Attributes("prompt").Value, a);
         }
 
         public override string ToString()

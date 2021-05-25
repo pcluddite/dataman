@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Xml;
 using Baxendale.DataManagement.Xml;
+using System.Xml.Linq;
 
 namespace VirtualFlashCards.QuizData
 {
@@ -13,10 +14,10 @@ namespace VirtualFlashCards.QuizData
         public string Value { get; set; }
         public bool MatchCase { get; set; }
 
-        protected TextAnswer(XmlNode node)
+        protected TextAnswer(XElement node)
         {
-            Value = node.Attributes("value").Value;
-            MatchCase = node.Attributes("matchCase").Value(false);
+            Value = node.Attribute("value").Value;
+            MatchCase = node.Attribute("matchCase").Value(false);
         }
 
         public TextAnswer(string value)
@@ -57,12 +58,12 @@ namespace VirtualFlashCards.QuizData
             };
         }
 
-        public override XmlElement ToXml(XmlDocument doc)
+        public override XElement ToXml(XName name)
         {
-            XmlElement node = base.ToXml(doc);
-            node.Attributes("value").Value = Value;
+            XElement node = base.ToXml(name);
+            node.SetAttributeValue("value", Value);
             if (MatchCase)
-                node.Attributes("matchCase").Value = MatchCase.ToString();
+                node.SetAttributeValue("matchCase", MatchCase.ToString());
             return node;
         }
 

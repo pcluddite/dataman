@@ -2,6 +2,7 @@
 using System.IO;
 using System.Windows.Forms;
 using System.Xml;
+using Baxendale.DataManagement.Xml;
 using VirtualFlashCards.Forms;
 using VirtualFlashCards.QuizData;
 
@@ -10,6 +11,13 @@ namespace VirtualFlashCards
     public class AppContext : ApplicationContext
     {
         public Quiz CurrentQuiz { get; private set; }
+
+        static AppContext()
+        {
+            XmlSerializer.RegisterType<Quiz>("quiz");
+            XmlSerializer.RegisterType<Question>("question");
+            XmlSerializer.RegisterType<Answer>("answer");
+        }
 
         public AppContext(string[] args)
         {
@@ -119,9 +127,12 @@ namespace VirtualFlashCards
 
         public Quiz OpenQuiz(string path)
         {
+#if !DEBUG
             try
             {
+#endif
                 return Quiz.FromFile(path);
+#if !DEBUG
             }
             catch (Exception ex)
             {
@@ -130,6 +141,7 @@ namespace VirtualFlashCards
                 ShowError(ex.Message);
                 return null;
             }
+#endif
         }
 
         public void ShowError(string text)

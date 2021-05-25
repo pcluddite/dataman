@@ -3,12 +3,12 @@ using System.Drawing;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
-using System.Xml;
+using System.Xml.Linq;
 using Baxendale.DataManagement.Xml;
 
 namespace VirtualFlashCards.QuizData
 {
-    public abstract class Answer
+    public abstract class Answer : IXmlSerializableObject
     {
         public abstract bool IsCorrect(Control control);
 
@@ -16,10 +16,10 @@ namespace VirtualFlashCards.QuizData
 
         public abstract Control CreateFormControl(Font font);
 
-        public virtual XmlElement ToXml(XmlDocument doc)
+        public virtual XElement ToXml(XName name)
         {
-            XmlElement elem = doc.CreateElement("answer");
-            elem.SetAttribute("type", GetAnswerType(GetType()));
+            XElement elem = new XElement(name);
+            elem.SetAttributeValue("type", GetAnswerType(GetType()));
             return elem;
         }
 
@@ -52,15 +52,17 @@ namespace VirtualFlashCards.QuizData
             return !(left == right);
         }
 
-        public static Answer FromXml(XmlNode node)
+        public static Answer FromXml(XElement node, XName name)
         {
+            if (name != null)
+                node = node.Element(name);
             if (node.Name != "answer")
                 throw new ArgumentException("Cannot convert node to Answer class because node is not an Answer");
-            string ansTypeName = node.Attributes("type").Value;
+            string ansTypeName = node.Attribute("type").Value("");
             Type t = Type.GetType(GetAnswerClassNameFromType(ansTypeName));
             if (t == null)
                 throw new ArgumentException("Encountered unknown answer type '" + ansTypeName + "'. The document may not be supported by this version of Flash Cards");
-            ConstructorInfo ctor = t.GetConstructor(BindingFlags.Instance | BindingFlags.NonPublic, null, new Type[] { typeof(XmlNode) }, null);
+            ConstructorInfo ctor = t.GetConstructor(BindingFlags.Instance | BindingFlags.NonPublic, null, new Type[] { typeof(XElement) }, null);
             return (Answer)ctor.Invoke(new object[] { node });
         }
 
