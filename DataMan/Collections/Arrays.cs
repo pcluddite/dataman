@@ -26,7 +26,7 @@ using System.Linq;
 
 namespace Baxendale.DataManagement.Collections
 {
-    public static class ArrayExtensions
+    public static class Arrays
     {
         public static int[] GetLengths(this Array array)
         {

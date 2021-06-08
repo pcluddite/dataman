@@ -55,9 +55,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Collections\ArrayExtensions.cs" />
-    <Compile Include="Collections\CollectionExtensions.cs" />
+    <Compile Include="Collections\Arrays.cs" />
+    <Compile Include="Collections\Collections.cs" />
+    <Compile Include="Collections\Collections%28T%29.cs" />
     <Compile Include="Collections\DynamicArray.cs" />
+    <Compile Include="Collections\Sublist.cs" />
     <Compile Include="Collections\Vector.cs" />
     <Compile Include="Reflection\ReflectionExtensions.cs" />
     <Compile Include="Xml\DeserializedArray.cs">
