@@ -97,35 +97,35 @@ namespace Baxendale.DataManagement.Xml
         internal static ISerializedXmlObject CreateSerializedObject(Type t, XElement node)
         {
             Type serializedXmlObject = typeof(SerializedXmlObject<>).MakeGenericType(t);
-            MethodInfo factoryMethod = serializedXmlObject.GetMethod("CreateSerializedObject", new Type[] { typeof(XElement) });
+            MethodInfo factoryMethod = serializedXmlObject.GetMethod(nameof(SerializedXmlObject<object>.CreateSerializedObject), new Type[] { typeof(XElement) });
             return (ISerializedXmlObject)factoryMethod.Invoke(null, new object[] { node });
         }
 
         internal static ISerializedXmlObject CreateSerializedObject(Type t, XElement node, XmlSerializeAttribute attrib)
         {
             Type serializedXmlObject = typeof(SerializedXmlObject<>).MakeGenericType(t);
-            MethodInfo factoryMethod = serializedXmlObject.GetMethod("CreateSerializedObject", new Type[] { typeof(XElement), typeof(XmlSerializeAttribute) });
+            MethodInfo factoryMethod = serializedXmlObject.GetMethod(nameof(SerializedXmlObject<object>.CreateSerializedObject), new Type[] { typeof(XElement), typeof(XmlSerializeAttribute) });
             return (ISerializedXmlObject)factoryMethod.Invoke(null, new object[] { node, attrib });
         }
 
         internal static ISerializedXmlObject CreateSerializedObject(Type t, XElement node, XName name, object defaultValue)
         {
             Type serializedXmlObject = typeof(SerializedXmlObject<>).MakeGenericType(t);
-            MethodInfo factoryMethod = serializedXmlObject.GetMethod("CreateSerializedObject", new Type[] { typeof(XElement), typeof(XName), t });
+            MethodInfo factoryMethod = serializedXmlObject.GetMethod(nameof(SerializedXmlObject<object>.CreateSerializedObject), new Type[] { typeof(XElement), typeof(XName), t });
             return (ISerializedXmlObject)factoryMethod.Invoke(null, new object[] { node, name, defaultValue });
         }
 
         internal static IDeserializedXmlObject CreateDeserializedObject(Type t, object obj, XmlSerializeAttribute attrib)
         {
             Type deserializedXmlObject = typeof(DeserializedXmlObject<>).MakeGenericType(t);
-            MethodInfo factoryMethod = deserializedXmlObject.GetMethod("CreateDeserializedObject", new Type[] { t, typeof(XmlSerializeAttribute) });
+            MethodInfo factoryMethod = deserializedXmlObject.GetMethod(nameof(DeserializedXmlObject<object>.CreateDeserializedObject), new Type[] { t, typeof(XmlSerializeAttribute) });
             return (IDeserializedXmlObject)factoryMethod.Invoke(null, new object[] { obj, attrib });
         }
 
         internal static IDeserializedXmlObject CreateDeserializedObject(Type t, object obj, XName name)
         {
             Type deserializedXmlObject = typeof(DeserializedXmlObject<>).MakeGenericType(t);
-            MethodInfo factoryMethod = deserializedXmlObject.GetMethod("CreateDeserializedObject", new Type[] { t, typeof(XName) });
+            MethodInfo factoryMethod = deserializedXmlObject.GetMethod(nameof(DeserializedXmlObject<object>.CreateDeserializedObject), new Type[] { t, typeof(XName) });
             return (IDeserializedXmlObject)factoryMethod.Invoke(null, new object[] { obj, name });
         }
     }

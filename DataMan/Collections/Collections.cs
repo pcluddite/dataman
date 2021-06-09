@@ -32,7 +32,7 @@ namespace Baxendale.DataManagement.Collections
         public static void Add(this ICollection collection, object item)
         {
             Type collectionType = collection.GetType();
-            MethodInfo addMethods = collectionType.GetMethod("Add", BindingFlags.Instance | BindingFlags.Public, null, new Type[] { typeof(object) }, null);
+            MethodInfo addMethods = collectionType.GetMethod(nameof(ArrayList.Add), BindingFlags.Instance | BindingFlags.Public, null, new Type[] { typeof(object) }, null);
             addMethods.Invoke(collection, new object[] { item });
         }
 
@@ -41,7 +41,7 @@ namespace Baxendale.DataManagement.Collections
             Type collectionType = collection.GetType();
             try
             {
-                PropertyInfo readOnlyProperty = collectionType.GetProperty("IsReadOnly", BindingFlags.Instance | BindingFlags.Public, null, typeof(bool), new Type[0], null);
+                PropertyInfo readOnlyProperty = collectionType.GetProperty(nameof(ArrayList.IsReadOnly), BindingFlags.Instance | BindingFlags.Public, null, typeof(bool), new Type[0], null);
                 if (readOnlyProperty == null)
                     return null;
                 MethodInfo getMethod = readOnlyProperty.GetGetMethod(false);
@@ -127,9 +127,9 @@ namespace Baxendale.DataManagement.Collections
         public static bool ContainsAll<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> first, IEnumerable<KeyValuePair<TKey, TValue>> second, IEqualityComparer<TValue> comparer)
         {
             if (first == null)
-                throw new ArgumentNullException("first");
+                throw new ArgumentNullException(nameof(first));
             if (second == null)
-                throw new ArgumentNullException("second");
+                throw new ArgumentNullException(nameof(second));
             IDictionary<TKey, TValue> firstAsDict = first as IDictionary<TKey, TValue>;
             IDictionary<TKey, TValue> secondAsDict = second as IDictionary<TKey, TValue>;
             if (first == null || second == null)
@@ -169,9 +169,9 @@ namespace Baxendale.DataManagement.Collections
         public static bool ContainsAll<TSource>(this IEnumerable<TSource> first, IEnumerable<TSource> second, IEqualityComparer<TSource> comparer)
         {
             if (first == null)
-                throw new ArgumentNullException("first");
+                throw new ArgumentNullException(nameof(first));
             if (second == null)
-                throw new ArgumentNullException("second");
+                throw new ArgumentNullException(nameof(second));
             ISet<TSource> set = new HashSet<TSource>(first, comparer);
             foreach (TSource item in second)
                 if (!set.Contains(item)) return false;
@@ -186,9 +186,9 @@ namespace Baxendale.DataManagement.Collections
         public static bool ContainsOnly<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> first, IEnumerable<KeyValuePair<TKey, TValue>> second, IEqualityComparer<TValue> comparer)
         {
             if (first == null)
-                throw new ArgumentNullException("first");
+                throw new ArgumentNullException(nameof(first));
             if (second == null)
-                throw new ArgumentNullException("second");
+                throw new ArgumentNullException(nameof(second));
             IDictionary<TKey, TValue> firstAsDict = first as IDictionary<TKey, TValue>;
             IDictionary<TKey, TValue> secondAsDict = second as IDictionary<TKey, TValue>;
             if (first == null || second == null)
@@ -204,9 +204,9 @@ namespace Baxendale.DataManagement.Collections
         public static bool ContainsOnly<TKey, TValue>(this IDictionary<TKey, TValue> first, IDictionary<TKey, TValue> second, IEqualityComparer<TValue> comparer)
         {
             if (first == null)
-                throw new ArgumentNullException("first");
+                throw new ArgumentNullException(nameof(first));
             if (second == null)
-                throw new ArgumentNullException("second");
+                throw new ArgumentNullException(nameof(second));
             if (first.Count != second.Count)
                 return false;
             return first.ContainsAll(second);
@@ -220,9 +220,9 @@ namespace Baxendale.DataManagement.Collections
         public static bool ContainsOnly<TSource>(this IEnumerable<TSource> first, IEnumerable<TSource> second, IEqualityComparer<TSource> comparer)
         {
             if (first == null)
-                throw new ArgumentNullException("first");
+                throw new ArgumentNullException(nameof(first));
             if (second == null)
-                throw new ArgumentNullException("second");
+                throw new ArgumentNullException(nameof(second));
             ISet<TSource> firstSet = new HashSet<TSource>(first, comparer);
             ISet<TSource> secondSet = new HashSet<TSource>(second, comparer);
             if (firstSet.Count != secondSet.Count)
