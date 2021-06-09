@@ -21,7 +21,7 @@ using System;
 
 namespace Baxendale.DataManagement.Xml
 {
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Class)]
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public class XmlSerializeAttribute : Attribute
     {
         public string Name { get; set; }
