@@ -18,9 +18,7 @@
 //    USA
 //
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Text;
 
 namespace Baxendale.DataManagement.Collections
@@ -28,32 +26,6 @@ namespace Baxendale.DataManagement.Collections
     public static class Collections
     {
         private static readonly Random RandomInstance = new Random();
-
-        public static void Add(this ICollection collection, object item)
-        {
-            Type collectionType = collection.GetType();
-            MethodInfo addMethods = collectionType.GetMethod(nameof(ArrayList.Add), BindingFlags.Instance | BindingFlags.Public, null, new Type[] { typeof(object) }, null);
-            addMethods.Invoke(collection, new object[] { item });
-        }
-
-        public static bool? IsReadOnly(this ICollection collection)
-        {
-            Type collectionType = collection.GetType();
-            try
-            {
-                PropertyInfo readOnlyProperty = collectionType.GetProperty(nameof(ArrayList.IsReadOnly), BindingFlags.Instance | BindingFlags.Public, null, typeof(bool), new Type[0], null);
-                if (readOnlyProperty == null)
-                    return null;
-                MethodInfo getMethod = readOnlyProperty.GetGetMethod(false);
-                if (getMethod == null)
-                    return null;
-                return (bool)getMethod.Invoke(collection, new object[0]);
-            }
-            catch (AmbiguousMatchException)
-            {
-                return null;
-            }
-        }
 
         public static string ToString<T>(this IEnumerable<T> e, string separator)
         {

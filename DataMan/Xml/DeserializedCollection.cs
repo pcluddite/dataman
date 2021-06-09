@@ -20,7 +20,6 @@
 using System;
 using System.Collections;
 using System.Xml.Linq;
-using Baxendale.DataManagement.Collections;
 
 namespace Baxendale.DataManagement.Xml
 {
@@ -41,9 +40,6 @@ namespace Baxendale.DataManagement.Xml
 
             public override XObject Serialize()
             {
-                if (DeserializedObject.IsReadOnly() == true)
-                    throw new UnsupportedTypeException(typeof(T));
-
                 XElement element = new XElement(Name);
                 foreach (object item in DeserializedObject)
                 {
@@ -55,9 +51,8 @@ namespace Baxendale.DataManagement.Xml
                     else
                     {
                         a = new XElement("a");
-                        IDeserializedXmlObject xobj = XmlSerializer.CreateDeserializedObject(item.GetType(), item, "v");
                         a.SetAttributeValue("t", item.GetType().FullName);
-                        a.Add(xobj.Serialize());
+                        a.Add(XmlSerializer.Serialize(item.GetType(), item, "v"));
                     }
                     element.Add(a);
                 }
