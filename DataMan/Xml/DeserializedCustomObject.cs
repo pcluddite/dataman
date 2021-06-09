@@ -93,12 +93,12 @@ namespace Baxendale.DataManagement.Xml
                     XmlSerializeAttribute attrib = member.GetCustomAttribute<XmlSerializeAttribute>(inherit: true);
                     if (attrib == null)
                     {
-                        if (attrib.Name == null)
-                            attrib.Name = member.Name;
+                        attrib = new XmlSerializeAttribute() { Name = member.Name };
                     }
                     else
                     {
-                        attrib = new XmlSerializeAttribute() { Name = member.Name };
+                        if (attrib.Name == null)
+                            attrib.Name = member.Name;
                     }
 
                     object obj;
