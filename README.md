@@ -1,2 +1,2 @@
-# Flash Cards
-Virtual flash card and general quizing software, which I used in middle school and high school.
+# DataMan
+.NET library to supplement manipulation of complex data types. Forked from pcluddite/flashcards
