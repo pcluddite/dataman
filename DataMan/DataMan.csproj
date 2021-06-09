@@ -74,6 +74,9 @@
     <Compile Include="Xml\DeserializedCustomObject.cs">
       <DependentUpon>DeserializedXmlObject.cs</DependentUpon>
     </Compile>
+    <Compile Include="Xml\DeserializedDictionary.cs">
+      <DependentUpon>DeserializedXmlObject.cs</DependentUpon>
+    </Compile>
     <Compile Include="Xml\DeserializedGenericCollection.cs">
       <DependentUpon>DeserializedXmlObject.cs</DependentUpon>
     </Compile>
@@ -91,6 +94,9 @@
       <DependentUpon>SerializedXmlObject.cs</DependentUpon>
     </Compile>
     <Compile Include="Xml\SerializedCustomObject.cs">
+      <DependentUpon>SerializedXmlObject.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Xml\SerializedDictionary.cs">
       <DependentUpon>SerializedXmlObject.cs</DependentUpon>
     </Compile>
     <Compile Include="Xml\SerializedGenericCollection.cs">

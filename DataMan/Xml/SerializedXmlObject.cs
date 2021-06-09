@@ -68,6 +68,11 @@ namespace Baxendale.DataManagement.Xml
                 if (name != null) node = node.Element(name);
                 return CreateSerializedArray(node, defaultValue);
             }
+            else if (memberType.IsSubClassOfGeneric(typeof(IDictionary<,>)))
+            {
+                if (name != null) node = node.Element(name);
+                return CreateSerializedDictionary(node.Element(name), defaultValue);
+            }
             else if (memberType.IsSubClassOfGeneric(typeof(ICollection<>)))
             {
                 if (name != null) node = node.Element(name);

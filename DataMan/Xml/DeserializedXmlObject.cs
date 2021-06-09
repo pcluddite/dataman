@@ -63,6 +63,10 @@ namespace Baxendale.DataManagement.Xml
             {
                 return CreateDeserializedArray(obj, name);
             }
+            else if (memberType.IsSubClassOfGeneric(typeof(IDictionary<,>)))
+            {
+                return CreateDeserializedDictionary(obj, name);
+            }
             else if (memberType.IsSubClassOfGeneric(typeof(ICollection<>)))
             {
                 return CreateDeserializedGenericCollection(obj, name);

@@ -57,11 +57,16 @@ namespace Baxendale.DataManagement.Xml
 
         public static T Deserialize<T>(XElement node)
         {
+            return Deserialize<T>(node, null);
+        }
+
+        public static T Deserialize<T>(XElement node, XName name)
+        {
             if (node == null)
                 throw new NullReferenceException();
             try
             {
-                return (T)SerializedXmlObject<T>.CreateSerializedObject(node).Deserialize();
+                return (T)SerializedXmlObject<T>.CreateSerializedObject(node, name, default(T)).Deserialize();
             }
             catch (TargetInvocationException ex)
             {
