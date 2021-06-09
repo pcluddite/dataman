@@ -6,10 +6,10 @@ namespace Baxendale.DataManagement.Xml
 {
     internal abstract partial class SerializedXmlObject<T> : ISerializedXmlObject
     {
-        private static ISerializedXmlObject CreateSerializedArray(XElement node, XName name, T defaultValue)
+        private static ISerializedXmlObject CreateSerializedArray(XElement node, T defaultValue)
         {
             Type serializedXmlObject = typeof(SerializedArray<>).MakeGenericType(typeof(T), typeof(T).GetElementType());
-            return (ISerializedXmlObject)Activator.CreateInstance(serializedXmlObject, node, name, defaultValue);
+            return (ISerializedXmlObject)Activator.CreateInstance(serializedXmlObject, node, defaultValue);
         }
 
         private class SerializedArray<ElementType> : SerializedXmlObject<Array>
@@ -22,17 +22,16 @@ namespace Baxendale.DataManagement.Xml
                 }
             }
 
-            public SerializedArray(XElement node, XName attrName, Array defaultValue)
-                : base(node, attrName, defaultValue)
+            public SerializedArray(XElement node, Array defaultValue)
+                : base(node, node.Name, defaultValue)
             {
             }
 
             public override Array Deserialize()
             {
-                XElement node = Name == null ? Node : Node.Element(Name);
+                XElement node = Node;
                 if (node == null)
                     return DefaultValue;
-
                 DynamicArray<ElementType> arr = new DynamicArray<ElementType>(new int[Rank]);
                 int[] indices = arr.DecrementIndex(arr.LowerBound);
                 foreach (XElement child in node.Elements("a"))

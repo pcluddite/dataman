@@ -7,26 +7,26 @@ namespace Baxendale.DataManagement.Xml
 {
     internal abstract partial class SerializedXmlObject<T> : ISerializedXmlObject
     {
-        private static ISerializedXmlObject CreateSerializedGenericCollection(XElement node, XName name, T defaultValue)
+        private static ISerializedXmlObject CreateSerializedGenericCollection(XElement node, T defaultValue)
         {
             Type collectionType = typeof(T).GetGenericBaseType(typeof(ICollection<>));
             if (collectionType == null)
                 throw new UnsupportedTypeException(typeof(T));
 
             Type serializedXmlObject = typeof(SerializedGenericCollection<>).MakeGenericType(collectionType, collectionType.GetGenericArguments()[0]);
-            return (ISerializedXmlObject)Activator.CreateInstance(serializedXmlObject, node, name, defaultValue);
+            return (ISerializedXmlObject)Activator.CreateInstance(serializedXmlObject, node, defaultValue);
         }
 
         private class SerializedGenericCollection<ItemType> : SerializedXmlObject<ICollection<ItemType>>
         {
-            public SerializedGenericCollection(XElement node, XName name, ICollection<ItemType> defaultValue)
-                : base(node, name, defaultValue)
+            public SerializedGenericCollection(XElement node, ICollection<ItemType> defaultValue)
+                : base(node, node.Name, defaultValue)
             {
             }
 
             public override ICollection<ItemType> Deserialize()
             {
-                XElement node = Name == null ? Node : Node.Element(Name);
+                XElement node = Node;
                 if (node == null)
                     return DefaultValue;
 

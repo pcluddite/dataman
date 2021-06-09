@@ -60,33 +60,37 @@ namespace Baxendale.DataManagement.Xml
             Type memberType = typeof(T);
             if (typeof(IXmlSerializableObject).IsAssignableFrom(memberType))
             {
-                return CreateSerializedCustomObject(node, name, defaultValue);
+                if (name != null) node = node.Element(name);
+                return CreateSerializedCustomObject(node.Element(name), defaultValue);
             }
             else if (memberType.IsArray)
             {
-                return CreateSerializedArray(node, name, defaultValue);
+                if (name != null) node = node.Element(name);
+                return CreateSerializedArray(node, defaultValue);
             }
             else if (memberType.IsSubClassOfGeneric(typeof(ICollection<>)))
             {
-                return CreateSerializedGenericCollection(node, name, defaultValue);
+                if (name != null) node = node.Element(name);
+                return CreateSerializedGenericCollection(node.Element(name), defaultValue);
             }
             else if (typeof(ICollection).IsAssignableFrom(memberType))
             {
-                return CreateSerializedCollection(node, name, defaultValue);
-            }
-            else if (typeof(object) == memberType)
-            {
-                XAttribute typeAttr = node.Attribute("t");
-                if (typeAttr == null)
-                    throw new UnregisteredTypeException(node.Name);
-                if (typeAttr.Value == "null")
-                    return CreateSerializedNullObject(node, name);
-                Type foundType = Type.GetType(typeAttr.Value, true);
-                return XmlSerializer.CreateSerializedObject(foundType, node, name, defaultValue);
+                if (name != null) node = node.Element(name);
+                return CreateSerializedCollection(node.Element(name), defaultValue);
             }
             else if (typeof(IConvertible).IsAssignableFrom(memberType))
             {
                 return CreateSerializedConvertible(node, name, defaultValue);
+            }
+            else if (typeof(object) == memberType)
+            {
+                XAttribute typeAttr = node.Attribute("t");
+                if (typeAttr?.Value == "null")
+                    return CreateSerializedNullObject(node, name);
+                Type foundType = Type.GetType(typeAttr?.Value, throwOnError: false);
+                if (foundType == null)
+                    throw new UnregisteredTypeException(node.Name);
+                return XmlSerializer.CreateSerializedObject(foundType, node, name, defaultValue);
             }
             throw new UnsupportedTypeException(typeof(T));
         }
