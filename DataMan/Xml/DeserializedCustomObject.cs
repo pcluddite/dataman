@@ -93,25 +93,18 @@ namespace Baxendale.DataManagement.Xml
                     XmlSerializeAttribute attrib = member.GetCustomAttribute<XmlSerializeAttribute>(inherit: true);
                     if (attrib == null)
                     {
-                        attrib = new XmlSerializeAttribute() { Name = member.Name };
+                        attrib = new XmlSerializeAttribute() { Name = member.Name, Default = memberType.CreateDefault() };
                     }
                     else
                     {
                         if (attrib.Name == null)
                             attrib.Name = member.Name;
+                        if (attrib.Default == null)
+                            attrib.Default = memberType.CreateDefault();
                     }
 
-                    object obj;
-                    if (member.MemberType == MemberTypes.Field)
-                    {
-                        obj = ((FieldInfo)member).GetValue(DeserializedObject);
-                    }
-                    else
-                    {
-                        obj = ((PropertyInfo)member).GetGetMethod(nonPublic: true).Invoke(DeserializedObject, new object[0]);
-                    }
-                    
-                    if (member.GetCustomAttribute<XmlSerializeNonDefaultAttribute>() == null || obj != memberType.CreateDefault())
+                    object obj = member.GetValue(DeserializedObject);
+                    if (member.GetCustomAttribute<XmlSerializeNonDefaultAttribute>() == null || obj != attrib.Default)
                     {
                         IDeserializedXmlObject xmlObj = XmlSerializer.CreateDeserializedObject(memberType, obj, attrib);
                         element.Add(xmlObj.Serialize());

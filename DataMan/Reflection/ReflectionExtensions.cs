@@ -18,9 +18,8 @@
 //    USA
 //
 using System;
-using System.Collections;
-using System.Reflection;
 using System.Linq;
+using System.Reflection;
 
 namespace Baxendale.DataManagement.Reflection
 {
@@ -30,12 +29,7 @@ namespace Baxendale.DataManagement.Reflection
         {
             return (T)System.Convert.ChangeType(c, typeof(T));
         }
-
-        public static bool IsCollection(this Type t)
-        {
-            return t.IsArray || typeof(IEnumerable).IsAssignableFrom(t);
-        }
-
+        
         public static object CreateDefault(this Type t)
         {
             if (t.IsValueType)
@@ -50,8 +44,29 @@ namespace Baxendale.DataManagement.Reflection
                 case MemberTypes.Field: ((FieldInfo)info).SetValue(obj, value); break;
                 case MemberTypes.Property: ((PropertyInfo)info).SetValue(obj, value, null); break;
                 default:
-                    throw new TargetException(info.Name + " in " + info.DeclaringType.Name + " does not have a value that can be set");
+                    throw new TargetException($"{info.Name} in {info.DeclaringType.Name} does not have a value that can be set");
             }
+        }
+
+        public static object GetValue(this MemberInfo info, object obj)
+        {
+            switch (info.MemberType)
+            {
+                case MemberTypes.Field: return ((FieldInfo)info).GetValue(obj);
+                case MemberTypes.Property: return ((PropertyInfo)info).GetGetMethod(nonPublic: true).Invoke(obj, new object[0]);
+                default:
+                    throw new TargetException($"{info.Name} in {info.DeclaringType.Name} does not have a value that can be gotten");
+            }
+        }
+
+        public static T GetValue<T>(this MemberInfo info, T obj)
+        {
+            object value = info.GetValue((object)obj);
+            if (value is T)
+                return (T)value;
+            if (!(value is IConvertible) || !typeof(IConvertible).IsAssignableFrom(typeof(T)))
+                throw new InvalidCastException();
+            return (T)System.Convert.ChangeType(value, typeof(T));
         }
 
         public static Type GetReturnType(this MemberInfo info)
@@ -62,7 +77,7 @@ namespace Baxendale.DataManagement.Reflection
                 case MemberTypes.Property: return ((PropertyInfo)info).PropertyType;
                 case MemberTypes.Method: return ((MethodInfo)info).ReturnType;
                 default:
-                    throw new TargetException(info.Name + " in " + info.DeclaringType.Name + " does not have a return type");
+                    throw new TargetException($"{info.Name} in {info.DeclaringType.Name} does not have a return type");
             }
         }
 
