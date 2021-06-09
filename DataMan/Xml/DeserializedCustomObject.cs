@@ -90,11 +90,9 @@ namespace Baxendale.DataManagement.Xml
                         continue; // skip fields tagged with this attribute
 
                     Type memberType = member.GetReturnType();
-                    object[] attribs = member.GetCustomAttributes(typeof(XmlSerializeAttribute), true);
-                    XmlSerializeAttribute attrib = null;
-                    if (attribs.Length > 0)
+                    XmlSerializeAttribute attrib = member.GetCustomAttribute<XmlSerializeAttribute>(inherit: true);
+                    if (attrib == null)
                     {
-                        attrib = (XmlSerializeAttribute)attribs[attribs.Length - 1];
                         if (attrib.Name == null)
                             attrib.Name = member.Name;
                     }
@@ -103,8 +101,21 @@ namespace Baxendale.DataManagement.Xml
                         attrib = new XmlSerializeAttribute() { Name = member.Name };
                     }
 
-                    IDeserializedXmlObject xmlObj = XmlSerializer.CreateDeserializedObject(member.GetReturnType(), DeserializedObject, attrib);
-                    element.Add(xmlObj.Serialize());
+                    object obj;
+                    if (member.MemberType == MemberTypes.Field)
+                    {
+                        obj = ((FieldInfo)member).GetValue(DeserializedObject);
+                    }
+                    else
+                    {
+                        obj = ((PropertyInfo)member).GetGetMethod(nonPublic: true).Invoke(DeserializedObject, new object[0]);
+                    }
+                    
+                    if (member.GetCustomAttribute<XmlSerializeNonDefaultAttribute>() == null || obj != memberType.CreateDefault())
+                    {
+                        IDeserializedXmlObject xmlObj = XmlSerializer.CreateDeserializedObject(memberType, obj, attrib);
+                        element.Add(xmlObj.Serialize());
+                    }
                 }
                 return element;
             }

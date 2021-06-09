@@ -108,6 +108,7 @@
     <Compile Include="Xml\XmlDoNotSerializeAttribute.cs" />
     <Compile Include="Xml\XmlSerializationException.cs" />
     <Compile Include="Xml\XmlSerializeAttribute.cs" />
+    <Compile Include="Xml\XmlSerializeNonDefaultAttribute.cs" />
     <Compile Include="Xml\XmlSerializer.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
