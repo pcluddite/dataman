@@ -23,7 +23,7 @@ namespace Baxendale.DataManagement.Collections
 {
     public static class Collections<T>
     {
-        public static readonly IList<T> EmptyList = new List<T>();
+        public static readonly IList<T> EmptyList = new List<T>().AsReadOnly();
         public static readonly ICollection<T> EmptyCollection = EmptyList;
     }
 }
