@@ -61,7 +61,7 @@ namespace Baxendale.DataManagement.Xml
             if (typeof(IXmlSerializableObject).IsAssignableFrom(memberType))
             {
                 if (name != null) node = node.Element(name);
-                return CreateSerializedCustomObject(node.Element(name), defaultValue);
+                return CreateSerializedCustomObject(node, defaultValue);
             }
             else if (memberType.IsArray)
             {
