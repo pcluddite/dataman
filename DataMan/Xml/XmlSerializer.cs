@@ -38,6 +38,11 @@ namespace Baxendale.DataManagement.Xml
             SerializableTypes[name.ToString()] = typeof(T);
         }
 
+        internal static string GetSerializedTypeName(Type type)
+        {
+            throw new NotImplementedException();
+        }
+
         public static object Deserialize(XElement node)
         {
             if (node == null)

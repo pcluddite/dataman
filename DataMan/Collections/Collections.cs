@@ -26,6 +26,12 @@ namespace Baxendale.DataManagement.Collections
     public static class Collections
     {
         private static readonly Random RandomInstance = new Random();
+        private static readonly object _object = new object();
+
+        public static IReadOnlyCollection<T> AsReadOnly<T>(this ICollection<T> collection)
+        {
+            return new ReadOnlyCollection<T>(collection);
+        }
 
         public static string ToString<T>(this IEnumerable<T> e, string separator)
         {
@@ -59,9 +65,12 @@ namespace Baxendale.DataManagement.Collections
             IList<TSource> options = new List<TSource>(e);
             while (options.Count > 0)
             {
-                int idx = RandomInstance.Next(0, options.Count);
-                yield return options[idx];
-                options.RemoveAt(idx);
+                lock (_object)
+                {
+                    int idx = RandomInstance.Next(0, options.Count);
+                    yield return options[idx];
+                    options.RemoveAt(idx);
+                }
             }
         }
 

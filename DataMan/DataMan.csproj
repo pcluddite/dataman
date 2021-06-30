@@ -57,11 +57,15 @@
   <ItemGroup>
     <Compile Include="Collections\Arrays.cs" />
     <Compile Include="Collections\BidirectionalDictionary.cs" />
+    <Compile Include="Collections\MultiValueDictionary.cs" />
+    <Compile Include="Collections\OneToManyBidictionary.cs" />
+    <Compile Include="Collections\OneToOneBidictionary.cs" />
     <Compile Include="Collections\Collections.cs" />
     <Compile Include="Collections\Collections%28T%29.cs" />
     <Compile Include="Collections\DynamicArray.cs" />
     <Compile Include="Collections\IBidirectionalDictionary.cs" />
     <Compile Include="Collections\NonGenerics\Collections.cs" />
+    <Compile Include="Collections\ReadOnlyCollection.cs" />
     <Compile Include="Collections\Sublist.cs" />
     <Compile Include="Collections\Vector.cs" />
     <Compile Include="Reflection\ReflectionExtensions.cs" />
