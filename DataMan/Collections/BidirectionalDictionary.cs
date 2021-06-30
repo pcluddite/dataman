@@ -89,6 +89,11 @@ namespace Baxendale.DataManagement.Collections
             return KeyValueDictionary.TryGetValue(key, out value);
         }
 
+        public virtual Dictionary<TKey, TValue> ToDictionary()
+        {
+            return new Dictionary<TKey, TValue>(this);
+        }
+
         public static explicit operator TReverseDict(BidirectionalDictionary<TKey, TValue, TReverseDict> dict)
         {
             return dict.AsReverse();

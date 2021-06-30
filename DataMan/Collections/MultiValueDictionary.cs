@@ -178,6 +178,22 @@ namespace Baxendale.DataManagement.Collections
             if (_count != null) --_count;
         }
 
+        public virtual Dictionary<TKey, ICollection<TValue>> ToDictionary()
+        {
+            Dictionary<TKey, ICollection<TValue>> dict = new Dictionary<TKey, ICollection<TValue>>(_dictionary.Count, _dictionary.Comparer);
+            foreach (KeyValuePair<TKey, ISet<TValue>> kv in _dictionary)
+                dict.Add(kv.Key, kv.Value.ToArray());
+            return dict;
+        }
+
+        public virtual Dictionary<TKey, TValue> Flatten()
+        {
+            Dictionary<TKey, TValue> other = new Dictionary<TKey, TValue>(_dictionary.Count, _dictionary.Comparer);
+            foreach (KeyValuePair<TKey, ISet<TValue>> kv in _dictionary)
+                other.Add(kv.Key, kv.Value.First());
+            return other;
+        }
+
         #region IDictionary<TKey, TValue>
 
         TValue IDictionary<TKey, TValue>.this[TKey key]
