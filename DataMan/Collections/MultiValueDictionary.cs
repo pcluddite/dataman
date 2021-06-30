@@ -24,11 +24,35 @@ using System.Linq;
 
 namespace Baxendale.DataManagement.Collections
 {
-    public class MultiValueDictionary<TKey, TValue> : IDictionary<TKey, TValue>, ICollection<KeyValuePair<TKey, TValue>>, IEnumerable<KeyValuePair<TKey, TValue>>
+    public class MultiValueDictionary<TKey, TValue> : IDictionary<TKey, TValue>, 
+        ICollection<KeyValuePair<TKey, TValue>>, IEnumerable<KeyValuePair<TKey, TValue>>, IEnumerable
     {
-        public IEqualityComparer<TValue> ValueComparer { get; }
+        protected Dictionary<TKey, ISet<TValue>> _dictionary;
+        protected int? _count = null;
 
-        private Dictionary<TKey, ISet<TValue>> _dictionary;
+        public virtual IEqualityComparer<TValue> ValueComparer { get; }
+        
+        public virtual int Count
+        {
+            get
+            {
+                if (_count == null)
+                    _count = _dictionary.Select(o => o.Value.Count).Sum();
+                return _count.Value;
+            }
+        }
+
+        public virtual ICollection<TKey> Keys => _dictionary.Keys;
+        public virtual IEnumerable<TValue> Values => _dictionary.Values.Select(a => a.AsEnumerable()).Aggregate((a, b) => a.Concat(b));
+
+        public virtual IEnumerable<TValue> this[TKey key]
+        {
+            get
+            {
+                foreach (TValue value in _dictionary[key])
+                    yield return value;
+            }
+        }
 
         public MultiValueDictionary()
             : this(0, null, null)
@@ -64,57 +88,7 @@ namespace Baxendale.DataManagement.Collections
             ValueComparer = valueComparer ?? EqualityComparer<TValue>.Default;
         }
 
-        public int Count
-        {
-            get
-            {
-                return _dictionary.Select(o => o.Value.Count).Sum();
-            }
-        }
-
-        public void Clear()
-        {
-            _dictionary.Clear();
-        }
-
-        public bool Contains(KeyValuePair<TKey, TValue> item)
-        {
-            ISet<TValue> values;
-            if (_dictionary.TryGetValue(item.Key, out values))
-                return values.Contains(item.Value);
-            return false;
-        }
-
-        public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
-        {
-            if (array == null) throw new ArgumentNullException(nameof(array));
-            if ((uint)arrayIndex >= array.Length) throw new ArgumentOutOfRangeException(nameof(arrayIndex));
-            foreach(KeyValuePair<TKey, TValue> kv in this)
-                array[arrayIndex++] = kv;
-        }
-
-        public ICollection<TKey> Keys
-        {
-            get
-            {
-                return _dictionary.Keys;
-            }
-        }
-
-        public ICollection<TValue> Values
-        {
-            get
-            {
-                return _dictionary.Values.Select(a => a.AsEnumerable()).Aggregate((a, b) => a.Concat(b)).ToArray();
-            }
-        }
-
-        public bool ContainsKey(TKey key)
-        {
-            return _dictionary.ContainsKey(key);
-        }
-
-        public void Add(TKey key, TValue value)
+        public virtual void Add(TKey key, TValue value)
         {
             ISet<TValue> values;
             if (!_dictionary.TryGetValue(key, out values))
@@ -123,14 +97,50 @@ namespace Baxendale.DataManagement.Collections
                 _dictionary[key] = values;
             }
             values.Add(value);
+            IncrementCount();
         }
 
-        public bool Remove(TKey key)
+        public virtual void Clear()
         {
-            return _dictionary.Remove(key);
+            _dictionary.Clear();
+            _count = 0;
         }
 
-        public bool Remove(TKey key, TValue value)
+        public virtual bool Contains(KeyValuePair<TKey, TValue> item)
+        {
+            ISet<TValue> values;
+            if (_dictionary.TryGetValue(item.Key, out values))
+                return values.Contains(item.Value);
+            return false;
+        }
+
+        public virtual bool ContainsKey(TKey key)
+        {
+            return _dictionary.ContainsKey(key);
+        }
+
+        public virtual void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
+        {
+            if (array == null) throw new ArgumentNullException(nameof(array));
+            if ((uint)arrayIndex >= array.Length) throw new ArgumentOutOfRangeException(nameof(arrayIndex));
+            if ((uint)(arrayIndex + Count) >= array.Length) throw new ArgumentOutOfRangeException(nameof(array));
+            foreach (KeyValuePair<TKey, TValue> kv in this)
+                array[arrayIndex++] = kv;
+        }
+
+        public virtual bool Remove(TKey key)
+        {
+            ISet<TValue> values;
+            if (_dictionary.TryGetValue(key, out values) && _dictionary.Remove(key))
+            {
+                if (_count != null) _count -= values.Count;
+                values.Clear();
+                return true;
+            }
+            return false;
+        }
+
+        public virtual bool Remove(TKey key, TValue value)
         {
             ISet<TValue> values;
             if (_dictionary.TryGetValue(key, out values))
@@ -139,21 +149,14 @@ namespace Baxendale.DataManagement.Collections
                 {
                     if (values.Count == 0)
                         _dictionary.Remove(key);
+                    DecrementCount();
                     return true;
                 }
             }
             return false;
         }
 
-        public IEnumerable<TValue> this[TKey key]
-        {
-            get
-            {
-                return _dictionary[key].AsReadOnly();
-            }
-        }
-
-        public bool TryGetValue(TKey key, out IEnumerable<TValue> values)
+        public virtual bool TryGetValue(TKey key, out IEnumerable<TValue> values)
         {
             ISet<TValue> set;
             if (_dictionary.TryGetValue(key, out set))
@@ -163,6 +166,16 @@ namespace Baxendale.DataManagement.Collections
             }
             values = null;
             return false;
+        }
+
+        protected void IncrementCount()
+        {
+            if (_count != null) ++_count;
+        }
+
+        protected void DecrementCount()
+        {
+            if (_count != null) --_count;
         }
 
         #region IDictionary<TKey, TValue>
@@ -178,6 +191,8 @@ namespace Baxendale.DataManagement.Collections
                 Add(key, value);
             }
         }
+
+        ICollection<TValue> IDictionary<TKey, TValue>.Values => Values.ToArray();
 
         bool IDictionary<TKey, TValue>.TryGetValue(TKey key, out TValue value)
         {
@@ -217,7 +232,7 @@ namespace Baxendale.DataManagement.Collections
 
         #region IEnumerable<KeyValuePair<TKey, TValue>>
 
-        public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
+        public virtual IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
         {
             foreach (KeyValuePair<TKey, ISet<TValue>> kv in _dictionary)
             {
@@ -228,7 +243,7 @@ namespace Baxendale.DataManagement.Collections
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            throw new NotImplementedException();
+            return GetEnumerator();
         }
 
         #endregion
