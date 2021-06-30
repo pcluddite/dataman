@@ -17,27 +17,25 @@
 //    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
 //    USA
 //
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Baxendale.DataManagement.Collections
 {
     interface IBidirectionalDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
         ICollection<KeyValuePair<TKey, TValue>>, IEnumerable<KeyValuePair<TKey, TValue>>, IEnumerable
     {
-        TValue GetValueByKey(TKey key);
-        TKey GetKeyByValue(TValue value);
-
-        void SetValueByKey(TKey key, TValue newValue);
-        void SetKeyByValue(TValue value, TKey newKey);
-
         bool ContainsValue(TValue value);
+
+        TKey GetKeyByValue(TValue value);
+        TValue GetValueByKey(TKey key);
+
         bool RemoveByKey(TKey key);
         bool RemoveByValue(TValue value);
+
+        void SetKeyByValue(TValue value, TKey newKey);
+        void SetValueByKey(TKey key, TValue newValue);
+
         bool TryGetKey(TValue value, out TKey key);
     }
 }
