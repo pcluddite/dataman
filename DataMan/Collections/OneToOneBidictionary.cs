@@ -17,38 +17,20 @@
 //    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
 //    USA
 //
+using System;
 using System.Collections.Generic;
 
 namespace Baxendale.DataManagement.Collections
 {
-    public class OneToOneBidictionary<TKey, TValue> : BidirectionalDictionary<TKey, TValue>
+    public sealed class OneToOneBidictionary<TKey, TValue> : BidirectionalDictionary<TKey, TValue, OneToOneBidictionary<TValue, TKey>>
     {
         private Dictionary<TKey, TValue> _first;
         private Dictionary<TValue, TKey> _second;
 
-        protected override IDictionary<TKey, TValue> KeyValueDictionary
-        {
-            get
-            {
-                return _first;
-            }
-        }
+        protected override IDictionary<TKey, TValue> KeyValueDictionary => _first;
+        protected override IDictionary<TValue, TKey> ValueKeyDictionary => _second;
 
-        protected override IDictionary<TValue, TKey> ValueKeyDictionary
-        {
-            get
-            {
-                return _second;
-            }
-        }
-
-        public override int Count
-        {
-            get
-            {
-                return _first.Count;
-            }
-        }
+        public override int Count => _first.Count;
 
         public OneToOneBidictionary()
             : this(0, null, null)
@@ -92,10 +74,16 @@ namespace Baxendale.DataManagement.Collections
 
         public override void Add(TKey key, TValue value)
         {
-            KeyValueDictionary.Add(key, value);
-            ValueKeyDictionary.Add(value, key);
+            if (_second.ContainsKey(value))
+                throw new ArgumentException("Value is already assigned to a key", nameof(value));
+            _first.Add(key, value);
+            _second.Add(value, key);
         }
 
+        public override OneToOneBidictionary<TValue, TKey> AsReverse()
+        {
+            return new OneToOneBidictionary<TValue, TKey>(_second, _first);
+        }
 
         public override void Clear()
         {
@@ -103,26 +91,26 @@ namespace Baxendale.DataManagement.Collections
             _second.Clear();
         }
 
-        public override TValue GetValueByKey(TKey key)
-        {
-            return KeyValueDictionary[key];
-        }
-
         public override TKey GetKeyByValue(TValue value)
         {
-            return ValueKeyDictionary[value];
+            return _second[value];
+        }
+
+        public override TValue GetValueByKey(TKey key)
+        {
+            return _first[key];
         }
 
         public override bool RemoveByKey(TKey key)
         {
             TValue value;
-            if (!KeyValueDictionary.TryGetValue(key, out value))
+            if (!_first.TryGetValue(key, out value))
                 return false;
-            if (KeyValueDictionary.Remove(key))
+            if (_first.Remove(key))
             {
-                if (ValueKeyDictionary.Remove(value))
+                if (_second.Remove(value))
                     return true;
-                KeyValueDictionary.Add(key, value);
+                _first.Add(key, value);
             }
             return false;
         }
@@ -130,13 +118,13 @@ namespace Baxendale.DataManagement.Collections
         public override bool RemoveByValue(TValue value)
         {
             TKey key;
-            if (!ValueKeyDictionary.TryGetValue(value, out key))
+            if (!_second.TryGetValue(value, out key))
                 return false;
-            if (ValueKeyDictionary.Remove(value))
+            if (_second.Remove(value))
             {
-                if (KeyValueDictionary.Remove(key))
+                if (_first.Remove(key))
                     return true;
-                ValueKeyDictionary.Add(value, key);
+                _second.Add(value, key);
             }
             return false;
         }
@@ -144,31 +132,29 @@ namespace Baxendale.DataManagement.Collections
         public override void SetKeyByValue(TValue value, TKey newKey)
         {
             TKey oldKey;
-            if (!ValueKeyDictionary.TryGetValue(value, out oldKey))
-                throw new KeyNotFoundException();
-            KeyValueDictionary.Remove(oldKey);
-
+            if (_second.TryGetValue(value, out oldKey))
+                _first.Remove(oldKey);
+            
             TValue oldValue;
-            if (KeyValueDictionary.TryGetValue(newKey, out oldValue))
-                ValueKeyDictionary.Remove(oldValue);
+            if (_first.TryGetValue(newKey, out oldValue))
+                _second.Remove(oldValue);
 
-            ValueKeyDictionary[value] = newKey;
-            KeyValueDictionary[newKey] = value;
+            _second[value] = newKey;
+            _first[newKey] = value;
         }
 
         public override void SetValueByKey(TKey key, TValue newValue)
         {
             TValue oldValue;
-            if (!KeyValueDictionary.TryGetValue(key, out oldValue))
-                throw new KeyNotFoundException();
-            ValueKeyDictionary.Remove(oldValue);
+            if (_first.TryGetValue(key, out oldValue))
+                _second.Remove(oldValue);
 
             TKey oldKey;
-            if (ValueKeyDictionary.TryGetValue(newValue, out oldKey))
-                KeyValueDictionary.Remove(oldKey);
+            if (_second.TryGetValue(newValue, out oldKey))
+                _first.Remove(oldKey);
 
-            KeyValueDictionary[key] = newValue;
-            ValueKeyDictionary[newValue] = key;
+            _first[key] = newValue;
+            _second[newValue] = key;
         }
 
         public override IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
@@ -176,9 +162,9 @@ namespace Baxendale.DataManagement.Collections
             return _first.GetEnumerator();
         }
 
-        public static implicit operator OneToOneBidictionary<TValue, TKey>(OneToOneBidictionary<TKey, TValue> o)
+        public static explicit operator OneToOneBidictionary<TValue, TKey>(OneToOneBidictionary<TKey, TValue> dict)
         {
-            return new OneToOneBidictionary<TValue, TKey>(o._second, o._first);
+            return dict.AsReverse();
         }
     }
 }
