@@ -29,23 +29,9 @@ namespace Baxendale.DataManagement.Collections
         protected abstract IDictionary<TValue, TKey> ValueKeyDictionary { get; }
 
         public abstract int Count { get; }
-        public abstract void Clear();
 
-        public virtual ICollection<TKey> Keys
-        {
-            get
-            {
-                return KeyValueDictionary.Keys;
-            }
-        }
-
-        public virtual ICollection<TValue> Values
-        {
-            get
-            {
-                return ValueKeyDictionary.Keys;
-            }
-        }
+        public virtual ICollection<TKey> Keys => KeyValueDictionary.Keys;
+        public virtual ICollection<TValue> Values => ValueKeyDictionary.Keys;
 
         public virtual TValue this[TKey key]
         {
@@ -59,19 +45,9 @@ namespace Baxendale.DataManagement.Collections
             }
         }
 
-        public abstract TValue GetValueByKey(TKey key);
-
-        public abstract TKey GetKeyByValue(TValue value);
-
-        public abstract void SetValueByKey(TKey key, TValue newValue);
-
-        public abstract void SetKeyByValue(TValue value, TKey newKey);
-
         public abstract void Add(TKey key, TValue value);
 
-        public abstract bool RemoveByKey(TKey key);
-
-        public abstract bool RemoveByValue(TValue value);
+        public abstract void Clear();
 
         public virtual bool ContainsKey(TKey key)
         {
@@ -83,29 +59,26 @@ namespace Baxendale.DataManagement.Collections
             return ValueKeyDictionary.ContainsKey(value);
         }
 
-        public virtual bool TryGetValue(TKey key, out TValue value)
-        {
-            return KeyValueDictionary.TryGetValue(key, out value);
-        }
+        public abstract TValue GetValueByKey(TKey key);
+
+        public abstract TKey GetKeyByValue(TValue value);
+
+        public abstract bool RemoveByKey(TKey key);
+
+        public abstract bool RemoveByValue(TValue value);
+
+        public abstract void SetKeyByValue(TValue value, TKey newKey);
+
+        public abstract void SetValueByKey(TKey key, TValue newValue);
 
         public virtual bool TryGetKey(TValue value, out TKey key)
         {
             return ValueKeyDictionary.TryGetValue(value, out key);
         }
 
-        public virtual bool Contains(KeyValuePair<TKey, TValue> item)
+        public virtual bool TryGetValue(TKey key, out TValue value)
         {
-            return KeyValueDictionary.Contains(item);
-        }
-
-        public virtual bool Remove(KeyValuePair<TKey, TValue> item)
-        {
-            if (RemoveByKey(item.Key))
-            {
-                RemoveByValue(item.Value);
-                return true;
-            }
-            return false;
+            return KeyValueDictionary.TryGetValue(key, out value);
         }
 
         #region IDictionary<TKey, TValue>
@@ -132,24 +105,29 @@ namespace Baxendale.DataManagement.Collections
             Add(item.Key, item.Value);
         }
 
+        bool ICollection<KeyValuePair<TKey, TValue>>.Contains(KeyValuePair<TKey, TValue> item)
+        {
+            return KeyValueDictionary.Contains(item);
+        }
+
         public virtual void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
         {
             if (array == null) throw new ArgumentNullException(nameof(array));
             if ((uint)arrayIndex >= array.Length) throw new ArgumentOutOfRangeException(nameof(arrayIndex));
-            foreach (KeyValuePair<TKey, TValue> kv in KeyValueDictionary)
-            {
-                array[arrayIndex++] = new KeyValuePair<TKey, TValue>(kv.Key, kv.Value);
-            }
+            if ((uint)(arrayIndex + Count) >= array.Length) throw new ArgumentOutOfRangeException(nameof(array));
+            
+            foreach (KeyValuePair<TKey, TValue> kv in this)
+                array[arrayIndex++] = kv;
         }
 
-        public virtual void CopyTo(KeyValuePair<TValue, TKey>[] array, int arrayIndex)
+        bool ICollection<KeyValuePair<TKey, TValue>>.Remove(KeyValuePair<TKey, TValue> item)
         {
-            if (array == null) throw new ArgumentNullException(nameof(array));
-            if ((uint)arrayIndex >= array.Length) throw new ArgumentOutOfRangeException(nameof(arrayIndex));
-            foreach (KeyValuePair<TValue, TKey> kv in ValueKeyDictionary)
+            if (RemoveByKey(item.Key))
             {
-                array[arrayIndex++] = new KeyValuePair<TValue, TKey>(kv.Key, kv.Value);
+                RemoveByValue(item.Value);
+                return true;
             }
+            return false;
         }
 
         #endregion
