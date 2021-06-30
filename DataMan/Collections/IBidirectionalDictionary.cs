@@ -22,9 +22,11 @@ using System.Collections.Generic;
 
 namespace Baxendale.DataManagement.Collections
 {
-    interface IBidirectionalDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
+    public interface IBidirectionalDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
         ICollection<KeyValuePair<TKey, TValue>>, IEnumerable<KeyValuePair<TKey, TValue>>, IEnumerable
     {
+        IBidirectionalDictionary<TValue, TKey> AsReverse();
+
         bool ContainsValue(TValue value);
 
         TKey GetKeyByValue(TValue value);

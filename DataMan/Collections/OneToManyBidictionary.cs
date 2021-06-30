@@ -22,26 +22,16 @@ using System.Linq;
 
 namespace Baxendale.DataManagement.Collections
 {
-    public class OneToManyBidictionary<TKey, TValue> : BidirectionalDictionary<TKey, TValue>
+    public sealed class OneToManyBidictionary<TKey, TValue> : BidirectionalDictionary<TKey, TValue, OneToManyBidictionary<TValue, TKey>>
     {
         private MultiValueDictionary<TKey, TValue> _first;
         private MultiValueDictionary<TValue, TKey> _second;
 
-        protected override IDictionary<TKey, TValue> KeyValueDictionary
-        {
-            get
-            {
-                return _first;
-            }
-        }
+        protected override IDictionary<TKey, TValue> KeyValueDictionary => _first;
+        protected override IDictionary<TValue, TKey> ValueKeyDictionary => _second;
 
-        protected override IDictionary<TValue, TKey> ValueKeyDictionary
-        {
-            get
-            {
-                return _second;
-            }
-        }
+        public override int Count => _first.Count;
+
 
         public OneToManyBidictionary()
             : this(0, null, null)
@@ -83,18 +73,21 @@ namespace Baxendale.DataManagement.Collections
             _second = second;
         }
 
-        public override int Count
+        public override OneToManyBidictionary<TValue, TKey> AsReverse()
         {
-            get
-            {
-                return _first.Count;
-            }
+            return new OneToManyBidictionary<TValue, TKey>(_second, _first);
         }
 
         public override void Add(TKey key, TValue value)
         {
             _first.Add(key, value);
             _second.Add(value, key);
+        }
+
+        public override void Clear()
+        {
+            _first.Clear();
+            _second.Clear();
         }
 
         public override TKey GetKeyByValue(TValue value)
@@ -153,15 +146,48 @@ namespace Baxendale.DataManagement.Collections
             Add(key, newValue);
         }
 
-        public override void Clear()
+        public override bool TryGetKey(TValue value, out TKey key)
         {
-            _first.Clear();
-            _second.Clear();
+            IEnumerable<TKey> keys;
+            if (TryGetKeys(value, out keys))
+            {
+                key = keys.First();
+                return true;
+            }
+            key = default(TKey);
+            return false;
+        }
+
+        public bool TryGetKeys(TValue value, out IEnumerable<TKey> keys)
+        {
+            return _second.TryGetValue(value, out keys);
+        }
+
+        public override bool TryGetValue(TKey key, out TValue value)
+        {
+            IEnumerable<TValue> values;
+            if (TryGetValues(key, out values))
+            {
+                value = values.First();
+                return true;
+            }
+            value = default(TValue);
+            return false;
+        }
+
+        public bool TryGetValues(TKey key, out IEnumerable<TValue> values)
+        {
+            return _first.TryGetValue(key, out values);
         }
 
         public override IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
         {
             return _first.GetEnumerator();
+        }
+
+        public static explicit operator OneToManyBidictionary<TValue, TKey>(OneToManyBidictionary<TKey, TValue> dict)
+        {
+            return dict.AsReverse();
         }
     }
 }
