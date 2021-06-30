@@ -27,11 +27,12 @@ namespace Baxendale.DataManagement.Collections
         private MultiValueDictionary<TKey, TValue> _first;
         private MultiValueDictionary<TValue, TKey> _second;
 
+        private OneToManyBidictionary<TValue, TKey> _reverse;
+
         protected override IDictionary<TKey, TValue> KeyValueDictionary => _first;
         protected override IDictionary<TValue, TKey> ValueKeyDictionary => _second;
 
         public override int Count => _first.Count;
-
 
         public OneToManyBidictionary()
             : this(0, null, null)
@@ -73,15 +74,17 @@ namespace Baxendale.DataManagement.Collections
             _second = second;
         }
 
-        public override OneToManyBidictionary<TValue, TKey> AsReverse()
-        {
-            return new OneToManyBidictionary<TValue, TKey>(_second, _first);
-        }
-
         public override void Add(TKey key, TValue value)
         {
             _first.Add(key, value);
             _second.Add(value, key);
+        }
+
+        public override OneToManyBidictionary<TValue, TKey> AsReverse()
+        {
+            if (_reverse == null)
+                _reverse = new OneToManyBidictionary<TValue, TKey>(_second, _first);
+            return _reverse;
         }
 
         public override void Clear()
