@@ -60,6 +60,18 @@ namespace Baxendale.DataManagement.Collections
             return sb.ToString();
         }
 
+        public static IEnumerable<T> Singleton<T>(this T o)
+        {
+            yield return o;
+        }
+
+        public static IEnumerable<KeyValuePair<TValue, TKey>> SwapKeyValues<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> collection)
+        {
+            if (collection == null) throw new ArgumentNullException(nameof(collection));
+            foreach (KeyValuePair<TKey, TValue> kv in collection)
+                yield return new KeyValuePair<TValue, TKey>(kv.Value, kv.Key);
+        }
+
         public static IEnumerable<TSource> Randomize<TSource>(this IEnumerable<TSource> e)
         {
             IList<TSource> options = new List<TSource>(e);
