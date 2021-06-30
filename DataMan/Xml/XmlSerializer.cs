@@ -19,17 +19,22 @@
 //
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Xml.Linq;
+using Baxendale.DataManagement.Collections;
 
 namespace Baxendale.DataManagement.Xml
 {
     public static class XmlSerializer
     {
-        private static readonly IDictionary<string, Type> SerializableTypes = new Dictionary<string, Type>();
+        private static readonly ISet<string> ReservedNames = new HashSet<string>(new[] { "a", "v" });
+        private static readonly OneToManyBidictionary<string, Type> SerializableTypes = new OneToManyBidictionary<string, Type>();
 
         public static void RegisterType<T>(string name) where T : IXmlSerializableObject
         {
+            if (ReservedNames.Contains(name))
+                throw new ArgumentException($"'{name}' is a reserved name and cannot be registered");
             SerializableTypes[name] = typeof(T);
         }
 
@@ -40,7 +45,12 @@ namespace Baxendale.DataManagement.Xml
 
         internal static string GetSerializedTypeName(Type type)
         {
-            throw new NotImplementedException();
+            return SerializableTypes.GetKeysByValue(type).FirstOrDefault();
+        }
+
+        internal static Type GetSerializedType(string name)
+        {
+            return SerializableTypes.GetValuesByKey(name).FirstOrDefault();
         }
 
         public static object Deserialize(XElement node)

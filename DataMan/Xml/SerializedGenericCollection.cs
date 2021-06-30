@@ -33,9 +33,17 @@ namespace Baxendale.DataManagement.Xml
                 ICollection<ItemType> collection = (ICollection<ItemType>)Activator.CreateInstance(typeof(T));
                 if (collection.IsReadOnly)
                     throw new UnsupportedTypeException(typeof(T));
-                foreach (XElement child in node.Elements("a"))
+                foreach (XElement child in node.Elements())
                 {
-                    collection.Add((ItemType)XmlSerializer.CreateSerializedObject(typeof(ItemType), child, "v", default(ItemType)).Deserialize());
+                    Type t = XmlSerializer.GetSerializedType(child.Name.ToString());
+                    if (t == null)
+                    {
+                        collection.Add(XmlSerializer.Deserialize<ItemType>(child, "v"));
+                    }
+                    else
+                    {
+                        collection.Add(XmlSerializer.Deserialize<ItemType>(child));
+                    }
                 }
                 return collection;
             }

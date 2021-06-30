@@ -54,7 +54,7 @@ namespace Baxendale.DataManagement.Xml
                     XObject serializedItem = XmlSerializer.Serialize(item, "v");
                     if (serializedItem is XElement)
                     {
-                        XmlSerializer.GetSerializedTypeName(item.GetType());
+                        ((XElement)serializedItem).Name = XmlSerializer.GetSerializedTypeName(item.GetType()) ?? "a";
                         element.Add(serializedItem);
                     }
                     else
