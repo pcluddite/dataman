@@ -18,7 +18,6 @@
 //    USA
 //
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Xml.Linq;
@@ -30,15 +29,18 @@ namespace Baxendale.DataManagement.Xml
     {
         public static readonly XNamespace ReservedNamespace = XNamespace.Get("baxml");
 
-        private static readonly ISet<XName> ReservedNames = new HashSet<XName>(new[] { ReservedNamespace + "a", ReservedNamespace + "v" });
-        private static readonly OneToManyBidictionary<Type, XName> SerializableTypes = new OneToManyBidictionary<Type, XName>();
+        internal static readonly XName ElementName = ReservedNamespace + "a";
+        internal static readonly XName KeyAttributeName = ReservedNamespace + "k";
+        internal static readonly XName ValueAttributeName = ReservedNamespace + "v";
+        internal static readonly XName IndexAttributeName = ReservedNamespace + "i";
+        internal static readonly XName TypeAttributeName = ReservedNamespace + "t";
 
-        private static readonly object _object = new object();
+        private static readonly OneToManyBidictionary<Type, XName> SerializableTypes = new OneToManyBidictionary<Type, XName>();
 
         public static void RegisterType<T>(XName name) where T : IXmlSerializableObject
         {
             if (name == null) throw new ArgumentNullException(nameof(name));
-            if (ReservedNames.Contains(name)) throw new ArgumentException($"'{name}' is a reserved name and cannot be registered");
+            if (name.Namespace == ReservedNamespace) throw new ArgumentException($"'{name}' is a reserved name and cannot be registered");
             SerializableTypes[typeof(T)] = name;
         }
 

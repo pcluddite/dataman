@@ -51,9 +51,9 @@ namespace Baxendale.DataManagement.Xml
                 XElement element = new XElement(Name);
                 foreach (KeyValuePair<TKey, TValue> item in DeserializedObject)
                 {
-                    XElement a = new XElement("a");
-                    a.Add(XmlSerializer.Serialize(item.Key, "key"));
-                    a.Add(XmlSerializer.Serialize(item.Value, "value"));
+                    XElement a = new XElement(XmlSerializer.ElementName);
+                    a.Add(XmlSerializer.Serialize(item.Key, XmlSerializer.KeyAttributeName));
+                    a.Add(XmlSerializer.Serialize(item.Value, XmlSerializer.ValueAttributeName));
                     element.Add(a);
                 }
                 return element;

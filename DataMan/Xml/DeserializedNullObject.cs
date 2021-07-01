@@ -45,7 +45,7 @@ namespace Baxendale.DataManagement.Xml
             public override XObject Serialize()
             {
                 XElement element = new XElement(Name);
-                element.SetAttributeValue("t", "null");
+                element.SetAttributeValue(XmlSerializer.TypeAttributeName, "null");
                 return element;
             }
         }

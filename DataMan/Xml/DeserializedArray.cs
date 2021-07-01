@@ -48,13 +48,13 @@ namespace Baxendale.DataManagement.Xml
 
                 foreach (ElementType item in DeserializedObject.Cast<ElementType>())
                 {
-                    XElement a = new XElement("a");
+                    XElement a = new XElement(XmlSerializer.ElementName);
 
-                    IDeserializedXmlObject xobj = XmlSerializer.CreateDeserializedObject(typeof(ElementType), item, "v");
+                    IDeserializedXmlObject xobj = XmlSerializer.CreateDeserializedObject(typeof(ElementType), item, XmlSerializer.ValueAttributeName);
                     a.Add(xobj.Serialize());
 
                     if (rank > 1)
-                        a.SetAttributeValue("i", indices.ToString(','));
+                        a.SetAttributeValue(XmlSerializer.IndexAttributeName, indices.ToString(','));
 
                     element.Add(a);
 

@@ -49,9 +49,9 @@ namespace Baxendale.DataManagement.Xml
                 if (node == null)
                     return DefaultValue;
                 IDictionary<TKey, TValue> dictionary = (IDictionary<TKey, TValue>)Activator.CreateInstance(typeof(T));
-                foreach (XElement element in node.Elements("a"))
+                foreach (XElement element in node.Elements(XmlSerializer.ElementName))
                 {
-                    dictionary.Add(XmlSerializer.Deserialize<TKey>(element, "key"), XmlSerializer.Deserialize<TValue>(element, "value"));
+                    dictionary.Add(XmlSerializer.Deserialize<TKey>(element, XmlSerializer.KeyAttributeName), XmlSerializer.Deserialize<TValue>(element, XmlSerializer.ValueAttributeName));
                 }
                 return dictionary;
             }

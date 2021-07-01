@@ -53,9 +53,9 @@ namespace Baxendale.DataManagement.Xml
                     return DefaultValue;
                 DynamicArray<ElementType> arr = new DynamicArray<ElementType>(new int[Rank]);
                 int[] indices = arr.DecrementIndex(arr.LowerBound);
-                foreach (XElement child in node.Elements("a"))
+                foreach (XElement child in node.Elements(XmlSerializer.ValueAttributeName))
                 {
-                    XAttribute indexAttribute = child.Attribute("i");
+                    XAttribute indexAttribute = child.Attribute(XmlSerializer.IndexAttributeName);
                     if (indexAttribute == null)
                     {
                         indices = arr.IncrementIndex(indices);
@@ -64,7 +64,7 @@ namespace Baxendale.DataManagement.Xml
                     {
                         SetIndices(indices, indexAttribute.Value);
                     }
-                    arr[indices] = (ElementType)XmlSerializer.CreateSerializedObject(typeof(ElementType), child, "v", default(ElementType)).Deserialize();
+                    arr[indices] = (ElementType)XmlSerializer.CreateSerializedObject(typeof(ElementType), child, XmlSerializer.ValueAttributeName, default(ElementType)).Deserialize();
                 }
                 return arr.ToArray();
             }

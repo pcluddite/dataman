@@ -51,15 +51,15 @@ namespace Baxendale.DataManagement.Xml
                 XElement element = new XElement(Name);
                 foreach (ItemType item in DeserializedObject)
                 {
-                    XObject serializedItem = XmlSerializer.Serialize(item, "v");
+                    XObject serializedItem = XmlSerializer.Serialize(item, XmlSerializer.ValueAttributeName);
                     if (serializedItem is XElement)
                     {
-                        ((XElement)serializedItem).Name = XmlSerializer.GetSerializedTypeName(item.GetType()) ?? "a";
+                        ((XElement)serializedItem).Name = XmlSerializer.GetSerializedTypeName(item.GetType()) ?? XmlSerializer.ElementName;
                         element.Add(serializedItem);
                     }
                     else
                     {
-                        XElement a = new XElement("a");
+                        XElement a = new XElement(XmlSerializer.ElementName);
                         a.Add(serializedItem);
                         element.Add(a);
                     }

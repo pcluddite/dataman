@@ -46,13 +46,13 @@ namespace Baxendale.DataManagement.Xml
                     XElement a;
                     if (item == null)
                     {
-                        a = (XElement)CreateDeserializedNullObject("a").Serialize();
+                        a = (XElement)CreateDeserializedNullObject(XmlSerializer.ElementName).Serialize();
                     }
                     else
                     {
-                        a = new XElement("a");
-                        a.SetAttributeValue("t", item.GetType().FullName);
-                        a.Add(XmlSerializer.Serialize(item.GetType(), item, "v"));
+                        a = new XElement(XmlSerializer.ElementName);
+                        a.SetAttributeValue(XmlSerializer.TypeAttributeName, item.GetType().FullName);
+                        a.Add(XmlSerializer.Serialize(item.GetType(), item, XmlSerializer.ValueAttributeName));
                     }
                     element.Add(a);
                 }

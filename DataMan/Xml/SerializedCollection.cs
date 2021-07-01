@@ -50,13 +50,13 @@ namespace Baxendale.DataManagement.Xml
                 CollectionType collection = (CollectionType)Activator.CreateInstance(typeof(CollectionType));
                 if (collection.IsReadOnly() == true)
                     throw new UnsupportedTypeException(typeof(CollectionType));
-                foreach (XElement child in node.Elements("a"))
+                foreach (XElement child in node.Elements(XmlSerializer.ElementName))
                 {
-                    XAttribute typeAttribute = child.Attribute("t");
+                    XAttribute typeAttribute = child.Attribute(XmlSerializer.TypeAttributeName);
                     if (typeAttribute == null)
                         throw new UnregisteredTypeException(child.Name);
                     Type itemType = Type.GetType(typeAttribute.Value, true);
-                    collection.Add(XmlSerializer.CreateSerializedObject(itemType, child, "v", itemType.CreateDefault()));
+                    collection.Add(XmlSerializer.CreateSerializedObject(itemType, child, XmlSerializer.ValueAttributeName, itemType.CreateDefault()));
                 }
                 return collection;
             }

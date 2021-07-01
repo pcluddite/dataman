@@ -57,7 +57,7 @@ namespace Baxendale.DataManagement.Xml
                     Type t = XmlSerializer.GetSerializedType(child.Name.ToString());
                     if (t == null)
                     {
-                        collection.Add(XmlSerializer.Deserialize<ItemType>(child, "v"));
+                        collection.Add(XmlSerializer.Deserialize<ItemType>(child, XmlSerializer.ValueAttributeName));
                     }
                     else
                     {

@@ -89,7 +89,7 @@ namespace Baxendale.DataManagement.Xml
             }
             else if (typeof(object) == memberType)
             {
-                XAttribute typeAttr = node.Attribute("t");
+                XAttribute typeAttr = node.Attribute(XmlSerializer.TypeAttributeName);
                 if (typeAttr?.Value == "null")
                     return CreateSerializedNullObject(node, name);
                 Type foundType = Type.GetType(typeAttr?.Value, throwOnError: false);
