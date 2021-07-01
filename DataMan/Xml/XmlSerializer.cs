@@ -56,8 +56,7 @@ namespace Baxendale.DataManagement.Xml
 
         public static object Deserialize(XElement node)
         {
-            if (node == null)
-                throw new NullReferenceException();
+            if (node == null) throw new ArgumentNullException(nameof(node));
             Type t;
             if (!SerializableTypes.TryGetKey(node.Name, out t))
                 throw new UnregisteredTypeException(node.Name);
@@ -78,8 +77,7 @@ namespace Baxendale.DataManagement.Xml
 
         public static T Deserialize<T>(XElement node, XName name)
         {
-            if (node == null)
-                throw new NullReferenceException();
+            if (node == null) throw new ArgumentNullException(nameof(node));
             try
             {
                 return (T)SerializedXmlObject<T>.CreateSerializedObject(node, name, default(T)).Deserialize();
@@ -103,6 +101,17 @@ namespace Baxendale.DataManagement.Xml
 
         }
 
+        public static XObject Serialize(Type t, object o)
+        {
+            if (t == null) throw new ArgumentNullException(nameof(t));
+            if (o == null) throw new ArgumentNullException(nameof(o));
+
+            XName name = GetSerializedTypeName(t);
+            if (name == null)
+                throw new UnregisteredTypeException(t.Name);
+            return Serialize(t, o, name);
+        }
+
         public static XObject Serialize(Type t, object o, XName name)
         {
             try
@@ -117,10 +126,7 @@ namespace Baxendale.DataManagement.Xml
 
         public static XObject Serialize<T>(T o)
         {
-            XName name = GetSerializedTypeName(typeof(T));
-            if (name == null)
-                throw new UnregisteredTypeException(typeof(T).Name);
-            return Serialize(o, name);
+            return Serialize(typeof(T), o);
         }
 
         internal static ISerializedXmlObject CreateSerializedObject(Type t, XElement node)

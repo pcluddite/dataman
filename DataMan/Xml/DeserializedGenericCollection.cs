@@ -45,9 +45,6 @@ namespace Baxendale.DataManagement.Xml
 
             public override XObject Serialize()
             {
-                if (DeserializedObject.IsReadOnly)
-                    throw new UnsupportedTypeException(typeof(T));
-
                 XElement element = new XElement(Name);
                 foreach (ItemType item in DeserializedObject)
                 {

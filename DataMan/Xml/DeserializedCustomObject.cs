@@ -103,8 +103,8 @@ namespace Baxendale.DataManagement.Xml
                             attrib.Default = memberType.CreateDefault();
                     }
 
-                    object obj = member.GetValue(DeserializedObject);
-                    if (member.GetCustomAttribute<XmlSerializeNonDefaultAttribute>() == null || obj != attrib.Default)
+                    object obj = member.GetValue((object)DeserializedObject);
+                    if (member.GetCustomAttribute<XmlSerializeNonDefaultAttribute>(inherit: true) == null || obj != attrib.Default)
                     {
                         IDeserializedXmlObject xmlObj = XmlSerializer.CreateDeserializedObject(memberType, obj, attrib);
                         element.Add(xmlObj.Serialize());
