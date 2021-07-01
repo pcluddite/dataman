@@ -22,7 +22,7 @@ using System.Linq;
 
 namespace Baxendale.DataManagement.Collections
 {
-    public sealed class OneToManyBidictionary<TKey, TValue> : BidirectionalDictionary<TKey, TValue, OneToManyBidictionary<TValue, TKey>>
+    public sealed class OneToManyBidictionary<TKey, TValue> : BidirectionalDictionary<TKey, TValue>
     {
         private readonly object _syncRoot;
 
@@ -59,6 +59,7 @@ namespace Baxendale.DataManagement.Collections
 
         public OneToManyBidictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection, IEqualityComparer<TKey> keyComparer, IEqualityComparer<TValue> valueComparer)
         {
+            _syncRoot = new object();
             _first = new MultiValueDictionary<TKey, TValue>(keyComparer, valueComparer);
             _second = new MultiValueDictionary<TValue, TKey>(valueComparer, keyComparer);
             AddRange(collection);
@@ -66,6 +67,7 @@ namespace Baxendale.DataManagement.Collections
 
         public OneToManyBidictionary(int capacity, IEqualityComparer<TKey> keyComparer, IEqualityComparer<TValue> valueComparer)
         {
+            _syncRoot = new object();
             _first = new MultiValueDictionary<TKey, TValue>(capacity, keyComparer, valueComparer);
             _second = new MultiValueDictionary<TValue, TKey>(capacity, valueComparer, keyComparer);
         }
@@ -99,11 +101,9 @@ namespace Baxendale.DataManagement.Collections
             }
         }
 
-        public override OneToManyBidictionary<TValue, TKey> AsReverse()
+        public override BidirectionalDictionary<TValue, TKey> AsReverse()
         {
-            if (_reverse == null)
-                lock(_syncRoot) _reverse = new OneToManyBidictionary<TValue, TKey>(this);
-            return _reverse;
+            return (OneToManyBidictionary<TValue, TKey>)this;
         }
 
         public override void Clear()
@@ -218,7 +218,9 @@ namespace Baxendale.DataManagement.Collections
 
         public static explicit operator OneToManyBidictionary<TValue, TKey>(OneToManyBidictionary<TKey, TValue> dict)
         {
-            return dict.AsReverse();
+            if (dict._reverse == null)
+                lock (dict._syncRoot) dict._reverse = new OneToManyBidictionary<TValue, TKey>(dict);
+            return dict._reverse;
         }
     }
 }

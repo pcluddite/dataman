@@ -22,7 +22,7 @@ using System.Collections.Generic;
 
 namespace Baxendale.DataManagement.Collections
 {
-    public sealed class OneToOneBidictionary<TKey, TValue> : BidirectionalDictionary<TKey, TValue, OneToOneBidictionary<TValue, TKey>>
+    public sealed class OneToOneBidictionary<TKey, TValue> : BidirectionalDictionary<TKey, TValue>
     {
         private Dictionary<TKey, TValue> _first;
         private Dictionary<TValue, TKey> _second;
@@ -61,6 +61,7 @@ namespace Baxendale.DataManagement.Collections
             _syncRoot = new object();
             _first = new Dictionary<TKey, TValue>(keyComparer);
             _second = new Dictionary<TValue, TKey>(valueComparer);
+            _reverse = new OneToOneBidictionary<TValue, TKey>(this);
             AddRange(collection);
         }
 
@@ -69,6 +70,7 @@ namespace Baxendale.DataManagement.Collections
             _syncRoot = new object();
             _first = new Dictionary<TKey, TValue>(capacity, keyComparer);
             _second = new Dictionary<TValue, TKey>(capacity, valueComparer);
+            _reverse = new OneToOneBidictionary<TValue, TKey>(this);
         }
 
         private OneToOneBidictionary(OneToOneBidictionary<TValue, TKey> reverse)
@@ -90,10 +92,8 @@ namespace Baxendale.DataManagement.Collections
             }
         }
 
-        public override OneToOneBidictionary<TValue, TKey> AsReverse()
+        public override BidirectionalDictionary<TValue, TKey> AsReverse()
         {
-            if (_reverse == null)
-                lock (_syncRoot) _reverse = new OneToOneBidictionary<TValue, TKey>(this);
             return _reverse;
         }
 
@@ -187,7 +187,7 @@ namespace Baxendale.DataManagement.Collections
 
         public static explicit operator OneToOneBidictionary<TValue, TKey>(OneToOneBidictionary<TKey, TValue> dict)
         {
-            return dict.AsReverse();
+            return dict._reverse;
         }
     }
 }

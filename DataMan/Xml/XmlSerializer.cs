@@ -28,37 +28,36 @@ namespace Baxendale.DataManagement.Xml
 {
     public static class XmlSerializer
     {
-        private static readonly ISet<string> ReservedNames = new HashSet<string>(new[] { "a", "v" });
-        private static readonly OneToManyBidictionary<string, Type> SerializableTypes = new OneToManyBidictionary<string, Type>();
+        public static readonly XNamespace ReservedNamespace = XNamespace.Get("baxml");
 
-        public static void RegisterType<T>(string name) where T : IXmlSerializableObject
-        {
-            if (ReservedNames.Contains(name))
-                throw new ArgumentException($"'{name}' is a reserved name and cannot be registered");
-            SerializableTypes[name] = typeof(T);
-        }
+        private static readonly ISet<XName> ReservedNames = new HashSet<XName>(new[] { ReservedNamespace + "a", ReservedNamespace + "v" });
+        private static readonly OneToManyBidictionary<Type, XName> SerializableTypes = new OneToManyBidictionary<Type, XName>();
+
+        private static readonly object _object = new object();
 
         public static void RegisterType<T>(XName name) where T : IXmlSerializableObject
         {
-            SerializableTypes[name.ToString()] = typeof(T);
+            if (name == null) throw new ArgumentNullException(nameof(name));
+            if (ReservedNames.Contains(name)) throw new ArgumentException($"'{name}' is a reserved name and cannot be registered");
+            SerializableTypes[typeof(T)] = name;
         }
 
-        internal static string GetSerializedTypeName(Type type)
+        internal static XName GetSerializedTypeName(Type type)
         {
-            return SerializableTypes.GetKeysByValue(type).FirstOrDefault();
+            return SerializableTypes.GetValuesByKey(type).FirstOrDefault();
         }
 
-        internal static Type GetSerializedType(string name)
+        internal static Type GetSerializedType(XName name)
         {
-            return SerializableTypes.GetValuesByKey(name).FirstOrDefault();
+            return SerializableTypes.GetKeysByValue(name).FirstOrDefault();
         }
 
         public static object Deserialize(XElement node)
         {
             if (node == null)
                 throw new NullReferenceException();
-            Type t = SerializableTypes[node.Name.ToString()];
-            if (t == null)
+            Type t;
+            if (!SerializableTypes.TryGetKey(node.Name, out t))
                 throw new UnregisteredTypeException(node.Name);
             try
             {
@@ -112,6 +111,14 @@ namespace Baxendale.DataManagement.Xml
             {
                 throw ex.GetBaseException();
             }
+        }
+
+        public static XObject Serialize<T>(T o)
+        {
+            XName name = GetSerializedTypeName(typeof(T));
+            if (name == null)
+                throw new UnregisteredTypeException(typeof(T).Name);
+            return Serialize(o, name);
         }
 
         internal static ISerializedXmlObject CreateSerializedObject(Type t, XElement node)

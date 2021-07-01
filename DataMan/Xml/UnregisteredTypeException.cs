@@ -17,6 +17,7 @@
 //    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
 //    USA
 //
+using System;
 using System.Xml.Linq;
 
 namespace Baxendale.DataManagement.Xml
@@ -24,11 +25,18 @@ namespace Baxendale.DataManagement.Xml
     public class UnregisteredTypeException : XmlSerializationException
     {
         public XName ElementName { get; private set; }
+        public Type UnregisteredType { get; private set; }
 
         public UnregisteredTypeException(XName elementName)
-            : base("<" + elementName + "> was not registered for deserialization and the type of object is not known")
+            : base($"<{elementName}> was not registered for deserialization and the type of object is not known")
         {
             ElementName = elementName;
+        }
+
+        public UnregisteredTypeException(Type type)
+            : base($"{type.FullName} was not registered for serialization and no XML name is associated with it")
+        {
+            UnregisteredType = type;
         }
     }
 }

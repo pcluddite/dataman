@@ -23,8 +23,7 @@ using System.Collections.Generic;
 
 namespace Baxendale.DataManagement.Collections
 {
-    public abstract class BidirectionalDictionary<TKey, TValue, TReverseDict> : IBidirectionalDictionary<TKey, TValue>
-        where TReverseDict : IBidirectionalDictionary<TValue, TKey>
+    public abstract class BidirectionalDictionary<TKey, TValue> : IBidirectionalDictionary<TKey, TValue>
     {
         protected abstract IDictionary<TKey, TValue> KeyValueDictionary { get; }
         protected abstract IDictionary<TValue, TKey> ValueKeyDictionary { get; }
@@ -75,12 +74,7 @@ namespace Baxendale.DataManagement.Collections
             }
         }
 
-        public abstract TReverseDict AsReverse();
-
-        IBidirectionalDictionary<TValue, TKey> IBidirectionalDictionary<TKey, TValue>.AsReverse()
-        {
-            return AsReverse();
-        }
+        public abstract BidirectionalDictionary<TValue, TKey> AsReverse();
 
         public abstract void Clear();
 
@@ -121,9 +115,14 @@ namespace Baxendale.DataManagement.Collections
             lock (SyncRoot) return new Dictionary<TKey, TValue>(this);
         }
 
-        public static explicit operator TReverseDict(BidirectionalDictionary<TKey, TValue, TReverseDict> dict)
+        public static explicit operator BidirectionalDictionary<TValue, TKey> (BidirectionalDictionary<TKey, TValue> dict)
         {
             return dict.AsReverse();
+        }
+
+        IBidirectionalDictionary<TValue, TKey> IBidirectionalDictionary<TKey, TValue>.AsReverse()
+        {
+            return AsReverse();
         }
 
         #region IDictionary<TKey, TValue>

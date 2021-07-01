@@ -22,8 +22,7 @@ using System.Collections.Generic;
 
 namespace Baxendale.DataManagement.Collections
 {
-    public interface IBidirectionalDictionary<TKey, TValue> : IDictionary<TKey, TValue>,
-        ICollection<KeyValuePair<TKey, TValue>>, IEnumerable<KeyValuePair<TKey, TValue>>, IEnumerable
+    public interface IBidirectionalDictionary<TKey, TValue> : IDictionary<TKey, TValue>
     {
         IBidirectionalDictionary<TValue, TKey> AsReverse();
 

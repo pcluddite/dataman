@@ -27,6 +27,7 @@ namespace Baxendale.DataManagement.Collections
     {
         public static readonly IList<T> EmptyList = new List<T>().AsReadOnly();
         public static readonly ICollection<T> EmptyCollection = EmptyList;
+        public static readonly T[] EmptyArray = new T[0];
 
         public static ISet<T> SingletonSet(T value)
         {
