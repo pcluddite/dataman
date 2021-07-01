@@ -26,9 +26,13 @@ namespace Baxendale.DataManagement.Collections
     {
         private Dictionary<TKey, TValue> _first;
         private Dictionary<TValue, TKey> _second;
+        private OneToOneBidictionary<TValue, TKey> _reverse;
+
+        private readonly object _syncRoot;
 
         protected override IDictionary<TKey, TValue> KeyValueDictionary => _first;
         protected override IDictionary<TValue, TKey> ValueKeyDictionary => _second;
+        protected override object SyncRoot => _syncRoot;
 
         public override int Count => _first.Count;
 
@@ -47,114 +51,133 @@ namespace Baxendale.DataManagement.Collections
         {
         }
 
-        public OneToOneBidictionary(IDictionary<TKey, TValue> dictionary)
-            : this(dictionary, null, null)
+        public OneToOneBidictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection)
+            : this(collection, null, null)
         {
         }
 
-        public OneToOneBidictionary(IDictionary<TKey, TValue> dictionary, IEqualityComparer<TKey> keyComparer, IEqualityComparer<TValue> valueComparer)
+        public OneToOneBidictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection, IEqualityComparer<TKey> keyComparer, IEqualityComparer<TValue> valueComparer)
         {
+            _syncRoot = new object();
             _first = new Dictionary<TKey, TValue>(keyComparer);
             _second = new Dictionary<TValue, TKey>(valueComparer);
-            foreach (KeyValuePair<TKey, TValue> kv in dictionary)
-                Add(kv.Key, kv.Value);
+            AddRange(collection);
         }
 
         public OneToOneBidictionary(int capacity, IEqualityComparer<TKey> keyComparer, IEqualityComparer<TValue> valueComparer)
         {
+            _syncRoot = new object();
             _first = new Dictionary<TKey, TValue>(capacity, keyComparer);
             _second = new Dictionary<TValue, TKey>(capacity, valueComparer);
         }
 
-        private OneToOneBidictionary(Dictionary<TKey, TValue> first, Dictionary<TValue, TKey> second)
+        private OneToOneBidictionary(OneToOneBidictionary<TValue, TKey> reverse)
         {
-            _first = first;
-            _second = second;
+            _syncRoot = reverse._syncRoot;
+            _first = reverse._second;
+            _second = reverse._first;
+            _reverse = reverse;
         }
 
         public override void Add(TKey key, TValue value)
         {
-            if (_second.ContainsKey(value))
-                throw new ArgumentException("Value is already assigned to a key", nameof(value));
-            _first.Add(key, value);
-            _second.Add(value, key);
+            lock (_syncRoot)
+            {
+                if (_second.ContainsKey(value))
+                    throw new ArgumentException("Value is already assigned to a key", nameof(value));
+                _first.Add(key, value);
+                _second.Add(value, key);
+            }
         }
 
         public override OneToOneBidictionary<TValue, TKey> AsReverse()
         {
-            return new OneToOneBidictionary<TValue, TKey>(_second, _first);
+            if (_reverse == null)
+                lock (_syncRoot) _reverse = new OneToOneBidictionary<TValue, TKey>(this);
+            return _reverse;
         }
 
         public override void Clear()
         {
-            _first.Clear();
-            _second.Clear();
+            lock (_syncRoot)
+            {
+                _first.Clear();
+                _second.Clear();
+            }
         }
 
         public override TKey GetKeyByValue(TValue value)
         {
-            return _second[value];
+            lock (_syncRoot) return _second[value];
         }
 
         public override TValue GetValueByKey(TKey key)
         {
-            return _first[key];
+            lock (_syncRoot) return _first[key];
         }
 
         public override bool RemoveByKey(TKey key)
         {
-            TValue value;
-            if (!_first.TryGetValue(key, out value))
-                return false;
-            if (_first.Remove(key))
+            lock (_syncRoot)
             {
-                if (_second.Remove(value))
-                    return true;
-                _first.Add(key, value);
+                TValue value;
+                if (_first.TryGetValue(key, out value) && _first.Remove(key))
+                {
+                    if (_second.Remove(value))
+                        return true;
+                    _first.Add(key, value);
+                }
+                return false;
             }
-            return false;
         }
 
         public override bool RemoveByValue(TValue value)
         {
-            TKey key;
-            if (!_second.TryGetValue(value, out key))
-                return false;
-            if (_second.Remove(value))
+            lock (_syncRoot)
             {
-                if (_first.Remove(key))
-                    return true;
-                _second.Add(value, key);
+                TKey key;
+                if (_second.TryGetValue(value, out key) && _second.Remove(value))
+                {
+                    if (_first.Remove(key))
+                        return true;
+                    _second.Add(value, key);
+                }
+                return false;
             }
-            return false;
         }
 
         public override void SetKeyByValue(TValue value, TKey newKey)
         {
-            TKey oldKey;
-            if (_second.TryGetValue(value, out oldKey))
-                _first.Remove(oldKey);
-            
-            TValue oldValue;
-            if (_first.TryGetValue(newKey, out oldValue))
-                _second.Remove(oldValue);
+            lock (_syncRoot)
+            {
+                TKey oldKey;
+                if (_second.TryGetValue(value, out oldKey))
+                    _first.Remove(oldKey);
 
-            _second[value] = newKey;
-            _first[newKey] = value;
+                TValue oldValue;
+                if (_first.TryGetValue(newKey, out oldValue))
+                    _second.Remove(oldValue);
+
+                _second[value] = newKey;
+                _first[newKey] = value;
+            }
         }
 
         public override void SetValueByKey(TKey key, TValue newValue)
         {
-            TValue oldValue;
-            if (_first.TryGetValue(key, out oldValue))
-                _second.Remove(oldValue);
+            lock (_syncRoot)
+            {
+                TValue oldValue;
+                if (_first.TryGetValue(key, out oldValue))
+                    _second.Remove(oldValue);
 
-            TKey oldKey;
-            if (_second.TryGetValue(newValue, out oldKey))
-                _first.Remove(oldKey);
+                TKey oldKey;
+                if (_second.TryGetValue(newValue, out oldKey))
+                    _first.Remove(oldKey);
 
-            _first[key] = newValue;
-            _second[newValue] = key;
+                _first[key] = newValue;
+                _second[newValue] = key;
+            }
         }
 
         public override IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()

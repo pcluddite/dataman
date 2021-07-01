@@ -27,9 +27,10 @@ namespace Baxendale.DataManagement.Collections
     public class MultiValueDictionary<TKey, TValue> : IDictionary<TKey, TValue>, 
         ICollection<KeyValuePair<TKey, TValue>>, IEnumerable<KeyValuePair<TKey, TValue>>, IEnumerable
     {
-        protected Dictionary<TKey, ISet<TValue>> _dictionary;
+        protected IDictionary<TKey, ISet<TValue>> _dictionary;
         protected int? _count = null;
 
+        public virtual IEqualityComparer<TKey> KeyComparer { get; }
         public virtual IEqualityComparer<TValue> ValueComparer { get; }
         
         public virtual int Count
@@ -43,7 +44,7 @@ namespace Baxendale.DataManagement.Collections
         }
 
         public virtual ICollection<TKey> Keys => _dictionary.Keys;
-        public virtual IEnumerable<TValue> Values => _dictionary.Values.Select(a => a.AsEnumerable()).Aggregate((a, b) => a.Concat(b));
+        public virtual IEnumerable<TValue> Values => _dictionary.Values.Flatten();
 
         public virtual IEnumerable<TValue> this[TKey key]
         {
@@ -69,35 +70,73 @@ namespace Baxendale.DataManagement.Collections
         {
         }
 
-        public MultiValueDictionary(IDictionary<TKey, TValue> dictionary)
-            : this(dictionary, null, null)
+        public MultiValueDictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection)
+            : this(collection, null, null)
         {
         }
 
-        public MultiValueDictionary(IDictionary<TKey, TValue> dictionary, IEqualityComparer<TKey> keyComparer, IEqualityComparer<TValue> valueComparer)
+        public MultiValueDictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection, IEqualityComparer<TKey> keyComparer, IEqualityComparer<TValue> valueComparer)
         {
+            if (collection == null) throw new ArgumentNullException(nameof(collection));
             _dictionary = new Dictionary<TKey, ISet<TValue>>(keyComparer);
+            KeyComparer = keyComparer ?? EqualityComparer<TKey>.Default;
             ValueComparer = valueComparer ?? EqualityComparer<TValue>.Default;
-            foreach (KeyValuePair<TKey, TValue> kv in dictionary)
+            foreach (KeyValuePair<TKey, TValue> kv in collection)
                 Add(kv.Key, kv.Value);
         }
 
         public MultiValueDictionary(int capacity, IEqualityComparer<TKey> keyComparer, IEqualityComparer<TValue> valueComparer)
         {
             _dictionary = new Dictionary<TKey, ISet<TValue>>(capacity, keyComparer);
+            KeyComparer = keyComparer ?? EqualityComparer<TKey>.Default;
             ValueComparer = valueComparer ?? EqualityComparer<TValue>.Default;
         }
 
-        public virtual void Add(TKey key, TValue value)
+        public virtual bool Add(TKey key, TValue value)
         {
             ISet<TValue> values;
-            if (!_dictionary.TryGetValue(key, out values))
+            if (_dictionary.TryGetValue(key, out values))
             {
-                values = new HashSet<TValue>(ValueComparer);
-                _dictionary[key] = values;
+                if (!values.Add(value))
+                    return false;
+                IncrementCount();
             }
-            values.Add(value);
-            IncrementCount();
+            else
+            {
+                values = CreateValueSet(value);
+                _dictionary.Add(key, values);
+                IncrementCount(values.Count);
+            }
+            return true;
+        }
+
+        public virtual bool Add(TKey key, IEnumerable<TValue> values)
+        {
+            if (values == null) throw new ArgumentNullException(nameof(values));
+            ISet<TValue> set;
+            if (_dictionary.TryGetValue(key, out set))
+            {
+                if (set.Overlaps(values))
+                    return false;
+                set.IntersectWith(values);
+            }
+            else
+            {
+                _dictionary.Add(key, CreateValueSet(values));
+            }
+            return true;
+        }
+
+        public virtual void AddRange(IEnumerable<KeyValuePair<TKey, TValue>> collection)
+        {
+            foreach (KeyValuePair<TKey, TValue> kv in collection)
+                Add(kv.Key, kv.Value);
+        }
+
+        public virtual void AddRange(IEnumerable<KeyValuePair<TKey, IEnumerable<TValue>>> collection)
+        {
+            foreach (KeyValuePair<TKey, IEnumerable<TValue>> kv in collection)
+                Add(kv.Key, kv.Value);
         }
 
         public virtual void Clear()
@@ -131,29 +170,21 @@ namespace Baxendale.DataManagement.Collections
         public virtual bool Remove(TKey key)
         {
             ISet<TValue> values;
-            if (_dictionary.TryGetValue(key, out values) && _dictionary.Remove(key))
-            {
-                if (_count != null) _count -= values.Count;
-                values.Clear();
-                return true;
-            }
-            return false;
+            if (!_dictionary.TryGetValue(key, out values) || !_dictionary.Remove(key))
+                return false;
+            DecrementCount(values.Count);
+            return true;
         }
 
         public virtual bool Remove(TKey key, TValue value)
         {
             ISet<TValue> values;
-            if (_dictionary.TryGetValue(key, out values))
-            {
-                if (values.Remove(value))
-                {
-                    if (values.Count == 0)
-                        _dictionary.Remove(key);
-                    DecrementCount();
-                    return true;
-                }
-            }
-            return false;
+            if (!_dictionary.TryGetValue(key, out values) || !values.Remove(value))
+                return false;
+            if (values.Count == 0)
+                _dictionary.Remove(key);
+            DecrementCount();
+            return true;
         }
 
         public virtual bool TryGetValue(TKey key, out IEnumerable<TValue> values)
@@ -168,19 +199,9 @@ namespace Baxendale.DataManagement.Collections
             return false;
         }
 
-        protected void IncrementCount()
-        {
-            if (_count != null) ++_count;
-        }
-
-        protected void DecrementCount()
-        {
-            if (_count != null) --_count;
-        }
-
         public virtual Dictionary<TKey, ICollection<TValue>> ToDictionary()
         {
-            Dictionary<TKey, ICollection<TValue>> dict = new Dictionary<TKey, ICollection<TValue>>(_dictionary.Count, _dictionary.Comparer);
+            Dictionary<TKey, ICollection<TValue>> dict = new Dictionary<TKey, ICollection<TValue>>(_dictionary.Count, KeyComparer);
             foreach (KeyValuePair<TKey, ISet<TValue>> kv in _dictionary)
                 dict.Add(kv.Key, kv.Value.ToArray());
             return dict;
@@ -188,10 +209,42 @@ namespace Baxendale.DataManagement.Collections
 
         public virtual Dictionary<TKey, TValue> Flatten()
         {
-            Dictionary<TKey, TValue> other = new Dictionary<TKey, TValue>(_dictionary.Count, _dictionary.Comparer);
+            Dictionary<TKey, TValue> other = new Dictionary<TKey, TValue>(_dictionary.Count, KeyComparer);
             foreach (KeyValuePair<TKey, ISet<TValue>> kv in _dictionary)
                 other.Add(kv.Key, kv.Value.First());
             return other;
+        }
+
+        protected void IncrementCount()
+        {
+            IncrementCount(1);
+        }
+
+        protected void IncrementCount(int n)
+        {
+            if (_count != null) _count += n;
+        }
+
+        protected void DecrementCount()
+        {
+            DecrementCount(1);
+        }
+
+        protected void DecrementCount(int n)
+        {
+            if (_count != null) _count -= n;
+        }
+
+        protected virtual ISet<TValue> CreateValueSet(TValue value)
+        {
+            ISet<TValue> set = new HashSet<TValue>(ValueComparer);
+            set.Add(value);
+            return set;
+        }
+
+        protected virtual ISet<TValue> CreateValueSet(IEnumerable<TValue> values)
+        {
+            return new HashSet<TValue>(values, ValueComparer);
         }
 
         #region IDictionary<TKey, TValue>
@@ -209,6 +262,11 @@ namespace Baxendale.DataManagement.Collections
         }
 
         ICollection<TValue> IDictionary<TKey, TValue>.Values => Values.ToArray();
+
+        void IDictionary<TKey, TValue>.Add(TKey key, TValue value)
+        {
+            if (!Add(key, value)) throw new ArgumentException("key/value combination already exists");
+        }
 
         bool IDictionary<TKey, TValue>.TryGetValue(TKey key, out TValue value)
         {

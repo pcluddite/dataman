@@ -31,22 +31,49 @@ namespace Baxendale.DataManagement.Collections
 
         public abstract int Count { get; }
 
-        public virtual ICollection<TKey> Keys => KeyValueDictionary.Keys;
-        public virtual ICollection<TValue> Values => ValueKeyDictionary.Keys;
+        public virtual ICollection<TKey> Keys
+        {
+            get
+            {
+                lock (SyncRoot) return KeyValueDictionary.Keys;
+            }
+        }
+
+        public virtual ICollection<TValue> Values
+        {
+            get
+            {
+                lock (SyncRoot) return ValueKeyDictionary.Keys;
+            }
+        }
+
+        protected abstract object SyncRoot { get; }
 
         public virtual TValue this[TKey key]
         {
             get
             {
-                return GetValueByKey(key);
+                lock (SyncRoot) return GetValueByKey(key);
             }
             set
             {
-                SetValueByKey(key, value);
+                lock (SyncRoot) SetValueByKey(key, value);
             }
         }
 
         public abstract void Add(TKey key, TValue value);
+
+        public virtual void AddRange(IEnumerable<KeyValuePair<TKey, TValue>> collection)
+        {
+            lock(SyncRoot)
+            {
+                foreach(KeyValuePair<TKey, TValue> kv in collection)
+                {
+                    KeyValueDictionary.Add(kv.Key, kv.Value);
+                    ValueKeyDictionary.Add(kv.Value, kv.Key);
+                }
+            }
+        }
 
         public abstract TReverseDict AsReverse();
 
@@ -59,12 +86,12 @@ namespace Baxendale.DataManagement.Collections
 
         public virtual bool ContainsKey(TKey key)
         {
-            return KeyValueDictionary.ContainsKey(key);
+            lock (SyncRoot) return KeyValueDictionary.ContainsKey(key);
         }
 
         public virtual bool ContainsValue(TValue value)
         {
-            return ValueKeyDictionary.ContainsKey(value);
+            lock (SyncRoot) return ValueKeyDictionary.ContainsKey(value);
         }
 
         public abstract TValue GetValueByKey(TKey key);
@@ -81,17 +108,17 @@ namespace Baxendale.DataManagement.Collections
 
         public virtual bool TryGetKey(TValue value, out TKey key)
         {
-            return ValueKeyDictionary.TryGetValue(value, out key);
+            lock (SyncRoot) return ValueKeyDictionary.TryGetValue(value, out key);
         }
 
         public virtual bool TryGetValue(TKey key, out TValue value)
         {
-            return KeyValueDictionary.TryGetValue(key, out value);
+            lock (SyncRoot) return KeyValueDictionary.TryGetValue(key, out value);
         }
 
         public virtual Dictionary<TKey, TValue> ToDictionary()
         {
-            return new Dictionary<TKey, TValue>(this);
+            lock (SyncRoot) return new Dictionary<TKey, TValue>(this);
         }
 
         public static explicit operator TReverseDict(BidirectionalDictionary<TKey, TValue, TReverseDict> dict)
@@ -110,13 +137,7 @@ namespace Baxendale.DataManagement.Collections
 
         #region ICollection<KeyValuePair<TKey, TValue>>
 
-        bool ICollection<KeyValuePair<TKey, TValue>>.IsReadOnly
-        {
-            get
-            {
-                return false;
-            }
-        }
+        bool ICollection<KeyValuePair<TKey, TValue>>.IsReadOnly => false;
 
         void ICollection<KeyValuePair<TKey, TValue>>.Add(KeyValuePair<TKey, TValue> item)
         {
@@ -125,17 +146,21 @@ namespace Baxendale.DataManagement.Collections
 
         bool ICollection<KeyValuePair<TKey, TValue>>.Contains(KeyValuePair<TKey, TValue> item)
         {
-            return KeyValueDictionary.Contains(item);
+            lock(SyncRoot) return KeyValueDictionary.Contains(item);
         }
 
         public virtual void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
         {
+            int count = Count;
             if (array == null) throw new ArgumentNullException(nameof(array));
             if ((uint)arrayIndex >= array.Length) throw new ArgumentOutOfRangeException(nameof(arrayIndex));
-            if ((uint)(arrayIndex + Count) >= array.Length) throw new ArgumentOutOfRangeException(nameof(array));
-            
-            foreach (KeyValuePair<TKey, TValue> kv in this)
-                array[arrayIndex++] = kv;
+            if ((uint)(arrayIndex + count) >= array.Length) throw new ArgumentOutOfRangeException(nameof(array));
+
+            lock (SyncRoot)
+            {
+                foreach (KeyValuePair<TKey, TValue> kv in this)
+                    array[arrayIndex++] = kv;
+            }
         }
 
         bool ICollection<KeyValuePair<TKey, TValue>>.Remove(KeyValuePair<TKey, TValue> item)

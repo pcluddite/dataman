@@ -24,13 +24,16 @@ namespace Baxendale.DataManagement.Collections
 {
     public sealed class OneToManyBidictionary<TKey, TValue> : BidirectionalDictionary<TKey, TValue, OneToManyBidictionary<TValue, TKey>>
     {
-        private MultiValueDictionary<TKey, TValue> _first;
-        private MultiValueDictionary<TValue, TKey> _second;
+        private readonly object _syncRoot;
+
+        private readonly MultiValueDictionary<TKey, TValue> _first;
+        private readonly MultiValueDictionary<TValue, TKey> _second;
 
         private OneToManyBidictionary<TValue, TKey> _reverse;
 
         protected override IDictionary<TKey, TValue> KeyValueDictionary => _first;
         protected override IDictionary<TValue, TKey> ValueKeyDictionary => _second;
+        protected override object SyncRoot => _syncRoot;
 
         public override int Count => _first.Count;
 
@@ -49,17 +52,16 @@ namespace Baxendale.DataManagement.Collections
         {
         }
 
-        public OneToManyBidictionary(IDictionary<TKey, TValue> dictionary)
-            : this(dictionary, null, null)
+        public OneToManyBidictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection)
+            : this(collection, null, null)
         {
         }
 
-        public OneToManyBidictionary(IDictionary<TKey, TValue> dictionary, IEqualityComparer<TKey> keyComparer, IEqualityComparer<TValue> valueComparer)
+        public OneToManyBidictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection, IEqualityComparer<TKey> keyComparer, IEqualityComparer<TValue> valueComparer)
         {
             _first = new MultiValueDictionary<TKey, TValue>(keyComparer, valueComparer);
             _second = new MultiValueDictionary<TValue, TKey>(valueComparer, keyComparer);
-            foreach (KeyValuePair<TKey, TValue> kv in dictionary)
-                Add(kv.Key, kv.Value);
+            AddRange(collection);
         }
 
         public OneToManyBidictionary(int capacity, IEqualityComparer<TKey> keyComparer, IEqualityComparer<TValue> valueComparer)
@@ -68,29 +70,49 @@ namespace Baxendale.DataManagement.Collections
             _second = new MultiValueDictionary<TValue, TKey>(capacity, valueComparer, keyComparer);
         }
 
-        private OneToManyBidictionary(MultiValueDictionary<TKey, TValue> first, MultiValueDictionary<TValue, TKey> second)
+        private OneToManyBidictionary(OneToManyBidictionary<TValue, TKey> reverse)
         {
-            _first = first;
-            _second = second;
+            _syncRoot = reverse._syncRoot;
+            _first = reverse._second;
+            _second = reverse._first;
+            _reverse = reverse;
         }
 
         public override void Add(TKey key, TValue value)
         {
-            _first.Add(key, value);
-            _second.Add(value, key);
+            lock (_syncRoot)
+            {
+                _first.Add(key, value);
+                _second.Add(value, key);
+            }
+        }
+
+        public override void AddRange(IEnumerable<KeyValuePair<TKey, TValue>> collection)
+        {
+            lock (_syncRoot)
+            {
+                foreach (KeyValuePair<TKey, TValue> kv in collection)
+                {
+                    _first.Add(kv.Key, kv.Value);
+                    _second.Add(kv.Value, kv.Key);
+                }
+            }
         }
 
         public override OneToManyBidictionary<TValue, TKey> AsReverse()
         {
             if (_reverse == null)
-                _reverse = new OneToManyBidictionary<TValue, TKey>(_second, _first);
+                lock(_syncRoot) _reverse = new OneToManyBidictionary<TValue, TKey>(this);
             return _reverse;
         }
 
         public override void Clear()
         {
-            _first.Clear();
-            _second.Clear();
+            lock (_syncRoot)
+            {
+                _first.Clear();
+                _second.Clear();
+            }
         }
 
         public override TKey GetKeyByValue(TValue value)
@@ -100,7 +122,7 @@ namespace Baxendale.DataManagement.Collections
 
         public IEnumerable<TKey> GetKeysByValue(TValue value)
         {
-            return _second[value];
+            lock(_syncRoot) return _second[value];
         }
 
         public override TValue GetValueByKey(TKey key)
@@ -110,31 +132,37 @@ namespace Baxendale.DataManagement.Collections
 
         public IEnumerable<TValue> GetValuesByKey(TKey key)
         {
-            return _first[key];
+            lock (_syncRoot) return _first[key];
         }
 
         public override bool RemoveByKey(TKey key)
         {
-            IEnumerable<TValue> values;
-            if (_first.TryGetValue(key, out values))
+            lock (_syncRoot)
             {
-                foreach(TValue value in values)
-                    _second.Remove(value, key);
-                _first.Remove(key);
-                return true;
+                IEnumerable<TValue> values;
+                if (_first.TryGetValue(key, out values))
+                {
+                    foreach (TValue value in values)
+                        _second.Remove(value, key);
+                    _first.Remove(key);
+                    return true;
+                }
             }
             return false;
         }
 
         public override bool RemoveByValue(TValue value)
         {
-            IEnumerable<TKey> keys;
-            if (_second.TryGetValue(value, out keys))
+            lock (_syncRoot)
             {
-                foreach (TKey key in keys)
-                    _first.Remove(key, value);
-                _second.Remove(value);
-                return true;
+                IEnumerable<TKey> keys;
+                if (_second.TryGetValue(value, out keys))
+                {
+                    foreach (TKey key in keys)
+                        _first.Remove(key, value);
+                    _second.Remove(value);
+                    return true;
+                }
             }
             return false;
         }
@@ -163,7 +191,7 @@ namespace Baxendale.DataManagement.Collections
 
         public bool TryGetKeys(TValue value, out IEnumerable<TKey> keys)
         {
-            return _second.TryGetValue(value, out keys);
+            lock(_syncRoot) return _second.TryGetValue(value, out keys);
         }
 
         public override bool TryGetValue(TKey key, out TValue value)
@@ -180,7 +208,7 @@ namespace Baxendale.DataManagement.Collections
 
         public bool TryGetValues(TKey key, out IEnumerable<TValue> values)
         {
-            return _first.TryGetValue(key, out values);
+            lock (_syncRoot) return _first.TryGetValue(key, out values);
         }
 
         public override IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()

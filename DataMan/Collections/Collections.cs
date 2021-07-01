@@ -112,6 +112,15 @@ namespace Baxendale.DataManagement.Collections
                 yield return (char)(startChar + i);
         }
 
+        public static IEnumerable<T> Flatten<T>(this IEnumerable<IEnumerable<T>> collections)
+        {
+            foreach(IEnumerable<T> collection in collections)
+            {
+                foreach (T item in collection)
+                    yield return item;
+            }
+        }
+
         public static bool ContainsAll<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> first, IEnumerable<KeyValuePair<TKey, TValue>> second)
         {
             return first.ContainsAll<TKey, TValue>(second, null);
