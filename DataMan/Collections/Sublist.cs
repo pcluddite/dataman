@@ -18,36 +18,34 @@
 //    USA
 //
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Baxendale.DataManagement.Collections
 {
     internal class Sublist<T> : IList<T>
     {
-        private IList<T> list;
-        private int startIndex;
-        private int count;
+        private IList<T> _list;
+        private int _startIndex;
+        private int _count;
 
         public Sublist(IList<T> list, int startIndex, int count)
         {
-            if (list == null)
-                throw new NullReferenceException();
-            if ((uint)startIndex >= list.Count)
-                throw new ArgumentOutOfRangeException("startIndex");
-            if ((uint)(startIndex + count) > list.Count)
-                throw new ArgumentOutOfRangeException("count");
-            this.list = list;
-            this.startIndex = startIndex;
-            this.count = count;
+            if (list == null) throw new ArgumentNullException(nameof(list));
+            if ((uint)startIndex >= (uint)list.Count) throw new ArgumentOutOfRangeException(nameof(startIndex));
+            if ((uint)(startIndex + count) > (uint)list.Count) throw new ArgumentOutOfRangeException(nameof(count));
+            _list = list;
+            _startIndex = startIndex;
+            _count = count;
         }
 
         #region IList<T> Members
 
         public int IndexOf(T item)
         {
-            for (int idx = 0; idx < count; ++idx)
+            for (int idx = 0; idx < _count; ++idx)
             {
-                if (Equals(this[idx], item))
+                if (Equals(_list[idx], item))
                     return idx;
             }
             return -1;
@@ -67,13 +65,11 @@ namespace Baxendale.DataManagement.Collections
         {
             get
             {
-                if ((uint)index >= count)
-                    throw new ArgumentOutOfRangeException();
-                return list[index + startIndex];
+                return _list[index + _startIndex];
             }
             set
             {
-                throw new NotSupportedException();
+                _list[index + _startIndex] = value;
             }
         }
 
@@ -98,13 +94,13 @@ namespace Baxendale.DataManagement.Collections
 
         public void CopyTo(T[] array, int arrayIndex)
         {
-            for (int idx = 0; idx < count; ++idx)
+            for (int idx = 0; idx < _count; ++idx)
                 array[arrayIndex + idx] = this[idx];
         }
 
         public int Count
         {
-            get { return count; }
+            get { return _count; }
         }
 
         public bool IsReadOnly
@@ -123,7 +119,7 @@ namespace Baxendale.DataManagement.Collections
 
         public IEnumerator<T> GetEnumerator()
         {
-            for (int idx = 0; idx < count; ++idx)
+            for (int idx = 0; idx < _count; ++idx)
                 yield return this[idx];
         }
 
@@ -131,7 +127,7 @@ namespace Baxendale.DataManagement.Collections
 
         #region IEnumerable Members
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
         }
