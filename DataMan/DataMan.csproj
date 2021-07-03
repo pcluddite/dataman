@@ -63,6 +63,7 @@
     <Compile Include="Collections\Concurrent\LockingCollection.cs" />
     <Compile Include="Collections\Concurrent\LockingEnumerator.cs" />
     <Compile Include="Collections\Concurrent\LockingList.cs" />
+    <Compile Include="Collections\Enumerable.cs" />
     <Compile Include="Collections\MultiValueDictionary.cs" />
     <Compile Include="Collections\OneToManyBidictionary.cs" />
     <Compile Include="Collections\OneToOneBidictionary.cs" />
@@ -72,6 +73,7 @@
     <Compile Include="Collections\IBidirectionalDictionary.cs" />
     <Compile Include="Collections\NonGenerics\Collections.cs" />
     <Compile Include="Collections\ReadOnlyCollection.cs" />
+    <Compile Include="Collections\ReverseEnumerator.cs" />
     <Compile Include="Collections\Sublist.cs" />
     <Compile Include="Collections\Vector.cs" />
     <Compile Include="Reflection\ReflectionExtensions.cs" />

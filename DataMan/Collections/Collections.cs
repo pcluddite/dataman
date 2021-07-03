@@ -25,44 +25,9 @@ namespace Baxendale.DataManagement.Collections
 {
     public static class Collections
     {
-        private static readonly Random RandomInstance = new Random();
-        private static readonly object _object = new object();
-
         public static IReadOnlyCollection<T> AsReadOnly<T>(this ICollection<T> collection)
         {
             return new ReadOnlyCollection<T>(collection);
-        }
-
-        public static string ToString<T>(this IEnumerable<T> e, string separator)
-        {
-            if (separator == null)
-                throw new ArgumentNullException();
-            return ToString<T, string>(e, separator);
-        }
-
-        public static string ToString<T>(this IEnumerable<T> e, char separator)
-        {
-            return ToString<T, char>(e, separator);
-        }
-
-        internal static string ToString<T, V>(this IEnumerable<T> e, V separator)
-        {
-            if (e == null)
-                throw new ArgumentNullException();
-            StringBuilder sb = new StringBuilder();
-            using (IEnumerator<T> enumerator = e.GetEnumerator())
-            {
-                if (enumerator.MoveNext())
-                    sb.Append(enumerator.Current);
-                while (enumerator.MoveNext())
-                    sb.Append(separator).Append(enumerator.Current);
-            }
-            return sb.ToString();
-        }
-
-        public static IEnumerable<T> Singleton<T>(this T o)
-        {
-            yield return o;
         }
 
         public static IEnumerable<KeyValuePair<TValue, TKey>> SwapKeyValues<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> collection)
@@ -70,73 +35,6 @@ namespace Baxendale.DataManagement.Collections
             if (collection == null) throw new ArgumentNullException(nameof(collection));
             foreach (KeyValuePair<TKey, TValue> kv in collection)
                 yield return new KeyValuePair<TValue, TKey>(kv.Value, kv.Key);
-        }
-
-        public static IEnumerable<TSource> Randomize<TSource>(this IEnumerable<TSource> e)
-        {
-            IList<TSource> options = new List<TSource>(e);
-            while (options.Count > 0)
-            {
-                lock (_object)
-                {
-                    int idx = RandomInstance.Next(0, options.Count);
-                    yield return options[idx];
-                    options.RemoveAt(idx);
-                }
-            }
-        }
-
-        public static IEnumerable<char> AlphaSequence(this char startChar)
-        {
-            if (char.IsLetter(startChar))
-            {
-                if (char.IsLower(startChar))
-                {
-                    return startChar.Sequence('z' - startChar + 1);
-                }
-                else
-                {
-                    return startChar.Sequence('Z' - startChar + 1);
-                }
-            }
-            else if (char.IsDigit(startChar))
-            {
-                return startChar.Sequence('9' - startChar + 1);
-            }
-            throw new ArgumentException("Character must be a number or a letter to sequence");
-        }
-
-        public static IEnumerable<char> Sequence(this char startChar, int count)
-        {
-            for (int i = 0; i < startChar; ++i)
-                yield return (char)(startChar + i);
-        }
-
-        public static IEnumerable<T> Flatten<T>(this IEnumerable<IEnumerable<T>> collections)
-        {
-            foreach(IEnumerable<T> collection in collections)
-            {
-                foreach (T item in collection)
-                    yield return item;
-            }
-        }
-
-        public static bool ContainsAll<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> first, IEnumerable<KeyValuePair<TKey, TValue>> second)
-        {
-            return first.ContainsAll<TKey, TValue>(second, null);
-        }
-
-        public static bool ContainsAll<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> first, IEnumerable<KeyValuePair<TKey, TValue>> second, IEqualityComparer<TValue> comparer)
-        {
-            if (first == null)
-                throw new ArgumentNullException(nameof(first));
-            if (second == null)
-                throw new ArgumentNullException(nameof(second));
-            IDictionary<TKey, TValue> firstAsDict = first as IDictionary<TKey, TValue>;
-            IDictionary<TKey, TValue> secondAsDict = second as IDictionary<TKey, TValue>;
-            if (first == null || second == null)
-                return first.ContainsAll(second, new KeyValueComparator<TKey, TValue>(comparer));
-            return firstAsDict.ContainsAll(second, comparer);
         }
 
         public static bool ContainsAll<TKey, TValue>(this IDictionary<TKey, TValue> first, IDictionary<TKey, TValue> second)
@@ -163,21 +61,22 @@ namespace Baxendale.DataManagement.Collections
             return true;
         }
 
-        public static bool ContainsAll<TSource>(this IEnumerable<TSource> first, IEnumerable<TSource> second)
+        public static bool ContainsAll<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> first, IEnumerable<KeyValuePair<TKey, TValue>> second)
         {
-            return first.ContainsAll(second, null);
+            return first.ContainsAll<TKey, TValue>(second, null);
         }
 
-        public static bool ContainsAll<TSource>(this IEnumerable<TSource> first, IEnumerable<TSource> second, IEqualityComparer<TSource> comparer)
+        public static bool ContainsAll<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> first, IEnumerable<KeyValuePair<TKey, TValue>> second, IEqualityComparer<TValue> comparer)
         {
             if (first == null)
                 throw new ArgumentNullException(nameof(first));
             if (second == null)
                 throw new ArgumentNullException(nameof(second));
-            ISet<TSource> set = new HashSet<TSource>(first, comparer);
-            foreach (TSource item in second)
-                if (!set.Contains(item)) return false;
-            return true;
+            IDictionary<TKey, TValue> firstAsDict = first as IDictionary<TKey, TValue>;
+            IDictionary<TKey, TValue> secondAsDict = second as IDictionary<TKey, TValue>;
+            if (first == null || second == null)
+                return first.ContainsAll(second, new KeyValueComparator<TKey, TValue>(comparer));
+            return firstAsDict.ContainsAll(second, comparer);
         }
 
         public static bool ContainsOnly<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> first, IEnumerable<KeyValuePair<TKey, TValue>> second)
@@ -214,23 +113,31 @@ namespace Baxendale.DataManagement.Collections
             return first.ContainsAll(second);
         }
 
-        public static bool ContainsOnly<TSource>(this IEnumerable<TSource> first, IEnumerable<TSource> second)
+        public static string ToString<T>(this IEnumerable<T> e, string separator)
         {
-            return first.ContainsOnly(second, null);
+            if (separator == null)
+                throw new ArgumentNullException();
+            return ToString<T, string>(e, separator);
         }
 
-        public static bool ContainsOnly<TSource>(this IEnumerable<TSource> first, IEnumerable<TSource> second, IEqualityComparer<TSource> comparer)
+        public static string ToString<T>(this IEnumerable<T> e, char separator)
         {
-            if (first == null)
-                throw new ArgumentNullException(nameof(first));
-            if (second == null)
-                throw new ArgumentNullException(nameof(second));
-            ISet<TSource> firstSet = new HashSet<TSource>(first, comparer);
-            ISet<TSource> secondSet = new HashSet<TSource>(second, comparer);
-            if (firstSet.Count != secondSet.Count)
-                return false;
-            firstSet.IntersectWith(secondSet);
-            return firstSet.Count == secondSet.Count;
+            return ToString<T, char>(e, separator);
+        }
+
+        internal static string ToString<T, V>(this IEnumerable<T> e, V separator)
+        {
+            if (e == null)
+                throw new ArgumentNullException();
+            StringBuilder sb = new StringBuilder();
+            using (IEnumerator<T> enumerator = e.GetEnumerator())
+            {
+                if (enumerator.MoveNext())
+                    sb.Append(enumerator.Current);
+                while (enumerator.MoveNext())
+                    sb.Append(separator).Append(enumerator.Current);
+            }
+            return sb.ToString();
         }
 
         private class KeyValueComparator<TKey, TValue> : EqualityComparer<KeyValuePair<TKey, TValue>>
