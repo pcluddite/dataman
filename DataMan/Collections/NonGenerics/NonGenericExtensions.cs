@@ -23,7 +23,7 @@ using System.Reflection;
 
 namespace Baxendale.DataManagement.Collections.NonGenerics
 {
-    public static class NonGenericCollections
+    public static class NonGenericExtensions
     {
         public static void Add(this ICollection collection, object item)
         {

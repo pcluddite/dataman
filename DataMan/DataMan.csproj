@@ -71,7 +71,7 @@
     <Compile Include="Collections\Collections%28T%29.cs" />
     <Compile Include="Collections\DynamicArray.cs" />
     <Compile Include="Collections\IBidirectionalDictionary.cs" />
-    <Compile Include="Collections\NonGenerics\Collections.cs" />
+    <Compile Include="Collections\NonGenerics\NonGenericExtensions.cs" />
     <Compile Include="Collections\ReadOnly\ReadOnlyCollection.cs" />
     <Compile Include="Collections\ReadOnly\ReadOnlyCollectionBase.cs" />
     <Compile Include="Collections\ReadOnly\ReadOnlyList.cs" />
