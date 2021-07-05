@@ -30,6 +30,14 @@ namespace Baxendale.DataManagement.Collections.Concurrent
         public abstract CollectionType Collection { get; }
         public abstract object SyncRoot { get; }
 
+        public virtual bool IsSynchronized
+        {
+            get
+            {
+                return true;
+            }
+        }
+
         public virtual int Count
         {
             get
@@ -161,6 +169,11 @@ namespace Baxendale.DataManagement.Collections.Concurrent
             {
                 lock (SyncRoot) return Collection.IsReadOnly;
             }
+        }
+
+        void ICollection.CopyTo(Array array, int index)
+        {
+            CopyTo((T[])array, index);
         }
 
         #endregion

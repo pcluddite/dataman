@@ -58,11 +58,15 @@
     <Compile Include="Collections\Arrays.cs" />
     <Compile Include="Collections\BidirectionalDictionary.cs" />
     <Compile Include="Collections\Concurrent\LockingCollectionBase.cs" />
+    <Compile Include="Collections\Concurrent\LockingDictionary.cs" />
+    <Compile Include="Collections\Concurrent\LockingDictionaryBase.cs" />
+    <Compile Include="Collections\Concurrent\LockingHashSet.cs" />
     <Compile Include="Collections\Concurrent\LockingListBase.cs" />
     <Compile Include="Collections\Concurrent\ILockingCollection.cs" />
     <Compile Include="Collections\Concurrent\LockingCollection.cs" />
     <Compile Include="Collections\Concurrent\LockingEnumerator.cs" />
     <Compile Include="Collections\Concurrent\LockingList.cs" />
+    <Compile Include="Collections\Concurrent\LockingSetBase.cs" />
     <Compile Include="Collections\Enumerable.cs" />
     <Compile Include="Collections\MultiValueDictionary.cs" />
     <Compile Include="Collections\OneToManyBidictionary.cs" />

@@ -17,13 +17,14 @@
 //    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
 //    USA
 //
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Baxendale.DataManagement.Collections.Concurrent
 {
-    public interface ILockingCollection<T> : ICollection<T>
+    public interface ILockingCollection<T> : ICollection<T>, ICollection
     {
         ICollection<T> Collection { get; }
-        object SyncRoot { get; }
+        new LockingEnumerator<T> GetEnumerator();
     }
 }
