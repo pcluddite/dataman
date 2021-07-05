@@ -18,56 +18,46 @@
 //    USA
 //
 using System;
-using System.Collections;
 using System.Collections.Generic;
 
-namespace Baxendale.DataManagement.Collections
+namespace Baxendale.DataManagement.Collections.ReadOnly
 {
-    public class ReadOnlyCollection<T> : IReadOnlyCollection<T>, ICollection<T>
+    public sealed class ReadOnlyList<T> : ReadOnlyCollectionBase<T>, IList<T>
     {
-        private ICollection<T> _collection;
+        private IList<T> _list;
 
-        public ReadOnlyCollection(ICollection<T> collection)
+        public ReadOnlyList(IList<T> list)
+            : base(list)
         {
-            _collection = collection;
+            _list = list;
         }
 
-        public int Count => _collection.Count;
-        public bool IsReadOnly => true;
-
-        public void Add(T item)
+        public T this[int index]
         {
-            throw new InvalidOperationException();
+            get
+            {
+                return _list[index];
+            }
+
+            set
+            {
+                throw new NotSupportedException();
+            }
         }
 
-        public void Clear()
+        public int IndexOf(T item)
         {
-            throw new InvalidOperationException();
+            return _list.IndexOf(item);
         }
 
-        public bool Contains(T item)
+        void IList<T>.Insert(int index, T item)
         {
-            return _collection.Contains(item);
+            throw new NotSupportedException();
         }
 
-        public void CopyTo(T[] array, int arrayIndex)
+        void IList<T>.RemoveAt(int index)
         {
-            _collection.CopyTo(array, arrayIndex);
-        }
-
-        public IEnumerator<T> GetEnumerator()
-        {
-            return _collection.GetEnumerator();
-        }
-
-        public bool Remove(T item)
-        {
-            throw new InvalidOperationException();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return ((IEnumerable)_collection).GetEnumerator();
+            throw new NotSupportedException();
         }
     }
 }

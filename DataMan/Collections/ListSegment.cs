@@ -23,42 +23,15 @@ using System.Collections.Generic;
 
 namespace Baxendale.DataManagement.Collections
 {
-    internal class Sublist<T> : IList<T>
+    public sealed class ListSegment<T> : IList<T>
     {
         private IList<T> _list;
         private int _startIndex;
         private int _count;
 
-        public Sublist(IList<T> list, int startIndex, int count)
+        public int Count
         {
-            if (list == null) throw new ArgumentNullException(nameof(list));
-            if ((uint)startIndex >= (uint)list.Count) throw new ArgumentOutOfRangeException(nameof(startIndex));
-            if ((uint)(startIndex + count) > (uint)list.Count) throw new ArgumentOutOfRangeException(nameof(count));
-            _list = list;
-            _startIndex = startIndex;
-            _count = count;
-        }
-
-        #region IList<T> Members
-
-        public int IndexOf(T item)
-        {
-            for (int idx = 0; idx < _count; ++idx)
-            {
-                if (Equals(_list[idx], item))
-                    return idx;
-            }
-            return -1;
-        }
-
-        public void Insert(int index, T item)
-        {
-            throw new NotSupportedException();
-        }
-
-        public void RemoveAt(int index)
-        {
-            throw new NotSupportedException();
+            get { return _count; }
         }
 
         public T this[int index]
@@ -73,18 +46,14 @@ namespace Baxendale.DataManagement.Collections
             }
         }
 
-        #endregion
-
-        #region ICollection<T> Members
-
-        public void Add(T item)
+        public ListSegment(IList<T> list, int startIndex, int count)
         {
-            throw new NotSupportedException();
-        }
-
-        public void Clear()
-        {
-            throw new NotSupportedException();
+            if (list == null) throw new ArgumentNullException(nameof(list));
+            if ((uint)startIndex >= (uint)list.Count) throw new ArgumentOutOfRangeException(nameof(startIndex));
+            if ((uint)(startIndex + count) > (uint)list.Count) throw new ArgumentOutOfRangeException(nameof(count));
+            _list = list;
+            _startIndex = startIndex;
+            _count = count;
         }
 
         public bool Contains(T item)
@@ -98,34 +67,79 @@ namespace Baxendale.DataManagement.Collections
                 array[arrayIndex + idx] = this[idx];
         }
 
-        public int Count
+        public int IndexOf(T item)
         {
-            get { return _count; }
+            return IndexOf(item, 0, _count);
         }
 
-        public bool IsReadOnly
+        public int IndexOf(T item, int index)
         {
-            get { return true; }
+            return IndexOf(item, index, _count - index);
         }
 
-        public bool Remove(T item)
+        public int IndexOf(T item, int index, int count)
+        {
+            return IndexOf(item, index, count, null);
+        }
+
+        public int IndexOf(T item, int index, int count, IEqualityComparer<T> comparer)
+        {
+            if ((uint)index >= (uint)_count) throw new ArgumentOutOfRangeException(nameof(index));
+            if ((uint)(index + count) > (uint)_count) throw new ArgumentOutOfRangeException(nameof(count));
+            if (comparer == null) comparer = EqualityComparer<T>.Default;
+            for (int idx = _startIndex + index, endIdx = idx + count; index < endIdx; ++index)
+            {
+                if (comparer.Equals(_list[index], item))
+                    return index;
+            }
+            return -1;
+        }
+
+        #region IList<T>
+
+        void IList<T>.Insert(int index, T item)
+        {
+            throw new NotSupportedException();
+        }
+
+        void IList<T>.RemoveAt(int index)
         {
             throw new NotSupportedException();
         }
 
         #endregion
 
-        #region IEnumerable<T> Members
+        #region ICollection<T>
+
+        void ICollection<T>.Add(T item)
+        {
+            throw new NotSupportedException();
+        }
+
+        void ICollection<T>.Clear()
+        {
+            throw new NotSupportedException();
+        }
+
+        bool ICollection<T>.IsReadOnly
+        {
+            get { return true; }
+        }
+
+        bool ICollection<T>.Remove(T item)
+        {
+            throw new NotSupportedException();
+        }
+
+        #endregion
+
+        #region IEnumerable<T>
 
         public IEnumerator<T> GetEnumerator()
         {
             for (int idx = 0; idx < _count; ++idx)
                 yield return this[idx];
         }
-
-        #endregion
-
-        #region IEnumerable Members
 
         IEnumerator IEnumerable.GetEnumerator()
         {

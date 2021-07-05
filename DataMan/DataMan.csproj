@@ -76,9 +76,11 @@
     <Compile Include="Collections\DynamicArray.cs" />
     <Compile Include="Collections\IBidirectionalDictionary.cs" />
     <Compile Include="Collections\NonGenerics\Collections.cs" />
-    <Compile Include="Collections\ReadOnlyCollection.cs" />
+    <Compile Include="Collections\ReadOnly\ReadOnlyCollection.cs" />
+    <Compile Include="Collections\ReadOnly\ReadOnlyCollectionBase.cs" />
+    <Compile Include="Collections\ReadOnly\ReadOnlyList.cs" />
     <Compile Include="Collections\ReverseEnumerator.cs" />
-    <Compile Include="Collections\Sublist.cs" />
+    <Compile Include="Collections\ListSegment.cs" />
     <Compile Include="Collections\Vector.cs" />
     <Compile Include="Reflection\ReflectionExtensions.cs" />
     <Compile Include="Xml\DeserializedArray.cs">
