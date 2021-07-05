@@ -25,10 +25,10 @@ namespace Baxendale.DataManagement.Collections
 {
     public class ReverseEnumerator<T> : IEnumerator<T>
     {
-        private IList<T> _list;
+        private readonly IList<T> _list;
+        private readonly int _startIndex;
         private int _index;
         private int _count;
-        private int _startIndex;
 
         public T Current
         {
@@ -77,7 +77,9 @@ namespace Baxendale.DataManagement.Collections
             if (index < 0) throw new ArgumentOutOfRangeException(nameof(index));
             if (count < 0 || index - count + 1 < 0) throw new ArgumentOutOfRangeException(nameof(count));
             _count = count;
-            _index = index;
+            _list = list;
+            _startIndex = index;
+            _index = _startIndex;
         }
 
         public void Dispose()
