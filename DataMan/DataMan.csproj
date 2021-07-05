@@ -75,6 +75,7 @@
     <Compile Include="Collections\ReadOnly\ReadOnlyCollection.cs" />
     <Compile Include="Collections\ReadOnly\ReadOnlyCollectionBase.cs" />
     <Compile Include="Collections\ReadOnly\ReadOnlyList.cs" />
+    <Compile Include="Collections\ReadOnly\ReadOnlySet.cs" />
     <Compile Include="Collections\ReverseEnumerator.cs" />
     <Compile Include="Collections\ListSegment.cs" />
     <Compile Include="Collections\Vector.cs" />
