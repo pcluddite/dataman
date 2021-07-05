@@ -78,6 +78,7 @@
     <Compile Include="Collections\ReadOnly\ReadOnlySet.cs" />
     <Compile Include="Collections\ReverseEnumerator.cs" />
     <Compile Include="Collections\ListSegment.cs" />
+    <Compile Include="Collections\SingletonSet.cs" />
     <Compile Include="Collections\Vector.cs" />
     <Compile Include="Reflection\ReflectionExtensions.cs" />
     <Compile Include="Xml\DeserializedArray.cs">
