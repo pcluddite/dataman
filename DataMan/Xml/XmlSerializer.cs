@@ -18,6 +18,7 @@
 //    USA
 //
 using System;
+using System.IO;
 using System.Reflection;
 using System.Xml.Linq;
 using Baxendale.DataManagement.Collections;
@@ -26,7 +27,8 @@ namespace Baxendale.DataManagement.Xml
 {
     public static class XmlSerializer
     {
-        public static readonly XNamespace ReservedNamespace = XNamespace.Get("baxml");
+        public static readonly XNamespace ReservedNamespace = "https://github.com/pcluddite/dataman";
+        public static readonly XName ReservedNamespaceName = XNamespace.Xmlns + "baxml";
 
         internal static readonly XName ElementName = ReservedNamespace + "a";
         internal static readonly XName KeyAttributeName = ReservedNamespace + "k";
@@ -64,7 +66,7 @@ namespace Baxendale.DataManagement.Xml
             if (node == null) throw new ArgumentNullException(nameof(node));
             Type t;
             if (!SerializableTypes.TryGetKey(node.Name, out t))
-                throw new UnregisteredTypeException(node.Name);
+                throw new UnregisteredTypeException(node.Name.ToString());
             try
             {
                 return CreateSerializedObject(t, node).Deserialize();
@@ -91,6 +93,21 @@ namespace Baxendale.DataManagement.Xml
             {
                 throw ex.GetBaseException();
             }
+        }
+
+        public static T Load<T>(string path) where T : IXmlSerializableObject
+        {
+            return Load<T>(XDocument.Load(path));
+        }
+
+        public static T Load<T>(Stream stream) where T : IXmlSerializableObject
+        {
+            return Load<T>(XDocument.Load(stream));
+        }
+
+        public static T Load<T>(XDocument document) where T : IXmlSerializableObject
+        {
+            return Deserialize<T>(document.Root);
         }
 
         public static XObject Serialize<T>(T o, XName name)
@@ -132,6 +149,25 @@ namespace Baxendale.DataManagement.Xml
         public static XObject Serialize<T>(T o)
         {
             return Serialize(typeof(T), o);
+        }
+
+        public static XDocument Save<T>(T o) where T : IXmlSerializableObject
+        {
+            XElement root = (XElement)Serialize(o);
+            root.SetAttributeValue(ReservedNamespaceName, ReservedNamespace.NamespaceName);
+            XDocument doc = new XDocument();
+            doc.Add(root);
+            return doc;
+        }
+
+        public static void Save<T>(T o, Stream stream) where T : IXmlSerializableObject
+        {
+            Save(o).Save(stream);
+        }
+
+        public static void Save<T>(T o, string path) where T : IXmlSerializableObject
+        {
+            Save(o).Save(path);
         }
 
         internal static ISerializedXmlObject CreateSerializedObject(Type t, XElement node)

@@ -94,7 +94,7 @@ namespace Baxendale.DataManagement.Xml
                     return CreateSerializedNullObject(node, name);
                 Type foundType = Type.GetType(typeAttr?.Value, throwOnError: false);
                 if (foundType == null)
-                    throw new UnregisteredTypeException(node.Name);
+                    throw new UnregisteredTypeException(node.Name.ToString());
                 return XmlSerializer.CreateSerializedObject(foundType, node, name, defaultValue);
             }
             throw new UnsupportedTypeException(typeof(T));

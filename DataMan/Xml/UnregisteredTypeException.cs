@@ -24,10 +24,10 @@ namespace Baxendale.DataManagement.Xml
 {
     public class UnregisteredTypeException : XmlSerializationException
     {
-        public XName ElementName { get; private set; }
+        public string ElementName { get; private set; }
         public Type UnregisteredType { get; private set; }
 
-        public UnregisteredTypeException(XName elementName)
+        public UnregisteredTypeException(string elementName)
             : base($"<{elementName}> was not registered for deserialization and the type of object is not known")
         {
             ElementName = elementName;

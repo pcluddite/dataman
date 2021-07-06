@@ -54,7 +54,7 @@ namespace Baxendale.DataManagement.Xml
                 {
                     XAttribute typeAttribute = child.Attribute(XmlSerializer.TypeAttributeName);
                     if (typeAttribute == null)
-                        throw new UnregisteredTypeException(child.Name);
+                        throw new UnregisteredTypeException(child.Name.ToString());
                     Type itemType = Type.GetType(typeAttribute.Value, true);
                     collection.Add(XmlSerializer.CreateSerializedObject(itemType, child, XmlSerializer.ValueAttributeName, itemType.CreateDefault()));
                 }
