@@ -26,7 +26,7 @@ namespace Baxendale.DataManagement.Xml
     {
         private static IDeserializedXmlObject CreateDeserializedNullObject(XName name)
         {
-            Type deserializedXmlObject = typeof(DeserializedNullObject).MakeGenericType(typeof(T));
+            Type deserializedXmlObject = typeof(DeserializedNullObject); //.MakeGenericType(typeof(T));
             return (IDeserializedXmlObject)Activator.CreateInstance(deserializedXmlObject, name);
         }
 

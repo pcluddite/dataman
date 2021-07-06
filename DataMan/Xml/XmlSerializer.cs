@@ -18,7 +18,6 @@
 //    USA
 //
 using System;
-using System.Linq;
 using System.Reflection;
 using System.Xml.Linq;
 using Baxendale.DataManagement.Collections;
@@ -46,12 +45,18 @@ namespace Baxendale.DataManagement.Xml
 
         internal static XName GetSerializedTypeName(Type type)
         {
-            return SerializableTypes.GetValuesByKey(type).FirstOrDefault();
+            XName name;
+            if (SerializableTypes.TryGetValue(type, out name))
+                return name;
+            return null;
         }
 
         internal static Type GetSerializedType(XName name)
         {
-            return SerializableTypes.GetKeysByValue(name).FirstOrDefault();
+            Type type;
+            if (SerializableTypes.TryGetKey(name, out type))
+                return type;
+            return null;
         }
 
         public static object Deserialize(XElement node)
