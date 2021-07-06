@@ -49,8 +49,7 @@ namespace Baxendale.DataManagement.Xml
                                                                 || (parameters.Length == 2 && parameters[0].ParameterType.IsAssignableFrom(typeof(XElement)) && parameters[1].ParameterType.IsAssignableFrom(typeof(XName)))
                                                           where method.ReturnType.IsAssignableFrom(typeof(V))
                                                           select method;
-                    fromMethods = fromMethods.OrderBy(x => x, new FromMethodComparer());
-                    return fromMethods.FirstOrDefault();
+                    return fromMethods.OrderBy(x => x, new MethodInfoComparer()).FirstOrDefault();
                 }
             }
 
@@ -103,39 +102,6 @@ namespace Baxendale.DataManagement.Xml
                     member.SetValue(obj, xmlObj.Deserialize());
                 }
                 return obj;
-            }
-
-            internal class FromMethodComparer : IComparer<MethodInfo>
-            {
-                private Type[] _baseTypes;
-
-                public FromMethodComparer()
-                {
-                    List<Type> baseTypes = new List<Type>();
-                    Type currentType = typeof(V);
-                    while((currentType = currentType.BaseType) != null)
-                        baseTypes.Add(currentType);
-                    _baseTypes = baseTypes.ToArray();
-                }
-
-                public int Compare(MethodInfo x, MethodInfo y)
-                {
-                    if (x.ReturnType == y.ReturnType)
-                        return y.GetParameters().Length.CompareTo(x.GetParameters().Length);
-                    if (x.ReturnType == typeof(V))
-                        return -1;
-                    if (y.ReturnType == typeof(V))
-                        return 1;
-                    int r1 = Array.IndexOf(_baseTypes, x.ReturnType);
-                    int r2 = Array.IndexOf(_baseTypes, y.ReturnType);
-                    if (r1 == r2) 
-                        return y.GetParameters().Length.CompareTo(x.GetParameters().Length);
-                    if (r1 == -1)
-                        return 1;
-                    if (r2 == -1)
-                        return -1;
-                    return r1.CompareTo(r2);
-                }
             }
         }
     }

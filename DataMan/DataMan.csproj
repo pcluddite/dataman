@@ -53,6 +53,7 @@
   <ItemGroup>
     <Compile Include="Collections\Arrays.cs" />
     <Compile Include="Collections\BidirectionalDictionary.cs" />
+    <Compile Include="Collections\CompositeComparer.cs" />
     <Compile Include="Collections\Concurrent\LockingCollectionBase.cs" />
     <Compile Include="Collections\Concurrent\LockingDictionary.cs" />
     <Compile Include="Collections\Concurrent\LockingDictionaryBase.cs" />
@@ -80,7 +81,9 @@
     <Compile Include="Collections\ListSegment.cs" />
     <Compile Include="Collections\SingletonSet.cs" />
     <Compile Include="Collections\Vector.cs" />
+    <Compile Include="Reflection\MethodInfoComparer.cs" />
     <Compile Include="Reflection\ReflectionExtensions.cs" />
+    <Compile Include="Reflection\TypeComparer.cs" />
     <Compile Include="Xml\DeserializedArray.cs">
       <DependentUpon>DeserializedXmlObject.cs</DependentUpon>
     </Compile>

@@ -18,6 +18,8 @@
 //    USA
 //
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Xml.Linq;
@@ -40,27 +42,13 @@ namespace Baxendale.DataManagement.Xml
             {
                 get
                 {
-                    MethodInfo method;
-                    try
-                    {
-                        method = typeof(V).GetMethod("ToXml", BindingFlags.Instance | BindingFlags.Public | BindingFlags.FlattenHierarchy, null, new Type[] { typeof(XName) }, null);
-                    }
-                    catch (AmbiguousMatchException)
-                    {
-                        try
-                        {
-                            method = typeof(V).GetMethod("ToXml", BindingFlags.Instance | BindingFlags.Public, null, new Type[] { typeof(XName) }, null);
-                        }
-                        catch (AmbiguousMatchException)
-                        {
-                            method = null;
-                        }
-                    }
-                    if (method == null)
-                        return null;
-                    if (!typeof(XObject).IsAssignableFrom(method.ReturnType))
-                        return null;
-                    return method;
+                    IEnumerable<MethodInfo> toMethods = from method in typeof(V).GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy)
+                                                        let parameters = method.GetParameters()
+                                                        where "ToXml" == method.Name
+                                                               && (parameters.Length == 0 || (parameters.Length == 1 && parameters[0].ParameterType.IsAssignableFrom(typeof(XName))))
+                                                               && typeof(XObject).IsAssignableFrom(method.ReturnType)
+                                                        select method;
+                    return toMethods.OrderBy(x => x, new MethodInfoComparer()).FirstOrDefault();
                 }
             }
 
