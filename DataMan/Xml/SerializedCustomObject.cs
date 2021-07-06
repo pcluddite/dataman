@@ -18,10 +18,12 @@
 //    USA
 //
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Xml.Linq;
 using Baxendale.DataManagement.Reflection;
-using System.Runtime.CompilerServices;
 
 namespace Baxendale.DataManagement.Xml
 {
@@ -40,27 +42,15 @@ namespace Baxendale.DataManagement.Xml
             {
                 get
                 {
-                    MethodInfo method;
-                    try
-                    {
-                        method = typeof(V).GetMethod("FromXml", BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy, null, new Type[] { typeof(XElement), typeof(XName) }, null);
-                    }
-                    catch (AmbiguousMatchException)
-                    {
-                        try
-                        {
-                            method = typeof(V).GetMethod("FromXml", BindingFlags.Static | BindingFlags.Public, null, new Type[] { typeof(XElement), typeof(XName) }, null);
-                        }
-                        catch (AmbiguousMatchException)
-                        {
-                            method = null;
-                        }
-                    }
-                    if (method == null)
-                        return null;
-                    if (!typeof(V).IsAssignableFrom(method.ReturnType))
-                        return null;
-                    return method;
+                    IEnumerable<MethodInfo> fromMethods = from method in typeof(V).GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy)
+                                                          let parameters = method.GetParameters()
+                                                          where "FromXml" == method.Name
+                                                          where (parameters.Length == 1 && parameters[0].ParameterType.IsAssignableFrom(typeof(XElement))) 
+                                                                || (parameters.Length == 2 && parameters[0].ParameterType.IsAssignableFrom(typeof(XElement)) && parameters[1].ParameterType.IsAssignableFrom(typeof(XName)))
+                                                          where method.ReturnType.IsAssignableFrom(typeof(V))
+                                                          select method;
+                    fromMethods = fromMethods.OrderBy(x => x, new FromMethodComparer());
+                    return fromMethods.FirstOrDefault();
                 }
             }
 
@@ -113,6 +103,39 @@ namespace Baxendale.DataManagement.Xml
                     member.SetValue(obj, xmlObj.Deserialize());
                 }
                 return obj;
+            }
+
+            internal class FromMethodComparer : IComparer<MethodInfo>
+            {
+                private Type[] _baseTypes;
+
+                public FromMethodComparer()
+                {
+                    List<Type> baseTypes = new List<Type>();
+                    Type currentType = typeof(V);
+                    while((currentType = currentType.BaseType) != null)
+                        baseTypes.Add(currentType);
+                    _baseTypes = baseTypes.ToArray();
+                }
+
+                public int Compare(MethodInfo x, MethodInfo y)
+                {
+                    if (x.ReturnType == y.ReturnType)
+                        return y.GetParameters().Length.CompareTo(x.GetParameters().Length);
+                    if (x.ReturnType == typeof(V))
+                        return -1;
+                    if (y.ReturnType == typeof(V))
+                        return 1;
+                    int r1 = Array.IndexOf(_baseTypes, x.ReturnType);
+                    int r2 = Array.IndexOf(_baseTypes, y.ReturnType);
+                    if (r1 == r2) 
+                        return y.GetParameters().Length.CompareTo(x.GetParameters().Length);
+                    if (r1 == -1)
+                        return 1;
+                    if (r2 == -1)
+                        return -1;
+                    return r1.CompareTo(r2);
+                }
             }
         }
     }

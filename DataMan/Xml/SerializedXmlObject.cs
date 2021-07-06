@@ -71,17 +71,17 @@ namespace Baxendale.DataManagement.Xml
             else if (memberType.IsSubClassOfGeneric(typeof(IDictionary<,>)))
             {
                 if (name != null) node = node.Element(name);
-                return CreateSerializedDictionary(node.Element(name), defaultValue);
+                return CreateSerializedDictionary(node, defaultValue);
             }
             else if (memberType.IsSubClassOfGeneric(typeof(ICollection<>)))
             {
                 if (name != null) node = node.Element(name);
-                return CreateSerializedGenericCollection(node.Element(name), defaultValue);
+                return CreateSerializedGenericCollection(node, defaultValue);
             }
             else if (typeof(ICollection).IsAssignableFrom(memberType))
             {
                 if (name != null) node = node.Element(name);
-                return CreateSerializedCollection(node.Element(name), defaultValue);
+                return CreateSerializedCollection(node, defaultValue);
             }
             else if (typeof(IConvertible).IsAssignableFrom(memberType))
             {

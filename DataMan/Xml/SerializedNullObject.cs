@@ -26,20 +26,20 @@ namespace Baxendale.DataManagement.Xml
     {
         private static ISerializedXmlObject CreateSerializedNullObject(XElement node, XName name)
         {
-            Type serializedXmlObject = typeof(SerializedCustomObject<>).MakeGenericType(typeof(T));
+            Type serializedXmlObject = typeof(SerializedNullObject);
             return (ISerializedXmlObject)Activator.CreateInstance(serializedXmlObject, node, name);
         }
 
-        private class SerializedNullObject<V> : SerializedXmlObject<V>
+        private class SerializedNullObject : SerializedXmlObject<T>
         {
             public SerializedNullObject(XElement node, XName name)
-                : base(node, name, default(V))
+                : base(node, name, default(T))
             {
             }
 
-            public override V Deserialize()
+            public override T Deserialize()
             {
-                return default(V);
+                return default(T);
             }
         }
     }

@@ -64,9 +64,7 @@ namespace Baxendale.DataManagement.Xml
         public static object Deserialize(XElement node)
         {
             if (node == null) throw new ArgumentNullException(nameof(node));
-            Type t;
-            if (!SerializableTypes.TryGetKey(node.Name, out t))
-                throw new UnregisteredTypeException(node.Name.ToString());
+            Type t = GetTypeFromNode(node);
             try
             {
                 return CreateSerializedObject(t, node).Deserialize();
@@ -93,6 +91,24 @@ namespace Baxendale.DataManagement.Xml
             {
                 throw ex.GetBaseException();
             }
+        }
+
+        private static Type GetTypeFromNode(XElement node)
+        {
+            if (node.Name == ElementName)
+            {
+                string attrValue = node.Attribute(TypeAttributeName)?.Value;
+                if (attrValue == null)
+                    throw new UnregisteredTypeException(node.Name.ToString());
+                if (attrValue == "null")
+                    return typeof(object);
+                return Type.GetType(attrValue, throwOnError: true);
+            }
+
+            Type t;
+            if (!SerializableTypes.TryGetKey(node.Name, out t))
+                throw new UnregisteredTypeException(node.Name.ToString());
+            return t;
         }
 
         public static T Load<T>(string path) where T : IXmlSerializableObject
