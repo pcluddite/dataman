@@ -18,6 +18,7 @@
 //    USA
 //
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
@@ -79,6 +80,12 @@ namespace Baxendale.DataManagement.Reflection
                 default:
                     throw new TargetException($"{info.Name} in {info.DeclaringType.Name} does not have a return type");
             }
+        }
+
+        public static IEnumerable<Type> GetBaseTypes(this Type currentType)
+        {
+            while ((currentType = currentType.BaseType) != null)
+                yield return currentType;
         }
 
         // Adapted from https://stackoverflow.com/questions/457676/check-if-a-class-is-derived-from-a-generic-class/18828085#18828085
