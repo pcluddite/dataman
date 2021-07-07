@@ -67,10 +67,10 @@ namespace Baxendale.DataManagement.Xml
         {
             get
             {
-                IEnumerable<MethodInfo> toMethods = from method in typeof(V).GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy)
+                IEnumerable<MethodInfo> toMethods = from method in typeof(V).GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.FlattenHierarchy)
                                                     let parameters = method.GetParameters()
                                                     where SerializeMethodName == method.Name
-                                                           && (parameters.Length == 0 || (parameters.Length == 1 && parameters[0].ParameterType.IsAssignableFrom(typeof(XName))))
+                                                           && parameters.Length == 1 && parameters[0].ParameterType.IsAssignableFrom(typeof(XName))
                                                            && typeof(XObject).IsAssignableFrom(method.ReturnType)
                                                     select method;
                 return toMethods.OrderBy(x => x, new MethodInfoComparer()).FirstOrDefault();
@@ -148,7 +148,7 @@ namespace Baxendale.DataManagement.Xml
             MethodInfo toXmlMethod = SerializeMethod;
             if (toXmlMethod == null)
                 return DefaultSerialize(obj, name);
-            return (XElement)toXmlMethod.Invoke(SerializeMethod, new object[] { obj, name });
+            return (XElement)toXmlMethod.Invoke(obj, new object[] { name });
         }
 
         private XElement DefaultSerialize(V obj, XName name)
