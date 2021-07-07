@@ -22,25 +22,23 @@ using System.Xml.Linq;
 
 namespace Baxendale.DataManagement.Xml
 {
-    internal abstract partial class SerializedXmlObject<T> : ISerializedXmlObject
+    internal class XmlConvertibleSerializer<V> : XmlObjectSerializer<V, XAttribute>
+        where V : IConvertible
     {
-        private static ISerializedXmlObject CreateSerializedNullObject(XElement node, XName name)
+        public override bool UsesXAttribute => true;
+
+        public XmlConvertibleSerializer()
         {
-            Type serializedXmlObject = typeof(SerializedNullObject);
-            return (ISerializedXmlObject)Activator.CreateInstance(serializedXmlObject, node, name);
         }
 
-        private class SerializedNullObject : SerializedXmlObject<T>
+        public override V Deserialize(XAttribute content)
         {
-            public SerializedNullObject(XElement node, XName name)
-                : base(node, name, default(T))
-            {
-            }
+            return (V)Convert.ChangeType(content.Value, typeof(V));
+        }
 
-            public override T Deserialize()
-            {
-                return default(T);
-            }
+        public override XAttribute Serialize(V obj, XName name)
+        {
+            return new XAttribute(name, Convert.ToString(obj));
         }
     }
 }

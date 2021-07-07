@@ -17,18 +17,28 @@
 //    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
 //    USA
 //
-using System;
+using System.Xml.Linq;
 
 namespace Baxendale.DataManagement.Xml
 {
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-    public class XmlSerializeAttribute : Attribute
+    internal class XmlNullSerializer<T> : XmlObjectSerializer<T, XElement>
     {
-        public string Name { get; set; }
-        public object Default { get; set; }
+        public override bool UsesXAttribute => false;
 
-        public XmlSerializeAttribute()
+        public XmlNullSerializer()
         {
+        }
+
+        public override T Deserialize(XElement element)
+        {
+            return default(T);
+        }
+
+        public override XElement Serialize(T obj, XName name)
+        {
+            XElement element = new XElement(name);
+            element.SetAttributeValue(XmlSerializer.TypeAttributeName, "null");
+            return element;
         }
     }
 }

@@ -19,6 +19,9 @@
 //
 using System;
 using System.Xml.Linq;
+using System.Reflection;
+using System.Linq;
+using Baxendale.DataManagement.Reflection;
 
 namespace Baxendale.DataManagement.Xml
 {
@@ -26,7 +29,7 @@ namespace Baxendale.DataManagement.Xml
     {
         public static T Value<T>(this XAttribute attr) where T : IConvertible
         {
-            return (T)System.Convert.ChangeType(attr.Value, typeof(T));
+            return (T)Convert.ChangeType(attr.Value, typeof(T));
         }
 
         public static T Value<T>(this XAttribute attr, T @default) where T : IConvertible
@@ -53,6 +56,38 @@ namespace Baxendale.DataManagement.Xml
                 value = default(T);
                 return false;
             }
+        }
+
+        internal static XmlSerializableClassAttribute GetClassAttribute(this Type type)
+        {
+            if (type == null) throw new ArgumentNullException(nameof(type));
+            XmlSerializableClassAttribute attr = type.GetCustomAttributes<XmlSerializableClassAttribute>(inherit: true).FirstOrDefault();
+            return attr ?? new XmlSerializableClassAttribute();
+        }
+
+        internal static XmlSerializableFieldAttribute GetFieldAttribute(this FieldInfo field)
+        {
+            if (field == null) throw new ArgumentNullException(nameof(field));
+            XmlSerializableFieldAttribute attr = field.GetCustomAttributes<XmlSerializableFieldAttribute>(inherit: true).FirstOrDefault();
+            return attr ?? new XmlSerializableFieldAttribute() { Name = field.Name, Default = field.FieldType.CreateDefault() };
+        }
+
+        internal static XmlSerializablePropertyAttribute GetPropertyAttribute(this PropertyInfo property)
+        {
+            if (property == null) throw new ArgumentNullException(nameof(property));
+            XmlSerializablePropertyAttribute attr = property.GetCustomAttributes<XmlSerializablePropertyAttribute>(inherit: true).FirstOrDefault();
+            return attr ?? new XmlSerializablePropertyAttribute() { Name = property.Name, Default = property.PropertyType.CreateDefault() };
+        }
+
+
+        internal static XmlSerializableMemberAttribute GetMemberAttribute(this MemberInfo member)
+        {
+            if (member == null) throw new ArgumentNullException(nameof(member));
+            if (member.MemberType == MemberTypes.Field)
+                return GetFieldAttribute((FieldInfo)member);
+            if (member.MemberType == MemberTypes.Property)
+                return GetPropertyAttribute((PropertyInfo)member);
+            throw new ArgumentException();
         }
     }
 }

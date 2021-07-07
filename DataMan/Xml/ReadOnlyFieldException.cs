@@ -17,31 +17,23 @@
 //    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
 //    USA
 //
-using System;
-using System.Xml.Linq;
+using System.Reflection;
 
 namespace Baxendale.DataManagement.Xml
 {
-    internal partial class DeserializedXmlObject<T>
+    public class ReadOnlyFieldException : XmlSerializationException
     {
-        private static IDeserializedXmlObject CreateDeserializedConvertible(T obj, XName name)
+        public MemberInfo Member { get; }
+
+        public ReadOnlyFieldException(MemberInfo member)
+            : this(member, $"{member.Name} in ${member.DeclaringType.FullName} is read only and cannot be set")
         {
-            Type deserializedXmlObject = typeof(DeserializedConvertible<>).MakeGenericType(typeof(T), typeof(T));
-            return (IDeserializedXmlObject)Activator.CreateInstance(deserializedXmlObject, obj, name);
         }
 
-        private class DeserializedConvertible<V> : DeserializedXmlObject<V>
-            where V : IConvertible
+        public ReadOnlyFieldException(MemberInfo member, string message)
+            : base(message)
         {
-            public DeserializedConvertible(V obj, XName name)
-                : base(obj, name)
-            {
-            }
-
-            public override XObject Serialize()
-            {
-                return new XAttribute(Name, DeserializedObject);
-            }
+            Member = member;
         }
     }
 }

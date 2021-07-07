@@ -18,10 +18,13 @@
 //    USA
 //
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Xml.Linq;
 using Baxendale.DataManagement.Collections;
+using Baxendale.DataManagement.Reflection;
 
 namespace Baxendale.DataManagement.Xml
 {
@@ -64,10 +67,21 @@ namespace Baxendale.DataManagement.Xml
         public static object Deserialize(XElement node)
         {
             if (node == null) throw new ArgumentNullException(nameof(node));
-            Type t = GetTypeFromNode(node);
+            return Deserialize(GetTypeFromNode(node), node);
+        }
+
+        public static T Deserialize<T>(XElement content)
+        {
+            if (content == null) throw new ArgumentNullException(nameof(content));
+            Type serializerType = GetObjectSerializerType(typeof(T));
+            if (serializerType == null)
+                throw new UnsupportedTypeException(typeof(T));
+            IXmlObjectSerializer<T> serializer = (IXmlObjectSerializer<T>)Activator.CreateInstance(serializerType);
+            if (serializer.UsesXAttribute)
+                throw new UnsupportedTypeException(typeof(T));
             try
             {
-                return CreateSerializedObject(t, node).Deserialize();
+                return serializer.Deserialize(content);
             }
             catch (TargetInvocationException ex)
             {
@@ -75,22 +89,113 @@ namespace Baxendale.DataManagement.Xml
             }
         }
 
-        public static T Deserialize<T>(XElement node)
+        public static object Deserialize(Type t, XElement content)
         {
-            return Deserialize<T>(node, null);
-        }
-
-        public static T Deserialize<T>(XElement node, XName name)
-        {
-            if (node == null) throw new ArgumentNullException(nameof(node));
+            if (t == null) throw new ArgumentNullException(nameof(t));
+            if (content == null) throw new ArgumentNullException(nameof(content));
+            Type serializerType = GetObjectSerializerType(t);
+            if (serializerType == null)
+                throw new UnsupportedTypeException(t);
+            IXmlObjectSerializer serializer = (IXmlObjectSerializer)Activator.CreateInstance(serializerType);
+            if (serializer.UsesXAttribute)
+                throw new UnsupportedTypeException(t);
             try
             {
-                return (T)SerializedXmlObject<T>.CreateSerializedObject(node, name, default(T)).Deserialize();
+                return serializer.Deserialize(content);
             }
             catch (TargetInvocationException ex)
             {
                 throw ex.GetBaseException();
             }
+        }
+
+        public static T Deserialize<T>(XAttribute content)
+        {
+            if (content == null) throw new ArgumentNullException(nameof(content));
+            Type serializerType = GetObjectSerializerType(typeof(T));
+            if (serializerType == null)
+                throw new UnsupportedTypeException(typeof(T));
+            IXmlObjectSerializer<T> serializer = (IXmlObjectSerializer<T>)Activator.CreateInstance(serializerType);
+            if (!serializer.UsesXAttribute)
+                throw new UnsupportedTypeException(typeof(T));
+            try
+            {
+                return serializer.Deserialize(content);
+            }
+            catch (TargetInvocationException ex)
+            {
+                throw ex.GetBaseException();
+            }
+        }
+
+        public static object Deserialize(Type t, XAttribute content)
+        {
+            if (t == null) throw new ArgumentNullException(nameof(t));
+            if (content == null) throw new ArgumentNullException(nameof(content));
+            Type serializerType = GetObjectSerializerType(t);
+            if (serializerType == null)
+                throw new UnsupportedTypeException(t);
+            IXmlObjectSerializer serializer = (IXmlObjectSerializer)Activator.CreateInstance(serializerType);
+            if (!serializer.UsesXAttribute)
+                throw new UnsupportedTypeException(t);
+            try
+            {
+                return serializer.Deserialize(content);
+            }
+            catch (TargetInvocationException ex)
+            {
+                throw ex.GetBaseException();
+            }
+        }
+
+        internal static T Deserialize<T>(XElement content, XName name)
+        {
+            if (content == null) throw new ArgumentNullException(nameof(content));
+            if (name == null) throw new ArgumentNullException(nameof(name));
+            Type serializerType = GetObjectSerializerType(typeof(T));
+            if (content == null)
+                throw new UnsupportedTypeException(typeof(T));
+            IXmlObjectSerializer<T> serializer = (IXmlObjectSerializer<T>)Activator.CreateInstance(serializerType);
+            if (serializer.UsesXAttribute)
+            {
+                XAttribute attribute = content.Attribute(name);
+                if (attribute == null)
+                    throw new XObjectNotFound(name.ToString());
+                return Deserialize<T>(attribute);
+            }
+            content = content.Element(name);
+            if (content == null)
+                throw new XObjectNotFound(name.ToString());
+            return Deserialize<T>(content);
+        }
+
+        internal static object Deserialize(Type t, XElement content, XName name)
+        {
+            if (t == null) throw new ArgumentNullException(nameof(t));
+            if (content == null) throw new ArgumentNullException(nameof(content));
+            if (name == null) throw new ArgumentNullException(nameof(name));
+            Type serializerType = GetObjectSerializerType(t);
+            if (serializerType == null)
+                throw new UnsupportedTypeException(t);
+            IXmlObjectSerializer serializer = (IXmlObjectSerializer)Activator.CreateInstance(serializerType);
+            if (serializer.UsesXAttribute)
+            {
+                XAttribute attribute = content.Attribute(name);
+                if (attribute == null)
+                    throw new XObjectNotFound(name.ToString());
+                return Deserialize(t, attribute);
+            }
+            content = content.Element(name);
+            if (content == null)
+                throw new XObjectNotFound(name.ToString());
+            return Deserialize(t, content);
+        }
+
+        internal static object Deserialize(MemberInfo member, XElement content)
+        {
+            Type memberType = member.GetReturnType();
+            XmlSerializableMemberAttribute attribute = member.GetMemberAttribute();
+            return Deserialize(memberType, content, attribute.Name);
         }
 
         private static Type GetTypeFromNode(XElement node)
@@ -126,50 +231,106 @@ namespace Baxendale.DataManagement.Xml
             return Deserialize<T>(document.Root);
         }
 
-        public static XObject Serialize<T>(T o, XName name)
+        public static XElement Serialize<T>(T obj)
         {
+            Type serializerType = GetObjectSerializerType(typeof(T));
+            if (serializerType == null)
+                throw new UnsupportedTypeException(typeof(T));
+            IXmlObjectSerializer<T> serializer = (IXmlObjectSerializer<T>)Activator.CreateInstance(serializerType);
+            XName name = GetSerializedTypeName(typeof(T));
+            if (name == null)
+                name = serializer.UsesXAttribute ? ValueAttributeName : ElementName;
+            return Serialize(serializer, obj, name);
+        }
+
+        public static XElement Serialize<T>(T obj, XName name)
+        {
+            Type serializerType = GetObjectSerializerType(typeof(T));
+            if (serializerType == null)
+                throw new UnsupportedTypeException(typeof(T));
+            IXmlObjectSerializer<T> serializer = (IXmlObjectSerializer<T>)Activator.CreateInstance(serializerType);
+            return Serialize(serializer, obj, name);
+        }
+
+        private static XElement Serialize<T>(IXmlObjectSerializer<T> serializer, T obj, XName name)
+        {
+            XObject content;
             try
             {
-                return CreateDeserializedObject(typeof(T), o, name).Serialize();
+                content = serializer.Serialize(obj, name);
             }
             catch (TargetInvocationException ex)
             {
                 throw ex.GetBaseException();
             }
-
+            if (serializer.UsesXAttribute)
+            {
+                XElement element = new XElement(ElementName);
+                element.Add(content);
+                return element;
+            }
+            return (XElement)content;
         }
 
-        public static XObject Serialize(Type t, object o)
+        internal static XElement Serialize(Type t, object obj)
         {
-            if (t == null) throw new ArgumentNullException(nameof(t));
-            if (o == null) throw new ArgumentNullException(nameof(o));
-
+            Type serializerType = GetObjectSerializerType(t);
+            if (serializerType == null)
+                throw new UnsupportedTypeException(t);
+            IXmlObjectSerializer serializer = (IXmlObjectSerializer)Activator.CreateInstance(serializerType);
             XName name = GetSerializedTypeName(t);
             if (name == null)
-                throw new UnregisteredTypeException(t.Name);
-            return Serialize(t, o, name);
+                name = serializer.UsesXAttribute ? ValueAttributeName : ElementName;
+            return Serialize(t, serializer, obj, name);
         }
 
-        public static XObject Serialize(Type t, object o, XName name)
+        internal static XElement Serialize(Type t, object obj, XName name)
         {
+            Type serializerType = GetObjectSerializerType(t);
+            if (serializerType == null)
+                throw new UnsupportedTypeException(t);
+            IXmlObjectSerializer serializer = (IXmlObjectSerializer)Activator.CreateInstance(serializerType);
+            return Serialize(t, serializer, obj, name);
+        }
+
+        private static XElement Serialize(Type t, IXmlObjectSerializer serializer, object obj, XName name)
+        {
+            XObject content;
             try
             {
-                return CreateDeserializedObject(t, o, name).Serialize();
+                content = serializer.Serialize(obj, name);
             }
             catch (TargetInvocationException ex)
             {
                 throw ex.GetBaseException();
             }
+            if (serializer.UsesXAttribute)
+            {
+                XElement element = new XElement(ElementName);
+                element.Add(content);
+                return element;
+            }
+            return (XElement)content;
         }
 
-        public static XObject Serialize<T>(T o)
+        internal static XObject Serialize(MemberInfo member, object instance)
         {
-            return Serialize(typeof(T), o);
+            Type memberType = member.GetReturnType();
+            Type serializerType = GetObjectSerializerType(memberType);
+            if (serializerType == null)
+                throw new UnsupportedTypeException(memberType);
+            IXmlObjectSerializer serializer = (IXmlObjectSerializer)Activator.CreateInstance(serializerType);
+            XmlSerializableMemberAttribute memberAttribute = member.GetMemberAttribute();
+            XmlSerializableClassAttribute classAttribute = instance.GetType().GetClassAttribute();
+            object value = member.GetValue(instance);
+            if (!classAttribute.DefaultValues && memberType.CreateDefault() == value)
+                return null;
+            return serializer.Serialize(value, memberAttribute.Name);
         }
 
         public static XDocument Save<T>(T o) where T : IXmlSerializableObject
         {
-            XElement root = (XElement)Serialize(o);
+            XElement root = Serialize(o);
             root.SetAttributeValue(ReservedNamespaceName, ReservedNamespace.NamespaceName);
             XDocument doc = new XDocument();
             doc.Add(root);
@@ -186,39 +347,44 @@ namespace Baxendale.DataManagement.Xml
             Save(o).Save(path);
         }
 
-        internal static ISerializedXmlObject CreateSerializedObject(Type t, XElement node)
+        internal static Type GetObjectSerializerType(Type memberType)
         {
-            Type serializedXmlObject = typeof(SerializedXmlObject<>).MakeGenericType(t);
-            MethodInfo factoryMethod = serializedXmlObject.GetMethod(nameof(SerializedXmlObject<object>.CreateSerializedObject), new Type[] { typeof(XElement) });
-            return (ISerializedXmlObject)factoryMethod.Invoke(null, new object[] { node });
-        }
-
-        internal static ISerializedXmlObject CreateSerializedObject(Type t, XElement node, XmlSerializeAttribute attrib)
-        {
-            Type serializedXmlObject = typeof(SerializedXmlObject<>).MakeGenericType(t);
-            MethodInfo factoryMethod = serializedXmlObject.GetMethod(nameof(SerializedXmlObject<object>.CreateSerializedObject), new Type[] { typeof(XElement), typeof(XmlSerializeAttribute) });
-            return (ISerializedXmlObject)factoryMethod.Invoke(null, new object[] { node, attrib });
-        }
-
-        internal static ISerializedXmlObject CreateSerializedObject(Type t, XElement node, XName name, object defaultValue)
-        {
-            Type serializedXmlObject = typeof(SerializedXmlObject<>).MakeGenericType(t);
-            MethodInfo factoryMethod = serializedXmlObject.GetMethod(nameof(SerializedXmlObject<object>.CreateSerializedObject), new Type[] { typeof(XElement), typeof(XName), t });
-            return (ISerializedXmlObject)factoryMethod.Invoke(null, new object[] { node, name, defaultValue });
-        }
-
-        internal static IDeserializedXmlObject CreateDeserializedObject(Type t, object obj, XmlSerializeAttribute attrib)
-        {
-            Type deserializedXmlObject = typeof(DeserializedXmlObject<>).MakeGenericType(t);
-            MethodInfo factoryMethod = deserializedXmlObject.GetMethod(nameof(DeserializedXmlObject<object>.CreateDeserializedObject), new Type[] { t, typeof(XmlSerializeAttribute) });
-            return (IDeserializedXmlObject)factoryMethod.Invoke(null, new object[] { obj, attrib });
-        }
-
-        internal static IDeserializedXmlObject CreateDeserializedObject(Type t, object obj, XName name)
-        {
-            Type deserializedXmlObject = typeof(DeserializedXmlObject<>).MakeGenericType(t);
-            MethodInfo factoryMethod = deserializedXmlObject.GetMethod(nameof(DeserializedXmlObject<object>.CreateDeserializedObject), new Type[] { t, typeof(XName) });
-            return (IDeserializedXmlObject)factoryMethod.Invoke(null, new object[] { obj, name });
+            if (memberType == null)
+            {
+                return typeof(XmlNullSerializer<>).MakeGenericType(memberType);
+            }
+            else if (typeof(IXmlSerializableObject).IsAssignableFrom(memberType))
+            {
+                return typeof(XmlCustomObjectSerializer<>).MakeGenericType(memberType);
+            }
+            else if (memberType.IsArray)
+            {
+                return typeof(XmlArraySerializer<,>).MakeGenericType(memberType, memberType.GetElementType());
+            }
+            else if (memberType.IsSubClassOfGeneric(typeof(IDictionary<,>)))
+            {
+                Type dictionaryType = memberType.GetGenericBaseType(typeof(IDictionary<,>));
+                if (dictionaryType == null)
+                    throw new UnsupportedTypeException(memberType);
+                Type[] generics = dictionaryType.GetGenericArguments();
+                return typeof(XmlDictionarySerializer<,,>).MakeGenericType(dictionaryType, generics[0], generics[1]);
+            }
+            else if (memberType.IsSubClassOfGeneric(typeof(ICollection<>)))
+            {
+                Type collectionType = memberType.GetGenericBaseType(typeof(ICollection<>));
+                if (collectionType == null)
+                    throw new UnsupportedTypeException(memberType);
+                return typeof(XmlGenericCollectionSerializer<,>).MakeGenericType(collectionType, collectionType.GetGenericArguments()[0]);
+            }
+            else if (typeof(ICollection).IsAssignableFrom(memberType))
+            {
+                return typeof(XmlCollectionSerializer<>).MakeGenericType(memberType);
+            }
+            else if (typeof(IConvertible).IsAssignableFrom(memberType))
+            {
+                return typeof(XmlConvertibleSerializer<>).MakeGenericType(memberType);
+            }
+            return null;
         }
     }
 }

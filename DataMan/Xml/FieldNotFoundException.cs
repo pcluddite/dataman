@@ -21,8 +21,16 @@ using System;
 
 namespace Baxendale.DataManagement.Xml
 {
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-    public class XmlSerializeNonDefaultAttribute : Attribute
+    public class FieldNotFoundException : XmlSerializationException
     {
+        public Type DeclaringType { get; }
+        public string MissingFieldName { get; }
+
+        public FieldNotFoundException(Type declaringType, string fieldName)
+            : base($"{declaringType.FullName} does not contain a field named {fieldName}")
+        {
+            DeclaringType = declaringType;
+            MissingFieldName = fieldName;
+        }
     }
 }

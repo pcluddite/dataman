@@ -17,37 +17,17 @@
 //    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
 //    USA
 //
-using System;
-using System.Xml.Linq;
 
 namespace Baxendale.DataManagement.Xml
 {
-    internal partial class DeserializedXmlObject<T>
+    internal class XObjectNotFound : XmlSerializationException
     {
-        private static IDeserializedXmlObject CreateDeserializedNullObject(XName name)
+        public string Name { get; }
+
+        public XObjectNotFound(string name)
+            : base($"{name} was not found in the current element")
         {
-            Type deserializedXmlObject = typeof(DeserializedNullObject); //.MakeGenericType(typeof(T));
-            return (IDeserializedXmlObject)Activator.CreateInstance(deserializedXmlObject, name);
-        }
-
-        private class DeserializedNullObject : DeserializedXmlObject<object>
-        {
-            public DeserializedNullObject(XmlSerializeAttribute attrib)
-                : base(null, attrib.Name)
-            {
-            }
-
-            public DeserializedNullObject(XName attrName)
-                : base(null, attrName)
-            {
-            }
-
-            public override XObject Serialize()
-            {
-                XElement element = new XElement(Name);
-                element.SetAttributeValue(XmlSerializer.TypeAttributeName, "null");
-                return element;
-            }
+            Name = name;
         }
     }
 }
