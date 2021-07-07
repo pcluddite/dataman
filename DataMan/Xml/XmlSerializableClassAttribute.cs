@@ -25,9 +25,9 @@ namespace Baxendale.DataManagement.Xml
     public class XmlSerializableClassAttribute : Attribute
     {
         /// <summary>
-        /// The method to use for deserializing. This needs to be public and static and take the parameters XElement and XName
-        /// with a return type of the current class.
-        /// Example: <code>public static MyObject FromXml(XElement element, XName name)</code>
+        /// The method to use for deserializing. This needs to be public and static and take the parameters XElement
+        /// with a return type of the current class. If this is null, FromXml(XElement) will be used.
+        /// Example: <code>public static MyObject FromXml(XElement element)</code>
         /// </summary>
         public string DeserializeMethodName { get; set; }
 
@@ -60,19 +60,25 @@ namespace Baxendale.DataManagement.Xml
         /// Serialize all properties and not just the ones marked with the <code>XmlSerializablePropertyAttribute</code>
         /// This is false by default.
         /// </summary>
-        public bool AllProperties { get; set; }
+        public bool AllProperties { get; set; } = false;
 
         /// <summary>
         /// Serialize all fields and not just the ones marked with the <code>XmlSerializableFieldAttribute</code>
         /// This is false by default.
         /// </summary>
-        public bool AllFields { get; set; }
+        public bool AllFields { get; set; } = false;
 
         /// <summary>
         /// Serialize all members whether or not their value is equal to <code>default(T)</code> where <code>T</code> is the member type.
         /// This is true by default.
         /// </summary>
-        public bool DefaultValues { get; set; } = true;
+        public bool SerializeDefault { get; set; } = true;
+
+        /// <summary>
+        /// When true, overrides any option that conflicts with an attribute option applied to a member.
+        /// This is true by default.
+        /// </summary>
+        public bool OverrideMemberOptions { get; set; } = true;
 
         public XmlSerializableClassAttribute()
         {

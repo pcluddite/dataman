@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Xml.Linq;
 using Baxendale.DataManagement.Reflection;
 
@@ -120,6 +121,8 @@ namespace Baxendale.DataManagement.Xml
                     FieldInfo backingField = typeof(V).GetField(attrib.BackingField, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
                     if (backingField == null)
                         throw new FieldNotFoundException(typeof(V), attrib.BackingField);
+                    if (backingField.IsLiteral || backingField.IsInitOnly)
+                        throw new ReadOnlyFieldException(backingField);
                     backingField.SetValue(obj, XmlSerializer.Deserialize(backingField, content));
                     backingFields.Add(backingField);
                 }
@@ -165,6 +168,8 @@ namespace Baxendale.DataManagement.Xml
                     continue; // skip properties that do not have this attribute if not serializing all properties
 
                 XmlSerializablePropertyAttribute attrib = propertyInfo.GetPropertyAttribute();
+                if (CustomClassAttribute.OverrideMemberOptions)
+                    attrib.SerializeDefault = CustomClassAttribute.SerializeDefault;
 
                 if (attrib.BackingField == null)
                 {
@@ -179,6 +184,8 @@ namespace Baxendale.DataManagement.Xml
                     FieldInfo backingField = typeof(V).GetField(attrib.BackingField, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
                     if (backingField == null)
                         throw new FieldNotFoundException(typeof(V), attrib.BackingField);
+                    if (backingField.IsLiteral || backingField.IsInitOnly)
+                        throw new ReadOnlyFieldException(backingField);
                     XObject fieldContent = XmlSerializer.Serialize(backingField, obj);
                     if (fieldContent != null)
                         content.Add(fieldContent);
@@ -196,7 +203,12 @@ namespace Baxendale.DataManagement.Xml
                     continue; // skip properties that do not have this attribute if not serializing all properties
                 if (backingFields.Contains(fieldInfo))
                     continue; // skip fields that act as backing fields
-                XObject fieldContent = XmlSerializer.Serialize(fieldInfo, obj);
+                if (fieldInfo.IsLiteral || fieldInfo.IsInitOnly)
+                    throw new ReadOnlyFieldException(fieldInfo);
+                XmlSerializableFieldAttribute attrib = fieldInfo.GetFieldAttribute();
+                if (CustomClassAttribute.OverrideMemberOptions)
+                    attrib.SerializeDefault = CustomClassAttribute.SerializeDefault;
+                XObject fieldContent = XmlSerializer.Serialize(fieldInfo, obj, serializeDefault: attrib.SerializeDefault);
                 if (fieldContent != null)
                     content.Add(fieldContent);
             }

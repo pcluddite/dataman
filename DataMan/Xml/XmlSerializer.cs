@@ -281,7 +281,7 @@ namespace Baxendale.DataManagement.Xml
             XName name = GetSerializedTypeName(t);
             if (name == null)
                 name = serializer.UsesXAttribute ? ValueAttributeName : ElementName;
-            return Serialize(t, serializer, obj, name);
+            return Serialize(serializer, obj, name);
         }
 
         internal static XElement Serialize(Type t, object obj, XName name)
@@ -290,10 +290,10 @@ namespace Baxendale.DataManagement.Xml
             if (serializerType == null)
                 throw new UnsupportedTypeException(t);
             IXmlObjectSerializer serializer = (IXmlObjectSerializer)Activator.CreateInstance(serializerType);
-            return Serialize(t, serializer, obj, name);
+            return Serialize(serializer, obj, name);
         }
 
-        private static XElement Serialize(Type t, IXmlObjectSerializer serializer, object obj, XName name)
+        private static XElement Serialize(IXmlObjectSerializer serializer, object obj, XName name)
         {
             XObject content;
             try
@@ -313,7 +313,7 @@ namespace Baxendale.DataManagement.Xml
             return (XElement)content;
         }
 
-        internal static XObject Serialize(MemberInfo member, object instance)
+        internal static XObject Serialize(MemberInfo member, object instance, bool serializeDefault)
         {
             Type memberType = member.GetReturnType();
             Type serializerType = GetObjectSerializerType(memberType);
@@ -321,9 +321,8 @@ namespace Baxendale.DataManagement.Xml
                 throw new UnsupportedTypeException(memberType);
             IXmlObjectSerializer serializer = (IXmlObjectSerializer)Activator.CreateInstance(serializerType);
             XmlSerializableMemberAttribute memberAttribute = member.GetMemberAttribute();
-            XmlSerializableClassAttribute classAttribute = instance.GetType().GetClassAttribute();
             object value = member.GetValue(instance);
-            if (!classAttribute.DefaultValues && memberType.CreateDefault() == value)
+            if (!serializeDefault && memberAttribute.Default == value)
                 return null;
             return serializer.Serialize(value, memberAttribute.Name);
         }

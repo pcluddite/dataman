@@ -62,7 +62,7 @@ namespace Baxendale.DataManagement.Xml
         {
             if (type == null) throw new ArgumentNullException(nameof(type));
             XmlSerializableClassAttribute attr = type.GetCustomAttributes<XmlSerializableClassAttribute>(inherit: true).FirstOrDefault();
-            return attr ?? new XmlSerializableClassAttribute();
+            return attr ?? new XmlSerializableClassAttribute() { OverrideMemberOptions = false };
         }
 
         internal static XmlSerializableFieldAttribute GetFieldAttribute(this FieldInfo field)
