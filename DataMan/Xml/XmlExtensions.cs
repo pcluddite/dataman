@@ -22,6 +22,10 @@ using System.Xml.Linq;
 using System.Reflection;
 using System.Linq;
 using Baxendale.DataManagement.Reflection;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using Baxendale.DataManagement.Collections;
+using System.Runtime.InteropServices;
 
 namespace Baxendale.DataManagement.Xml
 {
@@ -58,36 +62,79 @@ namespace Baxendale.DataManagement.Xml
             }
         }
 
-        internal static XmlSerializableClassAttribute GetClassAttribute(this Type type)
+        internal static XmlSerializableClassAttribute GetXmlSerializableClassAttribute(this Type type)
         {
-            if (type == null) throw new ArgumentNullException(nameof(type));
-            XmlSerializableClassAttribute attr = type.GetCustomAttributes<XmlSerializableClassAttribute>(inherit: true).FirstOrDefault();
-            return attr ?? new XmlSerializableClassAttribute() { OverrideMemberOptions = false };
+            return type.GetCustomAttributes<XmlSerializableClassAttribute>(inherit: true).FirstOrDefault();
         }
 
-        internal static XmlSerializableFieldAttribute GetFieldAttribute(this FieldInfo field)
+        internal static XmlSerializableFieldAttribute GetXmlSerializableFieldAttribute(this FieldInfo field)
         {
-            if (field == null) throw new ArgumentNullException(nameof(field));
-            XmlSerializableFieldAttribute attr = field.GetCustomAttributes<XmlSerializableFieldAttribute>(inherit: true).FirstOrDefault();
-            return attr ?? new XmlSerializableFieldAttribute() { Name = field.Name, Default = field.FieldType.CreateDefault() };
+            return field.GetCustomAttributes<XmlSerializableFieldAttribute>(inherit: true).FirstOrDefault();
         }
 
-        internal static XmlSerializablePropertyAttribute GetPropertyAttribute(this PropertyInfo property)
+        internal static XmlSerializablePropertyAttribute GetXmlSerializablePropertyAttribute(this PropertyInfo property)
         {
-            if (property == null) throw new ArgumentNullException(nameof(property));
-            XmlSerializablePropertyAttribute attr = property.GetCustomAttributes<XmlSerializablePropertyAttribute>(inherit: true).FirstOrDefault();
-            return attr ?? new XmlSerializablePropertyAttribute() { Name = property.Name, Default = property.PropertyType.CreateDefault() };
+            return property.GetCustomAttributes<XmlSerializablePropertyAttribute>(inherit: true).FirstOrDefault();
         }
 
-
-        internal static XmlSerializableMemberAttribute GetMemberAttribute(this MemberInfo member)
+        internal static XmlSerializableMemberAttribute GetXmlSerializableMemberAttribute(this MemberInfo member)
         {
             if (member == null) throw new ArgumentNullException(nameof(member));
             if (member.MemberType == MemberTypes.Field)
-                return GetFieldAttribute((FieldInfo)member);
+                return GetXmlSerializableFieldAttribute((FieldInfo)member);
             if (member.MemberType == MemberTypes.Property)
-                return GetPropertyAttribute((PropertyInfo)member);
+                return GetXmlSerializablePropertyAttribute((PropertyInfo)member);
             throw new ArgumentException();
+        }
+
+        internal static IEnumerable<XmlSerializableField> GetSerializableFields(this Type type)
+        {
+            return GetSerializableFields(type, type.GetXmlSerializableClassAttribute(), Collections<FieldInfo>.EmptyCollection);
+        }
+
+        internal static IEnumerable<XmlSerializableField> GetSerializableFields(this Type type, XmlSerializableClassAttribute classAttribute)
+        {
+            return GetSerializableFields(type, classAttribute, Collections<FieldInfo>.EmptyCollection);
+        }
+
+        internal static IEnumerable<XmlSerializableField> GetSerializableFields(this Type type, ICollection<FieldInfo> excluded)
+        {
+            return GetSerializableFields(type, type.GetXmlSerializableClassAttribute(), excluded);
+        }
+
+        internal static IEnumerable<XmlSerializableField> GetSerializableFields(this Type type, XmlSerializableClassAttribute classAttribute, ICollection<FieldInfo> excluded)
+        {
+            foreach (FieldInfo fieldInfo in type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
+            {
+                if (fieldInfo.GetCustomAttribute<CompilerGeneratedAttribute>(inherit: true) != null)
+                    continue; // skip anything compiler generated
+                if (fieldInfo.GetCustomAttribute<XmlDoNotSerializeAttribute>(inherit: true) != null)
+                    continue; // skip fields tagged with this attribute
+                XmlSerializableField field = new XmlSerializableField(fieldInfo, classAttribute);
+                if (!field.HasAttribute && classAttribute?.AllFields == false)
+                    continue; // skip fields that do not have this attribute if not serializing all fields
+                yield return field;
+            }
+        }
+
+        internal static IEnumerable<XmlSerializableProperty> GetSerializableProperties(this Type type)
+        {
+            return GetSerializableProperties(type, type.GetXmlSerializableClassAttribute());
+        }
+
+        internal static IEnumerable<XmlSerializableProperty> GetSerializableProperties(this Type type, XmlSerializableClassAttribute classAttribute)
+        {
+            foreach (PropertyInfo propertyInfo in type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
+            {
+                if (propertyInfo.GetCustomAttribute<CompilerGeneratedAttribute>(inherit: true) != null)
+                    continue; // skip anything compiler generated
+                if (propertyInfo.GetCustomAttribute<XmlDoNotSerializeAttribute>(inherit: true) != null)
+                    continue; // skip properties tagged with this attribute
+                XmlSerializableProperty prop = new XmlSerializableProperty(propertyInfo, classAttribute);
+                if (!prop.HasAttribute && classAttribute?.AllProperties == false)
+                    continue; // skip properties that do not have this attribute if not serializing all properties
+                yield return prop;
+            }
         }
     }
 }

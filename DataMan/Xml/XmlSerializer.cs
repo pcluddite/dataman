@@ -194,7 +194,7 @@ namespace Baxendale.DataManagement.Xml
         internal static object Deserialize(MemberInfo member, XElement content)
         {
             Type memberType = member.GetReturnType();
-            XmlSerializableMemberAttribute attribute = member.GetMemberAttribute();
+            XmlSerializableMemberAttribute attribute = member.GetXmlSerializableMemberAttribute();
             return Deserialize(memberType, content, attribute.Name);
         }
 
@@ -311,20 +311,6 @@ namespace Baxendale.DataManagement.Xml
                 return element;
             }
             return (XElement)content;
-        }
-
-        internal static XObject Serialize(MemberInfo member, object instance, bool serializeDefault)
-        {
-            Type memberType = member.GetReturnType();
-            Type serializerType = GetObjectSerializerType(memberType);
-            if (serializerType == null)
-                throw new UnsupportedTypeException(memberType);
-            IXmlObjectSerializer serializer = (IXmlObjectSerializer)Activator.CreateInstance(serializerType);
-            XmlSerializableMemberAttribute memberAttribute = member.GetMemberAttribute();
-            object value = member.GetValue(instance);
-            if (!serializeDefault && memberAttribute.Default == value)
-                return null;
-            return serializer.Serialize(value, memberAttribute.Name);
         }
 
         public static XDocument Save<T>(T o) where T : IXmlSerializableObject

@@ -115,6 +115,7 @@
     <Compile Include="Xml\XmlObjectSerializer.cs" />
     <Compile Include="Xml\XmlDoNotSerializeAttribute.cs" />
     <Compile Include="Xml\XmlSerializableClassAttribute.cs" />
+    <Compile Include="Xml\XmlSerializableMember.cs" />
     <Compile Include="Xml\XmlSerializableMemberAttribute.cs" />
     <Compile Include="Xml\XmlSerializationException.cs" />
     <Compile Include="Xml\XmlSerializer.cs" />
