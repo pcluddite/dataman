@@ -20,12 +20,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Baxendale.DataManagement.Collections.ReadOnly;
 
 namespace Baxendale.DataManagement.Collections
 {
-    public class CompositeComparer<T> : IComparer<T>, ICollection<IComparer<T>>
+    public class CompositeComparer<T> : IComparer<T>, IList<IComparer<T>>, ICollection<IComparer<T>>
     {
         private readonly List<IComparer<T>> _comparers;
 
@@ -45,6 +44,20 @@ namespace Baxendale.DataManagement.Collections
             }
         }
 
+        public virtual IComparer<T> this[int index]
+        {
+            get
+            {
+                return _comparers[index];
+            }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException(nameof(value));
+                _comparers[index] = value;
+            }
+        }
+
         public CompositeComparer()
         {
             _comparers = new List<IComparer<T>> { Comparer<T>.Default };
@@ -52,6 +65,7 @@ namespace Baxendale.DataManagement.Collections
 
         public CompositeComparer(IEnumerable<IComparer<T>> comparers)
         {
+            if (comparers == null) throw new ArgumentNullException(nameof(comparers));
             _comparers = new List<IComparer<T>>(comparers);
         }
 
@@ -61,44 +75,84 @@ namespace Baxendale.DataManagement.Collections
             _comparers.Add(comparer);
         }
 
-        public virtual void Add<V>(IComparer<V> comparer, Converter<T, V> converter)
+        public virtual IComparer<T> Add(Comparison<T> comparison)
+        {
+            if (comparison == null) throw new ArgumentNullException(nameof(comparison));
+            IComparer<T> comparer = Comparer<T>.Create(comparison);
+            _comparers.Add(comparer);
+            return comparer;
+        }
+
+        public virtual IComparer<T> Add<V>(IComparer<V> comparer, Converter<T, V> converter)
         {
             if (comparer == null) throw new ArgumentNullException(nameof(comparer));
             if (converter == null) throw new ArgumentNullException(nameof(converter));
-            _comparers.Add(new CompositeComparerElement<V>(comparer, converter));
+            IComparer<T> converted = new ComponentComparer<V>(comparer, converter);
+            _comparers.Add(converted);
+            return converted;
         }
 
-        public virtual void Add(Comparison<T> comparison)
-        {
-            if (comparison == null) throw new ArgumentNullException(nameof(comparison));
-            _comparers.Add(Comparer<T>.Create(comparison));
-        }
-
-        public virtual void Add<V>(Comparison<V> comparison, Converter<T, V> converter)
+        public virtual IComparer<T> Add<V>(Comparison<V> comparison, Converter<T, V> converter)
         {
             if (comparison == null) throw new ArgumentNullException(nameof(comparison));
             if (converter == null) throw new ArgumentNullException(nameof(converter));
-            _comparers.Add(new CompositeComparerElement<V>(comparison, converter));
+            IComparer<T> converted = new ComponentComparer<V>(comparison, converter);
+            _comparers.Add(converted);
+            return converted;
+        }
+
+        public virtual int IndexOf(IComparer<T> comparer)
+        {
+            if (comparer == null) throw new ArgumentNullException(nameof(comparer));
+            return _comparers.IndexOf(comparer);
+        }
+
+        public virtual int IndexOf<V>(IComparer<V> comparer)
+        {
+            if (comparer == null) throw new ArgumentNullException(nameof(comparer));
+            for (int idx = 0; idx < _comparers.Count; ++idx)
+            {
+                ComponentComparer<V> other = _comparers[idx] as ComponentComparer<V>;
+                if (other?.Comparer == comparer)
+                    return idx;
+            }
+            return -1;
+        }
+
+        public virtual void Insert(int index, IComparer<T> comparer)
+        {
+            if (comparer == null) throw new ArgumentNullException(nameof(comparer));
+            _comparers.Insert(index, comparer);
+        }
+
+        public virtual void Insert<V>(int index, Comparison<V> comparison, Converter<T, V> converter)
+        {
+            if (comparison == null) throw new ArgumentNullException(nameof(comparison));
+            if (converter == null) throw new ArgumentNullException(nameof(converter));
+            _comparers.Insert(index, new ComponentComparer<V>(comparison, converter));
+        }
+
+        public virtual void RemoveAt(int index)
+        {
+            if (Count == 1) throw new TooFewComparersException();
+            _comparers.RemoveAt(index);
         }
 
         public virtual bool Remove(IComparer<T> comparer)
         {
+            if (comparer == null) throw new ArgumentNullException(nameof(comparer));
+            if (Count == 1) throw new TooFewComparersException();
             return _comparers.Remove(comparer);
         }
 
         public virtual bool Remove<V>(IComparer<V> comparer)
         {
-            if (comparer == null) throw new ArgumentNullException(nameof(comparer));
-            for (int idx = 0; idx < _comparers.Count; ++idx)
-            {
-                CompositeComparerElement<V> other = _comparers[idx] as CompositeComparerElement<V>;
-                if (other?.Comparer == comparer)
-                {
-                    _comparers.RemoveAt(idx);
-                    return true;
-                }
-            }
-            return false;
+            int idx = IndexOf(comparer); // null check is performed in IndexOf
+            if (idx == -1)
+                return false;
+            if (Count == 1) throw new TooFewComparersException();
+            _comparers.RemoveAt(idx);
+            return true;
         }
 
         public virtual int Compare(T x, T y)
@@ -111,7 +165,7 @@ namespace Baxendale.DataManagement.Collections
                     return result.Value;
             }
             if (result == null)
-                throw new InvalidOperationException("CompositeComparer must have at least one sub comparer");
+                throw new TooFewComparersException();
             return result.Value;
         }
 
@@ -123,6 +177,7 @@ namespace Baxendale.DataManagement.Collections
         public virtual void Clear()
         {
             _comparers.Clear();
+            _comparers.Add(Comparer<T>.Default);
         }
 
         public virtual bool Contains(IComparer<T> item)
@@ -132,12 +187,7 @@ namespace Baxendale.DataManagement.Collections
 
         public virtual bool Contains<V>(IComparer<V> comparer)
         {
-            foreach(CompositeComparerElement<V> other in _comparers.OfType<CompositeComparerElement<V>>())
-            {
-                if (other.Comparer == comparer)
-                    return true;
-            }
-            return false;
+            return IndexOf(comparer) > -1;
         }
 
         public virtual void CopyTo(IComparer<T>[] array, int arrayIndex)
@@ -160,22 +210,22 @@ namespace Baxendale.DataManagement.Collections
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return ((IEnumerable)_comparers).GetEnumerator();
+            return GetEnumerator();
         }
 
         #endregion
 
-        private class CompositeComparerElement<V> : IComparer<T>
+        private class ComponentComparer<V> : IComparer<T>
         {
             public Converter<T, V> Converter { get; }
             public IComparer<V> Comparer { get; }
 
-            public CompositeComparerElement(Comparison<V> comparison, Converter<T, V> converter)
+            public ComponentComparer(Comparison<V> comparison, Converter<T, V> converter)
                 : this(Comparer<V>.Create(comparison), converter)
             {
             }
 
-            public CompositeComparerElement(IComparer<V> comparer, Converter<T, V> converter)
+            public ComponentComparer(IComparer<V> comparer, Converter<T, V> converter)
             {
                 Converter = converter;
                 Comparer = comparer;
@@ -189,6 +239,14 @@ namespace Baxendale.DataManagement.Collections
             public int Compare(T x, T y)
             {
                 return Compare(Converter(x), Converter(y));
+            }
+        }
+
+        private class TooFewComparersException : InvalidOperationException
+        {
+            public TooFewComparersException()
+                : base("CompositeComparer must have at least one component comparer")
+            {
             }
         }
     }
