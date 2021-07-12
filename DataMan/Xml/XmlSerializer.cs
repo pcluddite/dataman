@@ -160,12 +160,12 @@ namespace Baxendale.DataManagement.Xml
             {
                 XAttribute attribute = content.Attribute(name);
                 if (attribute == null)
-                    throw new XObjectNotFound(name.ToString());
+                    throw new XObjectNotFoundException(name.ToString());
                 return Deserialize<T>(attribute);
             }
             content = content.Element(name);
             if (content == null)
-                throw new XObjectNotFound(name.ToString());
+                throw new XObjectNotFoundException(name.ToString());
             return Deserialize<T>(content);
         }
 
@@ -182,12 +182,12 @@ namespace Baxendale.DataManagement.Xml
             {
                 XAttribute attribute = content.Attribute(name);
                 if (attribute == null)
-                    throw new XObjectNotFound(name.ToString());
+                    throw new XObjectNotFoundException(name.ToString());
                 return Deserialize(t, attribute);
             }
             content = content.Element(name);
             if (content == null)
-                throw new XObjectNotFound(name.ToString());
+                throw new XObjectNotFoundException(name.ToString());
             return Deserialize(t, content);
         }
 

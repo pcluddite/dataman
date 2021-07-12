@@ -20,11 +20,11 @@
 
 namespace Baxendale.DataManagement.Xml
 {
-    internal class XObjectNotFound : XmlSerializationException
+    internal class XObjectNotFoundException : XmlSerializationException
     {
         public string Name { get; }
 
-        public XObjectNotFound(string name)
+        public XObjectNotFoundException(string name)
             : base($"{name} was not found in the current element")
         {
             Name = name;
