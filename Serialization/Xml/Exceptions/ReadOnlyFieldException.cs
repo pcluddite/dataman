@@ -26,7 +26,7 @@ namespace Baxendale.Data.Xml
         public MemberInfo Member { get; }
 
         public ReadOnlyFieldException(MemberInfo member)
-            : this(member, $"{member.Name} in ${member.DeclaringType.FullName} is read only and cannot be set")
+            : this(member, $"{member.Name} in {member.DeclaringType.FullName} is read only and cannot be set")
         {
         }
 
