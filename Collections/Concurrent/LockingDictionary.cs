@@ -17,6 +17,7 @@
 //    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
 //    USA
 //
+using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
@@ -54,7 +55,9 @@ namespace Baxendale.Data.Collections.Concurrent
         }
 
         public LockingDictionary(object syncRoot)
-        {
+{
+            Dictionary = new Dictionary<TKey, TValue>();
+            SyncRoot = syncRoot ?? new object();
         }
 
         public LockingDictionary(int capacity, object syncRoot)
