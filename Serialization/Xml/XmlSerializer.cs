@@ -337,7 +337,7 @@ namespace Baxendale.Data.Xml
             Save(o).Save(path);
         }
 
-        private IXmlObjectSerializer CreateSerializerObject(Type t)
+        internal IXmlObjectSerializer CreateSerializerObject(Type t)
         {
             LockingDictionary<Type, IXmlObjectSerializer> cache = _cache;
             Type serializerType = GetObjectSerializerType(t);

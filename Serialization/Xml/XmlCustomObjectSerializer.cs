@@ -197,16 +197,13 @@ namespace Baxendale.Data.Xml
             }
         }
 
-        private static XObject SerializeMember(V obj, MemberInfo member, XmlSerializableMemberAttribute memberAttribute)
+        private XObject SerializeMember(V obj, MemberInfo member, XmlSerializableMemberAttribute memberAttribute)
         {
             Type memberType = member.GetReturnType();
-            Type serializerType = XmlSerializer.GetObjectSerializerType(memberType);
-            if (serializerType == null)
-                throw new UnsupportedTypeException(memberType);
-            IXmlObjectSerializer serializer = (IXmlObjectSerializer)Activator.CreateInstance(serializerType);
-            object value = member.GetValue(obj);
+            IXmlObjectSerializer serializer = XmlSerializer.CreateSerializerObject(memberType);
+            object value = member.GetValue((object)obj);
             if (memberType.IsValueType && memberAttribute.Default == null)
-                memberAttribute.Default = Activator.CreateInstance(memberType);
+                memberAttribute.Default = Activator.CreateInstance(memberType, nonPublic: true);
             if (!memberAttribute.SerializeDefault && memberAttribute.Default == value)
                 return null;
             return serializer.Serialize(value, memberAttribute.Name);
