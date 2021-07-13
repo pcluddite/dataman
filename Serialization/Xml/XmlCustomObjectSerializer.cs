@@ -80,7 +80,9 @@ namespace Baxendale.Data.Xml
                     throw new UnsupportedTypeException(typeof(V), "Cannot deserialize from given XObject type.");
                 return DefaultDeserialize((XElement)content);
             }
-            return (V)deserializeMethod.Invoke(null, new[] { content });
+            if (deserializeMethod.GetParameters().Length == 1)
+                return (V)deserializeMethod.Invoke(null, new object[] { content });
+            return (V)deserializeMethod.Invoke(null, new object[] { XmlSerializer, content });
         }
 
         private V DefaultDeserialize(XElement content)
@@ -133,14 +135,13 @@ namespace Baxendale.Data.Xml
             MethodInfo serializeMethod = DeserializeMethod ?? FindSerializeMethod<XElement>(SerializeMethodName);
             if (serializeMethod == null)
                 return DefaultSerialize(obj, name);
-            return (XObject)serializeMethod.Invoke(null, new[] { name });
+            if (serializeMethod.GetParameters().Length == 1)
+                return (XObject)serializeMethod.Invoke(obj, new object[] { name });
+            return (XObject)serializeMethod.Invoke(obj, new object[] { XmlSerializer, name });
         }
 
         private XElement DefaultSerialize(V obj, XName name)
         {
-            MethodInfo toXmlMethod = SerializeMethod;
-            if (toXmlMethod != null)
-                return (XElement)toXmlMethod.Invoke(obj, new object[] { name });
             XElement content = new XElement(name);
             HashSet<FieldInfo> backingFields = new HashSet<FieldInfo>();
             SerializeProperties(obj, content, backingFields);
@@ -217,7 +218,7 @@ namespace Baxendale.Data.Xml
             IEnumerable<MethodInfo> fromMethods = from method in typeof(V).GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy)
                                                   let parameters = method.GetParameters()
                                                   where methodName == method.Name
-                                                        && parameters.Length == 1 && parameters[0].ParameterType.IsAssignableFrom(typeof(XType))
+                                                        && ((parameters.Length == 1 && parameters[0].ParameterType.IsAssignableFrom(typeof(XType))) || (parameters.Length == 2 && parameters[0].ParameterType == typeof(XmlSerializer) && parameters[1].ParameterType.IsAssignableFrom(typeof(XType))))
                                                         && method.ReturnType.IsAssignableFrom(typeof(V))
                                                   select method;
             return fromMethods.OrderBy(x => x, new MethodInfoComparer()).FirstOrDefault();
@@ -229,7 +230,7 @@ namespace Baxendale.Data.Xml
             IEnumerable<MethodInfo> toMethods = from method in typeof(V).GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.FlattenHierarchy)
                                                 let parameters = method.GetParameters()
                                                 where methodName == method.Name
-                                                       && parameters.Length == 1 && parameters[0].ParameterType.IsAssignableFrom(typeof(XName))
+                                                       && ((parameters.Length == 1 && parameters[0].ParameterType.IsAssignableFrom(typeof(XName))) || (parameters.Length == 2 && parameters[0].ParameterType == typeof(XmlSerializer) && parameters[1].ParameterType.IsAssignableFrom(typeof(XName))))
                                                        && typeof(XType).IsAssignableFrom(method.ReturnType)
                                                 select method;
             return toMethods.OrderBy(x => x, new MethodInfoComparer()).FirstOrDefault();
