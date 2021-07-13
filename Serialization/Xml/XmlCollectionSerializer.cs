@@ -45,7 +45,7 @@ namespace Baxendale.Data.Xml
                 if (typeAttribute == null)
                     throw new UnregisteredTypeException(child.Name.ToString());
                 Type itemType = Type.GetType(typeAttribute.Value, true);
-                collection.Add(XmlSerializer.Deserialize(itemType, child, XmlSerializer.ValueAttributeName));
+                collection.Add(XmlSerializer.Deserialize(itemType, child, ValueAttributeName));
             }
             return collection;
         }
@@ -56,7 +56,7 @@ namespace Baxendale.Data.Xml
             foreach (object item in obj)
             {
                 Type itemType = item?.GetType();
-                XElement a = XmlSerializer.Serialize(itemType, item);
+                XElement a = XmlSerializer.Serialize(itemType, item, ElementName, ValueAttributeName);
                 if (itemType != null)
                     a.SetAttributeValue(XmlSerializer.TypeAttributeName, itemType.FullName ?? "null");
                 element.Add(a);

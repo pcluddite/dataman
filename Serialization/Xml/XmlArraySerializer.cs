@@ -78,7 +78,7 @@ namespace Baxendale.Data.Xml
 
             foreach (ElementType item in array.Cast<ElementType>())
             {
-                XElement itemContent = XmlSerializer.Serialize(item);
+                XElement itemContent = XmlSerializer.Serialize(item, ElementName, ValueAttributeName);
                 
                 if (rank > 1)
                     itemContent.SetAttributeValue(XmlSerializer.IndexAttributeName, indices.ToString(','));

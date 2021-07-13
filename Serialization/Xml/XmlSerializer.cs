@@ -252,24 +252,34 @@ namespace Baxendale.Data.Xml
 
         public XElement Serialize<T>(T obj)
         {
-            IXmlObjectSerializer<T> serializer = CreateSerializerObject<T>(obj);
-            XName name = GetSerializedTypeName(typeof(T));
-            if (name == null)
-                name = serializer.UsesXAttribute ? ValueAttributeName : ElementName;
-            return Serialize(serializer, obj, name);
+            XName contentName = GetSerializedTypeName(typeof(T));
+            if (contentName == null)
+                throw new UnregisteredTypeException(typeof(T));
+            return Serialize(obj, contentName);
         }
 
         public XElement Serialize<T>(T obj, XName name)
         {
-            return Serialize(CreateSerializerObject(obj), obj, name);
+            if (name == null)
+                throw new ArgumentNullException(nameof(name));
+            return Serialize(CreateSerializerObject(obj), obj, name, ElementName);
         }
 
-        private XElement Serialize<T>(IXmlObjectSerializer<T> serializer, T obj, XName name)
+        internal XElement Serialize<T>(T obj, XName defaultElementName, XName defaultAttributeName)
+        {
+            IXmlObjectSerializer<T> serializer = CreateSerializerObject(obj);
+            XName contentName = GetSerializedTypeName(typeof(T));
+            if (contentName == null)
+                contentName = serializer.UsesXAttribute ? defaultAttributeName : defaultElementName;
+            return Serialize(serializer, obj, contentName, defaultElementName);
+        }
+
+        internal XElement Serialize<T>(IXmlObjectSerializer<T> serializer, T obj, XName contentName, XName defaultElementName)
         {
             XObject content;
             try
             {
-                content = serializer.Serialize(obj, name);
+                content = serializer.Serialize(obj, contentName);
             }
             catch (TargetInvocationException ex)
             {
@@ -277,33 +287,43 @@ namespace Baxendale.Data.Xml
             }
             if (serializer.UsesXAttribute)
             {
-                XElement element = new XElement(ElementName);
+                XElement element = new XElement(defaultElementName ?? ElementName);
                 element.Add(content);
                 return element;
             }
             return (XElement)content;
         }
 
-        internal XElement Serialize(Type t, object obj)
+        public XElement Serialize(Type t, object obj)
         {
-            IXmlObjectSerializer serializer = CreateSerializerObject(t);
-            XName name = GetSerializedTypeName(t);
+            XName contentName = GetSerializedTypeName(t);
+            if (contentName == null)
+                throw new UnregisteredTypeException(t);
+            return Serialize(t, obj, contentName);
+        }
+
+        public XElement Serialize(Type t, object obj, XName name)
+        {
             if (name == null)
-                name = serializer.UsesXAttribute ? ValueAttributeName : ElementName;
-            return Serialize(serializer, obj, name);
+                throw new ArgumentNullException(nameof(name));
+            return Serialize(t, CreateSerializerObject(t, obj), obj, name, ElementName);
         }
 
-        internal XElement Serialize(Type t, object obj, XName name)
+        internal XElement Serialize(Type t, object obj, XName defaultElementName, XName defaultAttributeName)
         {
-            return Serialize(CreateSerializerObject(t), obj, name);
+            IXmlObjectSerializer serializer = CreateSerializerObject(t, obj);
+            XName contentName = GetSerializedTypeName(t);
+            if (contentName == null)
+                contentName = serializer.UsesXAttribute ? defaultAttributeName : defaultElementName;
+            return Serialize(t, serializer, obj, contentName, defaultElementName);
         }
 
-        private XElement Serialize(IXmlObjectSerializer serializer, object obj, XName name)
+        internal XElement Serialize(Type t, IXmlObjectSerializer serializer, object obj, XName contentName, XName defaultElementName)
         {
             XObject content;
             try
             {
-                content = serializer.Serialize(obj, name);
+                content = serializer.Serialize(obj, contentName);
             }
             catch (TargetInvocationException ex)
             {
@@ -311,7 +331,7 @@ namespace Baxendale.Data.Xml
             }
             if (serializer.UsesXAttribute)
             {
-                XElement element = new XElement(ElementName);
+                XElement element = new XElement(defaultElementName ?? ElementName);
                 element.Add(content);
                 return element;
             }

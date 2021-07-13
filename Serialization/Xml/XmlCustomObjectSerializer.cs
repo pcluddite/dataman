@@ -201,6 +201,8 @@ namespace Baxendale.Data.Xml
         {
             Type memberType = member.GetReturnType();
             IXmlObjectSerializer serializer = XmlSerializer.CreateSerializerObject(memberType);
+            serializer.ElementName = memberAttribute.ElementName;
+            serializer.ValueAttributeName = memberAttribute.AttributeName;
             object value = member.GetValue((object)obj);
             if (memberType.IsValueType && memberAttribute.Default == null)
                 memberAttribute.Default = Activator.CreateInstance(memberType, nonPublic: true);

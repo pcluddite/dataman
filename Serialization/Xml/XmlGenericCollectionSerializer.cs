@@ -43,7 +43,7 @@ namespace Baxendale.Data.Xml
                 Type t = XmlSerializer.GetSerializedType(child.Name.ToString());
                 if (t == null)
                 {
-                    collection.Add(XmlSerializer.Deserialize<ItemType>(child, XmlSerializer.ValueAttributeName));
+                    collection.Add(XmlSerializer.Deserialize<ItemType>(child, ValueAttributeName));
                 }
                 else
                 {
@@ -58,7 +58,7 @@ namespace Baxendale.Data.Xml
             XElement element = new XElement(name);
             foreach (ItemType item in obj)
             {
-                element.Add(XmlSerializer.Serialize(item));
+                element.Add(XmlSerializer.Serialize(item, ElementName, ValueAttributeName));
             }
             return element;
         }

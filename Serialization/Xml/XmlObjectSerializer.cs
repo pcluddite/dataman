@@ -23,6 +23,9 @@ namespace Baxendale.Data.Xml
 {
     internal interface IXmlObjectSerializer
     {
+        XName ElementName { get; set; }
+        XName ValueAttributeName { get; set; }
+
         object Deserialize(XObject content);
         XObject Serialize(object obj, XName name);
         bool UsesXAttribute { get; }
@@ -39,6 +42,10 @@ namespace Baxendale.Data.Xml
     {
         public XmlSerializer XmlSerializer { get; }
 
+        public virtual XName ElementName { get; set; }
+
+        public virtual XName ValueAttributeName { get; set; }
+
         public XmlObjectSerializer(XmlSerializer serializer)
         {
             XmlSerializer = serializer;
@@ -48,7 +55,7 @@ namespace Baxendale.Data.Xml
 
         public abstract T Deserialize(XContentType content);
 
-        public abstract XContentType Serialize(T obj, XName name);
+        public abstract XContentType Serialize(T obj, XName contentName);
 
         #region ISerializedXmlObject Members
 
@@ -62,9 +69,9 @@ namespace Baxendale.Data.Xml
             return Deserialize((XContentType)content);
         }
 
-        XObject IXmlObjectSerializer.Serialize(object obj, XName name)
+        XObject IXmlObjectSerializer.Serialize(object obj, XName contentName)
         {
-            return Serialize((T)obj, name);
+            return Serialize((T)obj, contentName);
         }
 
         XObject IXmlObjectSerializer<T>.Serialize(T obj, XName name)

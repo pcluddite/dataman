@@ -85,7 +85,6 @@
     <Compile Include="Xml\XmlSerializer.cs" />
     <Compile Include="Xml\Exceptions\XObjectNotFoundException.cs" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\Collections\Collections.csproj">
       <Project>{283dd814-e043-4674-95fd-3df908a11eba}</Project>
@@ -95,6 +94,9 @@
       <Project>{f1885a10-bea4-4296-b028-14d5082ffe4c}</Project>
       <Name>Reflection</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

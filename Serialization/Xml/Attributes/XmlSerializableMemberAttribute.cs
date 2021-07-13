@@ -37,6 +37,18 @@ namespace Baxendale.Data.Xml
         /// The default value this should be set to if no value is found in the XML
         /// </summary>
         public object Default { get; set; }
+
+        /// <summary>
+        /// If the mmember is a collection, this is the name of the individual elements.
+        /// If this is not a collection, the value is ignored.
+        /// </summary>
+        public string ElementName { get; set; }
+
+        /// <summary>
+        /// If this mmember is serialized as an XAttribute in a collection, this is the name to use for the attribute.
+        /// If this is not a collection, the value is ignored.
+        /// </summary>
+        public string AttributeName { get; set; }
     }
 
     public class XmlSerializableFieldAttribute : XmlSerializableMemberAttribute

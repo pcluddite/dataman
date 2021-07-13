@@ -50,7 +50,7 @@ namespace Baxendale.Data.Xml
                 attrib = new TAttribType()
                 {
                     Name = memberType.Name,
-                    Default = memberType.GetReturnType().CreateDefault()
+                    Default = memberType.GetReturnType().CreateDefault(),
                 };
             }
             Attribute = attrib;
