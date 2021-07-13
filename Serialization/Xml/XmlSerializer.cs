@@ -252,7 +252,7 @@ namespace Baxendale.Data.Xml
 
         public XElement Serialize<T>(T obj)
         {
-            IXmlObjectSerializer<T> serializer = CreateSerializerObject<T>();
+            IXmlObjectSerializer<T> serializer = CreateSerializerObject<T>(obj);
             XName name = GetSerializedTypeName(typeof(T));
             if (name == null)
                 name = serializer.UsesXAttribute ? ValueAttributeName : ElementName;
@@ -261,7 +261,7 @@ namespace Baxendale.Data.Xml
 
         public XElement Serialize<T>(T obj, XName name)
         {
-            return Serialize(CreateSerializerObject<T>(), obj, name);
+            return Serialize(CreateSerializerObject(obj), obj, name);
         }
 
         private XElement Serialize<T>(IXmlObjectSerializer<T> serializer, T obj, XName name)
@@ -337,6 +337,13 @@ namespace Baxendale.Data.Xml
             Save(o).Save(path);
         }
 
+        internal IXmlObjectSerializer CreateSerializerObject(Type t, object obj)
+        {
+            if (obj == null)
+                return (IXmlObjectSerializer)Activator.CreateInstance(typeof(XmlNullSerializer<>).MakeGenericType(t), this);
+            return CreateSerializerObject(t);
+        }
+
         internal IXmlObjectSerializer CreateSerializerObject(Type t)
         {
             LockingDictionary<Type, IXmlObjectSerializer> cache = _cache;
@@ -354,8 +361,15 @@ namespace Baxendale.Data.Xml
             return serializer;
         }
 
-        private IXmlObjectSerializer<T> CreateSerializerObject<T>()
+        internal IXmlObjectSerializer<T> CreateSerializerObject<T>(T obj)
         {
+            if (obj == null)
+                return new XmlNullSerializer<T>(this);
+            return CreateSerializerObject<T>();
+        }
+
+        internal IXmlObjectSerializer<T> CreateSerializerObject<T>()
+        { 
             LockingDictionary<Type, IXmlObjectSerializer> cache = _cache;
             Type serializerType = GetObjectSerializerType(typeof(T));
             if (serializerType == null)
@@ -373,11 +387,7 @@ namespace Baxendale.Data.Xml
 
         internal static Type GetObjectSerializerType(Type memberType)
         {
-            if (memberType == null)
-            {
-                return typeof(XmlNullSerializer<>).MakeGenericType(memberType);
-            }
-            else if (typeof(IXmlSerializableObject).IsAssignableFrom(memberType))
+            if (typeof(IXmlSerializableObject).IsAssignableFrom(memberType))
             {
                 return typeof(XmlCustomObjectSerializer<>).MakeGenericType(memberType);
             }
