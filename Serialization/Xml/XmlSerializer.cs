@@ -348,7 +348,7 @@ namespace Baxendale.Data.Xml
                 return (IXmlObjectSerializer)Activator.CreateInstance(serializerType, this);
 
             IXmlObjectSerializer serializer;
-            if (!cache.TryGetValue(serializerType, out serializer))
+            if (!cache.TryGetValue(t, out serializer))
                 cache.Add(t, serializer = (IXmlObjectSerializer)Activator.CreateInstance(serializerType, this));
 
             return serializer;
@@ -365,7 +365,7 @@ namespace Baxendale.Data.Xml
                 return (IXmlObjectSerializer<T>)Activator.CreateInstance(serializerType, this);
 
             IXmlObjectSerializer serializer;
-            if (!cache.TryGetValue(serializerType, out serializer))
+            if (!cache.TryGetValue(typeof(T), out serializer))
                 cache.Add(typeof(T), serializer = (IXmlObjectSerializer)Activator.CreateInstance(serializerType, this));
 
             return (IXmlObjectSerializer<T>)serializer;
