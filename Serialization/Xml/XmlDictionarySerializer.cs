@@ -24,11 +24,12 @@ using System.Xml.Linq;
 namespace Baxendale.Data.Xml
 {
     internal class XmlDictionarySerializer<DictionaryType, TKey, TValue> : XmlObjectSerializer<DictionaryType, XElement>
-        where DictionaryType : IDictionary<TKey, TValue>
+        where DictionaryType : IDictionary<TKey, TValue>, new()
     {
         public override bool UsesXAttribute => false;
 
-        public XmlDictionarySerializer()
+        public XmlDictionarySerializer(XmlSerializer serializer)
+            : base(serializer)
         {
         }
 

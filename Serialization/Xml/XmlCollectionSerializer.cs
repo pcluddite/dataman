@@ -29,7 +29,8 @@ namespace Baxendale.Data.Xml
     {
         public override bool UsesXAttribute => false;
 
-        public XmlCollectionSerializer()
+        public XmlCollectionSerializer(XmlSerializer serializer)
+            : base(serializer)
         {
         }
 

@@ -37,6 +37,13 @@ namespace Baxendale.Data.Xml
     internal abstract class XmlObjectSerializer<T, XContentType> : IXmlObjectSerializer<T>
         where XContentType : XObject
     {
+        public XmlSerializer XmlSerializer { get; }
+
+        public XmlObjectSerializer(XmlSerializer serializer)
+        {
+            XmlSerializer = serializer;
+        }
+
         public abstract bool UsesXAttribute { get; }
 
         public abstract T Deserialize(XContentType content);

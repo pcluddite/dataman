@@ -24,11 +24,12 @@ using System.Xml.Linq;
 namespace Baxendale.Data.Xml
 {
     internal class XmlGenericCollectionSerializer<CollectionType, ItemType> : XmlObjectSerializer<CollectionType, XElement>
-        where CollectionType : ICollection<ItemType>
+        where CollectionType : ICollection<ItemType>, new()
     {
         public override bool UsesXAttribute => false;
 
-        public XmlGenericCollectionSerializer()
+        public XmlGenericCollectionSerializer(XmlSerializer serializer)
+            : base(serializer)
         {
         }
 

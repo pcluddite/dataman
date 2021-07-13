@@ -51,7 +51,8 @@ namespace Baxendale.Data.Xml
             }
         }
 
-        public XmlCustomObjectSerializer()
+        public XmlCustomObjectSerializer(XmlSerializer serializer)
+            : base(serializer)
         {
             CustomClassAttribute = typeof(V).GetXmlSerializableClassAttribute() ?? new XmlSerializableClassAttribute()
             {
