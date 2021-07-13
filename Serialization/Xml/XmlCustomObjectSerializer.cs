@@ -87,7 +87,7 @@ namespace Baxendale.Data.Xml
 
         private V DefaultDeserialize(XElement content)
         {
-            V obj = Activator.CreateInstance<V>();
+            V obj = (V)Activator.CreateInstance(typeof(V), nonPublic: true);
             HashSet<FieldInfo> backingFields = new HashSet<FieldInfo>();
             DeserializeProperties(obj, content, backingFields);
             DeserializeFields(obj, content, backingFields);
