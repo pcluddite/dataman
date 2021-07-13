@@ -20,9 +20,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Baxendale.DataManagement.Collections.ReadOnly;
+using Baxendale.Data.Collections.ReadOnly;
 
-namespace Baxendale.DataManagement.Collections
+namespace Baxendale.Data.Collections
 {
     public class CompositeComparer<T> : IComparer<T>, IList<IComparer<T>>, ICollection<IComparer<T>>
     {

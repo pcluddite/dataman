@@ -23,10 +23,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Xml.Linq;
-using Baxendale.DataManagement.Collections;
-using Baxendale.DataManagement.Reflection;
+using Baxendale.Data.Collections;
+using Baxendale.Data.Reflection;
 
-namespace Baxendale.DataManagement.Xml
+namespace Baxendale.Data.Xml
 {
     public static class XmlSerializer
     {

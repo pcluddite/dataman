@@ -20,7 +20,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Baxendale.DataManagement.Collections.Concurrent
+namespace Baxendale.Data.Collections.Concurrent
 {
     public interface ILockingCollection<T> : ICollection<T>, ICollection
     {

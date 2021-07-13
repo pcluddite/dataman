@@ -18,9 +18,9 @@
 //    USA
 //
 using System.Reflection;
-using Baxendale.DataManagement.Reflection;
+using Baxendale.Data.Reflection;
 
-namespace Baxendale.DataManagement.Xml
+namespace Baxendale.Data.Xml
 {
     internal abstract class XmlSerializableMember<TMemberType, TAttribType>
         where TMemberType : MemberInfo

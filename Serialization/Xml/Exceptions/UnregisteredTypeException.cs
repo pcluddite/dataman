@@ -20,7 +20,7 @@
 using System;
 using System.Xml.Linq;
 
-namespace Baxendale.DataManagement.Xml
+namespace Baxendale.Data.Xml
 {
     public class UnregisteredTypeException : XmlSerializationException
     {

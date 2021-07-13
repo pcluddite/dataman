@@ -7,7 +7,7 @@
     <ProjectGuid>{283DD814-E043-4674-95FD-3DF908A11EBA}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Baxendale.DataManagement.Collections</RootNamespace>
+    <RootNamespace>Baxendale.Data.Collections</RootNamespace>
     <AssemblyName>dmcollct</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

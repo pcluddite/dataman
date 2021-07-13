@@ -22,9 +22,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Xml.Linq;
-using Baxendale.DataManagement.Reflection;
+using Baxendale.Data.Reflection;
 
-namespace Baxendale.DataManagement.Xml
+namespace Baxendale.Data.Xml
 {
     internal class XmlCustomObjectSerializer<V> : XmlObjectSerializer<V, XObject>
         where V : IXmlSerializableObject

@@ -18,7 +18,7 @@
 //    USA
 //
 
-namespace Baxendale.DataManagement.Xml
+namespace Baxendale.Data.Xml
 {
     internal class XObjectNotFoundException : XmlSerializationException
     {

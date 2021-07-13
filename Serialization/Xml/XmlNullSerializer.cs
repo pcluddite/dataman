@@ -19,7 +19,7 @@
 //
 using System.Xml.Linq;
 
-namespace Baxendale.DataManagement.Xml
+namespace Baxendale.Data.Xml
 {
     internal class XmlNullSerializer<T> : XmlObjectSerializer<T, XElement>
     {

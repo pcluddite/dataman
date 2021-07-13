@@ -20,7 +20,7 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace Baxendale.DataManagement.Collections.Concurrent
+namespace Baxendale.Data.Collections.Concurrent
 {
     public sealed class LockingHashSet<T> : LockingSetBase<T, HashSet<T>>, ISerializable
     {

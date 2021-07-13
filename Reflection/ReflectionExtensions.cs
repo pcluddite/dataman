@@ -22,7 +22,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace Baxendale.DataManagement.Reflection
+namespace Baxendale.Data.Reflection
 {
     public static class ReflectionExtensions
     {

@@ -19,7 +19,7 @@
 //
 using System;
 
-namespace Baxendale.DataManagement.Xml
+namespace Baxendale.Data.Xml
 {
     public abstract class XmlSerializableMemberAttribute : Attribute
     {

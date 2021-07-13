@@ -21,7 +21,7 @@ using System;
 using System.Collections;
 using System.Reflection;
 
-namespace Baxendale.DataManagement.Collections.NonGenerics
+namespace Baxendale.Data.Collections.NonGenerics
 {
     public static class NonGenericExtensions
     {

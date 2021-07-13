@@ -23,7 +23,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Baxendale.DataManagement.Collections
+namespace Baxendale.Data.Collections
 {
     public class DynamicArray<T> : IList<T>
     {

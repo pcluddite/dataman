@@ -21,7 +21,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Baxendale.DataManagement.Collections.Concurrent
+namespace Baxendale.Data.Collections.Concurrent
 {
     public abstract class LockingDictionaryBase<TKey, TValue, DictionaryType, KeyCollectionType, ValueCollectionType> : ILockingCollection<KeyValuePair<TKey, TValue>>, IDictionary<TKey, TValue>
         where DictionaryType : IDictionary<TKey, TValue>, new()

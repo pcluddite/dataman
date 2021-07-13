@@ -19,7 +19,7 @@
 //
 using System.Collections.Generic;
 
-namespace Baxendale.DataManagement.Collections.ReadOnly
+namespace Baxendale.Data.Collections.ReadOnly
 {
     public sealed class ReadOnlyCollection<T> : ReadOnlyCollectionBase<T>
     {

@@ -24,7 +24,7 @@ using System.Reflection;
 using System.Text;
 using System.Linq;
 
-namespace Baxendale.DataManagement.Collections
+namespace Baxendale.Data.Collections
 {
     public static class Arrays
     {

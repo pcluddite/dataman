@@ -21,7 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
 
-namespace Baxendale.DataManagement.Xml
+namespace Baxendale.Data.Xml
 {
     internal class XmlGenericCollectionSerializer<CollectionType, ItemType> : XmlObjectSerializer<CollectionType, XElement>
         where CollectionType : ICollection<ItemType>

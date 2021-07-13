@@ -21,13 +21,13 @@ using System;
 using System.Xml.Linq;
 using System.Reflection;
 using System.Linq;
-using Baxendale.DataManagement.Reflection;
+using Baxendale.Data.Reflection;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using Baxendale.DataManagement.Collections;
+using Baxendale.Data.Collections;
 using System.Runtime.InteropServices;
 
-namespace Baxendale.DataManagement.Xml
+namespace Baxendale.Data.Xml
 {
     public static class XmlExtensions
     {

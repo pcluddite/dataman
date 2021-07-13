@@ -19,7 +19,7 @@
 //
 using System.Collections.Generic;
 
-namespace Baxendale.DataManagement.Collections
+namespace Baxendale.Data.Collections
 {
     public static class Collections<T>
     {

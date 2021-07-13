@@ -20,9 +20,9 @@
 using System;
 using System.Linq;
 using System.Xml.Linq;
-using Baxendale.DataManagement.Collections;
+using Baxendale.Data.Collections;
 
-namespace Baxendale.DataManagement.Xml
+namespace Baxendale.Data.Xml
 {
     internal class XmlArraySerializer<ArrayType, ElementType> : XmlObjectSerializer<Array, XElement>
     {

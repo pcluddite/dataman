@@ -21,7 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
 
-namespace Baxendale.DataManagement.Xml
+namespace Baxendale.Data.Xml
 {
     internal class XmlDictionarySerializer<DictionaryType, TKey, TValue> : XmlObjectSerializer<DictionaryType, XElement>
         where DictionaryType : IDictionary<TKey, TValue>

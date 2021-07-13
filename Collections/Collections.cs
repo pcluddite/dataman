@@ -20,9 +20,9 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Baxendale.DataManagement.Collections.ReadOnly;
+using Baxendale.Data.Collections.ReadOnly;
 
-namespace Baxendale.DataManagement.Collections
+namespace Baxendale.Data.Collections
 {
     public static class Collections
     {

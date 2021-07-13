@@ -21,7 +21,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Baxendale.DataManagement.Collections.ReadOnly
+namespace Baxendale.Data.Collections.ReadOnly
 {
     public abstract class ReadOnlyCollectionBase<T> : ICollection<T>, ICollection, IReadOnlyCollection<T>, IEnumerable<T>
     {

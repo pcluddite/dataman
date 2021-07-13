@@ -21,7 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Baxendale.DataManagement.Collections.Concurrent
+namespace Baxendale.Data.Collections.Concurrent
 {
     public abstract class LockingListBase<T, ListType> : LockingCollectionBase<T, ListType>, IList<T>
         where ListType : IList<T>, new()

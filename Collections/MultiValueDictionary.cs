@@ -22,7 +22,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Baxendale.DataManagement.Collections
+namespace Baxendale.Data.Collections
 {
     public class MultiValueDictionary<TKey, TValue> : IDictionary<TKey, TValue>, 
         ICollection<KeyValuePair<TKey, TValue>>, IEnumerable<KeyValuePair<TKey, TValue>>, IEnumerable

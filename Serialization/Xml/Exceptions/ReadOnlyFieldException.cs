@@ -19,7 +19,7 @@
 //
 using System.Reflection;
 
-namespace Baxendale.DataManagement.Xml
+namespace Baxendale.Data.Xml
 {
     public class ReadOnlyFieldException : XmlSerializationException
     {

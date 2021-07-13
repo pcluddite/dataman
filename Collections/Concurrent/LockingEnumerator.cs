@@ -22,7 +22,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace Baxendale.DataManagement.Collections.Concurrent
+namespace Baxendale.Data.Collections.Concurrent
 {
     public class LockingEnumerator<T> : IEnumerator<T>
     {

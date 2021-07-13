@@ -20,7 +20,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Baxendale.DataManagement.Collections
+namespace Baxendale.Data.Collections
 {
     public sealed class OneToManyBidictionary<TKey, TValue> : BidirectionalDictionary<TKey, TValue>
     {

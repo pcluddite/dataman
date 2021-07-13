@@ -8,7 +8,7 @@
     <ProjectGuid>{26D9068F-CF73-4B51-8F17-3CF2AADF5CB4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Baxendale.DataManagement.Xml</RootNamespace>
+    <RootNamespace>Baxendale.Data.Xml</RootNamespace>
     <AssemblyName>dmserial</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

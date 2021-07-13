@@ -20,7 +20,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Baxendale.DataManagement.Collections
+namespace Baxendale.Data.Collections
 {
     public interface IBidirectionalDictionary<TKey, TValue> : IDictionary<TKey, TValue>
     {

@@ -20,9 +20,9 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Baxendale.DataManagement.Collections;
+using Baxendale.Data.Collections;
 
-namespace Baxendale.DataManagement.Reflection
+namespace Baxendale.Data.Reflection
 {
     public class MethodInfoComparer : IComparer<MethodInfo>
     {

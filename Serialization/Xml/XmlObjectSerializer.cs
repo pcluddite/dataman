@@ -19,7 +19,7 @@
 //
 using System.Xml.Linq;
 
-namespace Baxendale.DataManagement.Xml
+namespace Baxendale.Data.Xml
 {
     internal interface IXmlObjectSerializer
     {

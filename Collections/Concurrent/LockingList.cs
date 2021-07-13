@@ -20,7 +20,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Baxendale.DataManagement.Collections.Concurrent
+namespace Baxendale.Data.Collections.Concurrent
 {
     public sealed class LockingList<T> : LockingListBase<T, List<T>>
     {

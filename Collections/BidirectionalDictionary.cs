@@ -21,7 +21,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Baxendale.DataManagement.Collections
+namespace Baxendale.Data.Collections
 {
     public abstract class BidirectionalDictionary<TKey, TValue> : IBidirectionalDictionary<TKey, TValue>
     {

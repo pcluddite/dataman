@@ -20,7 +20,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Baxendale.DataManagement.Reflection
+namespace Baxendale.Data.Reflection
 {
     public class TypeComparer : IComparer<Type>
     {

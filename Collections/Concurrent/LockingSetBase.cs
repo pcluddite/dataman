@@ -21,7 +21,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Baxendale.DataManagement.Collections.Concurrent
+namespace Baxendale.Data.Collections.Concurrent
 {
     public abstract class LockingSetBase<T, SetType> : ILockingCollection<T>, ISet<T>
         where SetType : ISet<T>, new()

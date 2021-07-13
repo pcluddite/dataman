@@ -22,7 +22,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Baxendale.DataManagement.Collections.Concurrent
+namespace Baxendale.Data.Collections.Concurrent
 {
     public abstract class LockingCollectionBase<T, CollectionType> : ILockingCollection<T>
         where CollectionType : ICollection<T>, new()
