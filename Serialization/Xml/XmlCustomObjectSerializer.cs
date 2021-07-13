@@ -132,7 +132,7 @@ namespace Baxendale.Data.Xml
 
         public override XObject Serialize(V obj, XName name)
         {
-            MethodInfo serializeMethod = DeserializeMethod ?? FindSerializeMethod<XElement>(SerializeMethodName);
+            MethodInfo serializeMethod = SerializeMethod ?? FindSerializeMethod<XElement>(SerializeMethodName);
             if (serializeMethod == null)
                 return DefaultSerialize(obj, name);
             if (serializeMethod.GetParameters().Length == 1)
