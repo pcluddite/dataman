@@ -45,7 +45,7 @@ namespace Baxendale.Data.Xml
                 if (typeAttribute == null)
                     throw new UnregisteredTypeException(child.Name.ToString());
                 Type itemType = Type.GetType(typeAttribute.Value, true);
-                collection.Add(XmlSerializer.Deserialize(itemType, child, ValueAttributeName));
+                collection.Add(XmlSerializer.Deserialize(itemType, child, null, ValueAttributeName));
             }
             return collection;
         }

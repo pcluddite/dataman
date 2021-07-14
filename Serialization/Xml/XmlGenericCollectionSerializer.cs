@@ -40,15 +40,7 @@ namespace Baxendale.Data.Xml
                 throw new UnsupportedTypeException(typeof(CollectionType));
             foreach (XElement child in content.Elements())
             {
-                Type t = XmlSerializer.GetSerializedType(child.Name.ToString());
-                if (t == null)
-                {
-                    collection.Add(XmlSerializer.Deserialize<ItemType>(child, ValueAttributeName));
-                }
-                else
-                {
-                    collection.Add(XmlSerializer.Deserialize<ItemType>(child));
-                }
+                collection.Add(XmlSerializer.Deserialize<ItemType>(child, null, ValueAttributeName));
             }
             return collection;
         }

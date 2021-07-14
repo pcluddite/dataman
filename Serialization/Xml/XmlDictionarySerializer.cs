@@ -36,10 +36,10 @@ namespace Baxendale.Data.Xml
         public override DictionaryType Deserialize(XElement content)
         {
             DictionaryType dictionary = (DictionaryType)Activator.CreateInstance(typeof(DictionaryType));
-            foreach (XElement child in content.Elements(XmlSerializer.ElementName))
+            foreach (XElement child in content.Elements())
             {
-                TKey key = XmlSerializer.Deserialize<TKey>(child, XmlSerializer.KeyAttributeName);
-                TValue value = XmlSerializer.Deserialize<TValue>(child, XmlSerializer.ValueAttributeName);
+                TKey key = XmlSerializer.Deserialize<TKey>(child, null, XmlSerializer.KeyAttributeName);
+                TValue value = XmlSerializer.Deserialize<TValue>(child, null, ValueAttributeName);
                 dictionary.Add(key, value);
             }
             return dictionary;
@@ -50,9 +50,9 @@ namespace Baxendale.Data.Xml
             XElement element = new XElement(name);
             foreach (KeyValuePair<TKey, TValue> item in obj)
             {
-                XElement a = new XElement(XmlSerializer.ElementName);
-                a.Add(XmlSerializer.Serialize(item.Key, XmlSerializer.KeyAttributeName));
-                a.Add(XmlSerializer.Serialize(item.Value, XmlSerializer.ValueAttributeName));
+                XElement a = new XElement(ElementName);
+                a.Add(XmlSerializer.Serialize(item.Key, ElementName, XmlSerializer.KeyAttributeName));
+                a.Add(XmlSerializer.Serialize(item.Value, ElementName, ValueAttributeName));
                 element.Add(a);
             }
             return element;
