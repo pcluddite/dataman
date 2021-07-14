@@ -210,13 +210,6 @@ namespace Baxendale.Data.Xml
             return Deserialize(t, content);
         }
 
-        internal object Deserialize(MemberInfo member, XElement content)
-        {
-            Type memberType = member.GetReturnType();
-            XmlSerializableMemberAttribute attribute = member.GetXmlSerializableMemberAttribute();
-            return Deserialize(memberType, content, attribute.Name);
-        }
-
         private Type GetTypeFromNode(XElement node)
         {
             if (node.Name == ElementName)
