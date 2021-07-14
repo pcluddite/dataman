@@ -113,7 +113,20 @@ namespace Baxendale.Data.Xml
             IXmlObjectSerializer serializer = XmlSerializer.CreateSerializerObject(member.MemberType);
             serializer.ElementName = member.Attribute.ElementName;
             serializer.ValueAttributeName = member.Attribute.AttributeName;
-            object value = serializer.Deserialize(content);
+
+            XObject memberContent;
+            if (serializer.UsesXAttribute)
+            {
+                memberContent = content.Attribute(member.Name);
+            }
+            else
+            {
+                memberContent = content.Element(member.Name);
+            }
+
+            object value = null;
+            if (memberContent != null)
+                value = serializer.Deserialize(memberContent);
             if (value == null)
             {
                 if (member.Default == null && member.MemberType.IsValueType)
