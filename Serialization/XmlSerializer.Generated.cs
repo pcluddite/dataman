@@ -18,14 +18,8 @@
 //    USA
 //
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
 using System.Xml.Linq;
-using Baxendale.Data.Collections;
 using Baxendale.Data.Collections.Concurrent;
-using Baxendale.Data.Reflection;
 
 namespace Baxendale.Data.Xml
 {
@@ -62,9 +56,9 @@ namespace Baxendale.Data.Xml
             {
                 content = serializer.Serialize(obj, contentName);
             }
-            catch (TargetInvocationException ex)
+            catch (Exception ex) when(!(ex is XmlSerializationException))
             {
-                throw ex.GetBaseException();
+                throw new XmlSerializationException(new XElement(contentName), ex.GetBaseException());
             }
             if (serializer.UsesXAttribute)
             {
@@ -109,9 +103,11 @@ namespace Baxendale.Data.Xml
             {
                 return serializer.Deserialize(content);
             }
-            catch (TargetInvocationException ex)
+            catch (Exception ex) when(!(ex is XmlSerializationException))
             {
-                throw ex.GetBaseException();
+                if (ex.GetBaseException() is XmlSerializationException)
+                    throw ex.GetBaseException();
+                throw new XmlSerializationException(content, ex.GetBaseException());
             }
         }
 
@@ -125,9 +121,11 @@ namespace Baxendale.Data.Xml
             {
                 return serializer.Deserialize(content);
             }
-            catch (TargetInvocationException ex)
+            catch (Exception ex) when(!(ex is XmlSerializationException))
             {
-                throw ex.GetBaseException();
+                if (ex.GetBaseException() is XmlSerializationException)
+                    throw ex.GetBaseException();
+                throw new XmlSerializationException(content, ex.GetBaseException());
             }
         }
 
@@ -145,14 +143,25 @@ namespace Baxendale.Data.Xml
             if (content == null) throw new ArgumentNullException(nameof(content));
             if (serializer.UsesXAttribute)
             {
-                XAttribute attribute = content.Attribute(contentName ?? ValueAttributeName);
+                if (contentName == null)
+                    contentName = ValueAttributeName;
+                XAttribute attribute = content.Attribute(contentName);
                 if (attribute == null)
-                    throw new XObjectNotFoundException(contentName.ToString());
+                    throw new XObjectNotFoundException(content, contentName);
                 return serializer.Deserialize(attribute);
             }
             if (contentName != null)
                 content = content.Element(contentName);
-            return serializer.Deserialize(content);
+            try
+            {
+                return serializer.Deserialize(content);
+            }
+            catch (Exception ex) when(!(ex is XmlSerializationException))
+            {
+                if (ex.GetBaseException() is XmlSerializationException)
+                    throw ex.GetBaseException();
+                throw new XmlSerializationException(content, ex.GetBaseException());
+            }
         }
 
         public XElement Serialize(Type t, object obj)
@@ -186,9 +195,9 @@ namespace Baxendale.Data.Xml
             {
                 content = serializer.Serialize(obj, contentName);
             }
-            catch (TargetInvocationException ex)
+            catch (Exception ex) when(!(ex is XmlSerializationException))
             {
-                throw ex.GetBaseException();
+                throw new XmlSerializationException(new XElement(contentName), ex.GetBaseException());
             }
             if (serializer.UsesXAttribute)
             {
@@ -233,9 +242,11 @@ namespace Baxendale.Data.Xml
             {
                 return serializer.Deserialize(content);
             }
-            catch (TargetInvocationException ex)
+            catch (Exception ex) when(!(ex is XmlSerializationException))
             {
-                throw ex.GetBaseException();
+                if (ex.GetBaseException() is XmlSerializationException)
+                    throw ex.GetBaseException();
+                throw new XmlSerializationException(content, ex.GetBaseException());
             }
         }
 
@@ -249,9 +260,11 @@ namespace Baxendale.Data.Xml
             {
                 return serializer.Deserialize(content);
             }
-            catch (TargetInvocationException ex)
+            catch (Exception ex) when(!(ex is XmlSerializationException))
             {
-                throw ex.GetBaseException();
+                if (ex.GetBaseException() is XmlSerializationException)
+                    throw ex.GetBaseException();
+                throw new XmlSerializationException(content, ex.GetBaseException());
             }
         }
 
@@ -269,14 +282,25 @@ namespace Baxendale.Data.Xml
             if (content == null) throw new ArgumentNullException(nameof(content));
             if (serializer.UsesXAttribute)
             {
-                XAttribute attribute = content.Attribute(contentName ?? ValueAttributeName);
+                if (contentName == null)
+                    contentName = ValueAttributeName;
+                XAttribute attribute = content.Attribute(contentName);
                 if (attribute == null)
-                    throw new XObjectNotFoundException(contentName.ToString());
+                    throw new XObjectNotFoundException(content, contentName);
                 return serializer.Deserialize(attribute);
             }
             if (contentName != null)
                 content = content.Element(contentName);
-            return serializer.Deserialize(content);
+            try
+            {
+                return serializer.Deserialize(content);
+            }
+            catch (Exception ex) when(!(ex is XmlSerializationException))
+            {
+                if (ex.GetBaseException() is XmlSerializationException)
+                    throw ex.GetBaseException();
+                throw new XmlSerializationException(content, ex.GetBaseException());
+            }
         }
     }
 }

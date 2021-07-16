@@ -17,24 +17,25 @@
 //    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
 //    USA
 //
-using System.Reflection;
-using System.Xml.Linq;
+using System;
 
 namespace Baxendale.Data.Xml
 {
-    public class ReadOnlyFieldException : XmlSerializationException
+    public class SerializerException : Exception
     {
-        public MemberInfo Member { get; }
-
-        public ReadOnlyFieldException(XObject source, MemberInfo member)
-            : this(source, member, $"{member.Name} in {member.DeclaringType.FullName} is read only and cannot be set")
+        public SerializerException()
+            : base()
         {
         }
 
-        public ReadOnlyFieldException(XObject source, MemberInfo member, string message)
-            : base(source, message)
+        public SerializerException(string message)
+            : base(message)
         {
-            Member = member;
+        }
+
+        public SerializerException(string message, Exception innerException)
+            : base(message, innerException)
+        {
         }
     }
 }

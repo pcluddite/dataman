@@ -21,7 +21,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Xml.Linq;
 using Baxendale.Data.Reflection;
 
@@ -78,7 +77,7 @@ namespace Baxendale.Data.Xml
             {
                 XElement xelementContent = content as XElement;
                 if (xelementContent == null)
-                    throw new UnsupportedTypeException(typeof(V), "Cannot deserialize from given XObject type.");
+                    throw new XmlSerializationException(content, $"Cannot deserialize {typeof(V).Name} from given XObject type.");
                 return DefaultDeserialize((XElement)content);
             }
             if (deserializeMethod.GetParameters().Length == 1)
@@ -91,7 +90,7 @@ namespace Baxendale.Data.Xml
             V obj = (V)Activator.CreateInstance(typeof(V), nonPublic: true);
             HashSet<FieldInfo> backingFields = new HashSet<FieldInfo>();
 
-            foreach (XmlSerializableProperty property in typeof(V).GetSerializableProperties())
+            foreach (XmlSerializableProperty property in typeof(V).GetSerializableProperties(content))
             {
                 FieldInfo backingField = property.BackingField;
                 if (backingField != null)
@@ -99,10 +98,9 @@ namespace Baxendale.Data.Xml
                 property.SetValue(obj, DeserializeMember(property, content));
             }
 
-            foreach (XmlSerializableField field in typeof(V).GetSerializableFields(CustomClassAttribute, backingFields))
+            foreach (XmlSerializableField field in typeof(V).GetSerializableFields(content, CustomClassAttribute, backingFields))
             {
-                FieldInfo fieldInfo = field.Member;
-                fieldInfo.SetValue(obj, DeserializeMember(field, content));
+                field.SetValue(obj, DeserializeMember(field, content));
             }
 
             return obj;
@@ -111,8 +109,8 @@ namespace Baxendale.Data.Xml
         private object DeserializeMember(IXmlSerializableMember member, XElement content)
         {
             IXmlObjectSerializer serializer = XmlSerializer.CreateSerializerObject(member.MemberType);
-            serializer.ElementName = member.Attribute.ElementName;
-            serializer.ValueAttributeName = member.Attribute.AttributeName;
+            serializer.ElementName = member.ElementName;
+            serializer.ValueAttributeName = member.AttributeName;
 
             XObject memberContent;
             if (serializer.UsesXAttribute)
@@ -151,7 +149,7 @@ namespace Baxendale.Data.Xml
             XElement content = new XElement(name);
             HashSet<FieldInfo> backingFields = new HashSet<FieldInfo>();
 
-            foreach (XmlSerializableProperty property in typeof(V).GetSerializableProperties(CustomClassAttribute))
+            foreach (XmlSerializableProperty property in typeof(V).GetSerializableProperties(content, CustomClassAttribute))
             {
                 FieldInfo backingField = property.BackingField;
                 if (backingField != null)
@@ -159,7 +157,7 @@ namespace Baxendale.Data.Xml
                 content.Add(SerializeMember(obj, property));
             }
 
-            foreach (XmlSerializableField field in typeof(V).GetSerializableFields(CustomClassAttribute, backingFields))
+            foreach (XmlSerializableField field in typeof(V).GetSerializableFields(content, CustomClassAttribute, backingFields))
             {
                 XObject fieldContent = SerializeMember(obj, field);
                 if (fieldContent != null)
@@ -172,8 +170,8 @@ namespace Baxendale.Data.Xml
         private XObject SerializeMember(V obj, IXmlSerializableMember member)
         {
             IXmlObjectSerializer serializer = XmlSerializer.CreateSerializerObject(member.MemberType);
-            serializer.ElementName = member.Attribute.ElementName;
-            serializer.ValueAttributeName = member.Attribute.AttributeName;
+            serializer.ElementName = member.ElementName;
+            serializer.ValueAttributeName = member.AttributeName;
             return serializer.Serialize(member.GetValue(obj), member.Name);
         }
 

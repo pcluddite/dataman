@@ -21,7 +21,7 @@ using System;
 
 namespace Baxendale.Data.Xml
 {
-    public class UnsupportedTypeException : XmlSerializationException
+    public class UnsupportedTypeException : SerializerException
     {
         public Type UnsupportedType { get; private set; }
 

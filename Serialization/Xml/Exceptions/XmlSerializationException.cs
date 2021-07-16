@@ -18,14 +18,34 @@
 //    USA
 //
 using System;
+using System.Xml.Linq;
 
 namespace Baxendale.Data.Xml
 {
     public class XmlSerializationException : Exception
     {
-        public XmlSerializationException(string message)
+        public XObject XmlSource { get; }
+
+        public XmlSerializationException(XObject source)
+            : this(source, $"An exception occurred when processing {source?.BaseUri}")
+        {
+        }
+
+        public XmlSerializationException(XObject source, Exception innerException)
+            : this(source, $"An exception occurred when processing {source?.BaseUri} because of the following: {innerException?.Message}")
+        {
+        }
+
+        public XmlSerializationException(XObject source, string message)
             : base(message)
         {
+            XmlSource = source;
+        }
+
+        public XmlSerializationException(XObject source, string message, Exception innerException)
+            : base(message, innerException)
+        {
+            XmlSource = source;
         }
     }
 }

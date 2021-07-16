@@ -19,7 +19,7 @@
 //
 using System;
 using System.Reflection;
-using System.Runtime.InteropServices;
+using System.Xml.Linq;
 using Baxendale.Data.Reflection;
 
 namespace Baxendale.Data.Xml
@@ -33,6 +33,11 @@ namespace Baxendale.Data.Xml
         bool SerializeDefault { get; }
         object Default { get; }
         bool HasAttribute { get;}
+        bool IsReadOnly { get; }
+        XObject Source { get; }
+
+        string ElementName { get; }
+        string AttributeName { get; }
 
         void SetValue(object instance, object value);
         object GetValue(object instance);
@@ -44,37 +49,41 @@ namespace Baxendale.Data.Xml
     {
         public TMemberType Member { get; }
         public TAttribType Attribute { get; }
+        public XObject Source { get; }
 
         public string Name => Attribute.Name;
+        public string ElementName => Attribute.ElementName;
+        public string AttributeName => Attribute.AttributeName;
         public bool SerializeDefault => Attribute.SerializeDefault;
         public object Default => Attribute.Default;
         public bool HasAttribute { get; }
-
+        
         public abstract Type MemberType { get; }
+        public abstract bool IsReadOnly { get; }
 
-        protected XmlSerializableMember(TMemberType member)
-            : this(member, member.DeclaringType.GetXmlSerializableClassAttribute())
+        protected XmlSerializableMember(XObject source, TMemberType member)
+            : this(source, member, member.DeclaringType.GetXmlSerializableClassAttribute())
         {
-            Member = member;
         }
 
-        protected XmlSerializableMember(TMemberType memberType, XmlSerializableClassAttribute xmlSerializableClassAttribute)
+        protected XmlSerializableMember(XObject source, TMemberType member, XmlSerializableClassAttribute xmlSerializableClassAttribute)
         {
-            TAttribType attrib = (TAttribType)memberType.GetXmlSerializableMemberAttribute();
+            Source = source;
+            TAttribType attrib = (TAttribType)member.GetXmlSerializableMemberAttribute();
             HasAttribute = attrib != null;
             if (attrib == null)
             {
                 HasAttribute = false;
                 attrib = new TAttribType()
                 {
-                    Name = memberType.Name,
-                    Default = memberType.GetReturnType().CreateDefault(),
+                    Name = member.Name,
+                    Default = member.GetReturnType().CreateDefault(),
                 };
             }
             Attribute = attrib;
             if (xmlSerializableClassAttribute?.OverrideMemberOptions == true)
                 Attribute.SerializeDefault = xmlSerializableClassAttribute.SerializeDefault;
-            Member = memberType;
+            Member = member;
         }
 
         MemberInfo IXmlSerializableMember.Member
@@ -101,20 +110,21 @@ namespace Baxendale.Data.Xml
     {
         public override Type MemberType => Member.FieldType;
 
-        public XmlSerializableField(FieldInfo field)
-            : base(field)
+        public override bool IsReadOnly => Member.IsLiteral || Member.IsInitOnly;
+
+        public XmlSerializableField(XObject source, FieldInfo field)
+            : base(source, field)
         {
         }
 
-        public XmlSerializableField(FieldInfo field, XmlSerializableClassAttribute classAttribute)
-            : base(field, classAttribute)
+        public XmlSerializableField(XObject source, FieldInfo field, XmlSerializableClassAttribute classAttribute)
+            : base(source, field, classAttribute)
         {
         }
 
         public override void SetValue(object instance, object value)
         {
-            if (Member.IsLiteral || Member.IsInitOnly)
-                throw new ReadOnlyFieldException(Member);
+            if (IsReadOnly) throw new ReadOnlyFieldException(Source, Member);
             if (value == null && Default == null && MemberType.IsValueType)
                 Attribute.Default = Activator.CreateInstance(MemberType);
             Member.SetValue(instance, value);
@@ -122,6 +132,7 @@ namespace Baxendale.Data.Xml
 
         public override object GetValue(object instance)
         {
+            if (IsReadOnly) throw new ReadOnlyFieldException(Source, Member);
             object value = Member.GetValue(instance);
             if (value == null && SerializeDefault && Default == null && MemberType.IsValueType)
                 return Activator.CreateInstance(MemberType);
@@ -131,76 +142,82 @@ namespace Baxendale.Data.Xml
 
     internal class XmlSerializableProperty : XmlSerializableMember<PropertyInfo, XmlSerializablePropertyAttribute>
     {
+        private readonly Lazy<FieldInfo> _backingField;
+
         public override Type MemberType
         {
             get
             {
-                FieldInfo backingField = BackingField;
-                if (backingField == null)
+                if (BackingField == null)
                     return Member.PropertyType;
-                return backingField.FieldType;
+                return BackingField.FieldType;
             }
         }
 
-        public FieldInfo BackingField
+        public FieldInfo BackingField => _backingField.Value;
+
+        public override bool IsReadOnly
         {
             get
             {
-                if (Attribute.BackingField == null)
-                    return null;
-                FieldInfo backingField = Member.DeclaringType.GetField(Attribute.BackingField, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-                if (backingField == null)
-                    throw new FieldNotFoundException(Member.DeclaringType, Attribute.BackingField);
-                if (backingField.IsLiteral || backingField.IsInitOnly)
-                    throw new ReadOnlyFieldException(backingField);
-                return backingField;
+                if (BackingField == null)
+                    return Member.CanWrite;
+                return BackingField.IsLiteral || BackingField.IsInitOnly;
             }
         }
 
-        public XmlSerializableProperty(PropertyInfo property)
-            : base(property)
+        public XmlSerializableProperty(XObject source, PropertyInfo property)
+            : base(source, property)
         {
+            _backingField = new Lazy<FieldInfo>(FindBackingFieldField);
         }
 
-        public XmlSerializableProperty(PropertyInfo property, XmlSerializableClassAttribute classAttribute)
-            : base(property, classAttribute)
+        public XmlSerializableProperty(XObject source, PropertyInfo property, XmlSerializableClassAttribute classAttribute)
+            : base(source, property, classAttribute)
         {
+            _backingField = new Lazy<FieldInfo>(FindBackingFieldField);
         }
 
         public override object GetValue(object instance)
         {
-            FieldInfo backingField = BackingField;
-            if (backingField == null)
+            if (BackingField == null)
             {
-                if (Member.SetMethod == null)
-                    throw new ReadOnlyFieldException(Member);
+                if (IsReadOnly) throw new ReadOnlyFieldException(Source, Member);
                 return Member.GetValue(instance);
             }
-            if (backingField.IsLiteral || backingField.IsInitOnly)
-                throw new ReadOnlyFieldException(Member);
-            object value = backingField.GetValue(instance);
+
+            if (IsReadOnly) throw new ReadOnlyFieldException(Source, BackingField);
+            object value = BackingField.GetValue(instance);
             if (value == null && SerializeDefault && Default == null && MemberType.IsValueType)
                 return Activator.CreateInstance(MemberType);
+
             return value;
         }
 
         public override void SetValue(object instance, object value)
         {
-            FieldInfo backingField = BackingField;
             if (value == null && SerializeDefault && Default == null && MemberType.IsValueType)
                 value = Activator.CreateInstance(MemberType);
-            if (backingField == null)
+            if (BackingField == null)
             {
-                if (Member.SetMethod == null)
-                    throw new ReadOnlyFieldException(Member);
+                if (IsReadOnly) throw new ReadOnlyFieldException(Source, Member);
                 Member.SetValue(instance, value);
             }
             else
             {
-                if (backingField.IsLiteral || backingField.IsInitOnly)
-                    throw new ReadOnlyFieldException(Member);
-                backingField.SetValue(instance, value);
+                if (IsReadOnly) throw new ReadOnlyFieldException(Source, BackingField);
+                BackingField.SetValue(instance, value);
             }
+        }
+
+        private FieldInfo FindBackingFieldField()
+        {
+            if (Attribute.BackingField == null)
+                return null;
+            FieldInfo field = Member.DeclaringType.GetField(Attribute.BackingField, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            if (field == null)
+                throw new FieldNotFoundException(Source, MemberType, Name);
+            return field;
         }
     }
 }

@@ -18,11 +18,10 @@
 //    USA
 //
 using System;
-using System.Xml.Linq;
 
 namespace Baxendale.Data.Xml
 {
-    public class UnregisteredTypeException : XmlSerializationException
+    public class UnregisteredTypeException : SerializerException
     {
         public string ElementName { get; private set; }
         public Type UnregisteredType { get; private set; }

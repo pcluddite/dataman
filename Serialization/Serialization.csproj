@@ -55,6 +55,7 @@
     </Compile>
     <Compile Include="Xml\Exceptions\FieldNotFoundException.cs" />
     <Compile Include="Xml\Exceptions\ReadOnlyFieldException.cs" />
+    <Compile Include="Xml\Exceptions\SerializerException.cs" />
     <Compile Include="Xml\XmlArraySerializer.cs">
       <DependentUpon>XmlObjectSerializer.cs</DependentUpon>
     </Compile>

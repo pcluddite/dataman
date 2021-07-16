@@ -18,6 +18,7 @@
 //    USA
 //
 using System;
+using System.Xml.Linq;
 
 namespace Baxendale.Data.Xml
 {
@@ -26,8 +27,8 @@ namespace Baxendale.Data.Xml
         public Type DeclaringType { get; }
         public string MissingFieldName { get; }
 
-        public FieldNotFoundException(Type declaringType, string fieldName)
-            : base($"{declaringType.FullName} does not contain a field named {fieldName}")
+        public FieldNotFoundException(XObject source, Type declaringType, string fieldName)
+            : base(source, $"{declaringType.FullName} does not contain a field named {fieldName}")
         {
             DeclaringType = declaringType;
             MissingFieldName = fieldName;

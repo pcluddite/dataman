@@ -18,14 +18,21 @@
 //    USA
 //
 
+using System.Xml.Linq;
+
 namespace Baxendale.Data.Xml
 {
     internal class XObjectNotFoundException : XmlSerializationException
     {
         public string Name { get; }
 
-        public XObjectNotFoundException(string name)
-            : base($"{name} was not found in the current element")
+        public XObjectNotFoundException(XObject source, XName name)
+            : this(source, name?.ToString())
+        {
+        }
+
+        public XObjectNotFoundException(XObject source, string name)
+            : base(source, $"{name} was not found in the current element")
         {
             Name = name;
         }

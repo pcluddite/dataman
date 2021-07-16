@@ -21,11 +21,9 @@ using System;
 using System.Xml.Linq;
 using System.Reflection;
 using System.Linq;
-using Baxendale.Data.Reflection;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Baxendale.Data.Collections;
-using System.Runtime.InteropServices;
 
 namespace Baxendale.Data.Xml
 {
@@ -87,22 +85,22 @@ namespace Baxendale.Data.Xml
             throw new ArgumentException();
         }
 
-        internal static IEnumerable<XmlSerializableField> GetSerializableFields(this Type type)
+        internal static IEnumerable<XmlSerializableField> GetSerializableFields(this Type type, XObject source)
         {
-            return GetSerializableFields(type, type.GetXmlSerializableClassAttribute(), Collections<FieldInfo>.EmptyCollection);
+            return GetSerializableFields(type, source, type.GetXmlSerializableClassAttribute(), Collections<FieldInfo>.EmptyCollection);
         }
 
-        internal static IEnumerable<XmlSerializableField> GetSerializableFields(this Type type, XmlSerializableClassAttribute classAttribute)
+        internal static IEnumerable<XmlSerializableField> GetSerializableFields(this Type type, XObject source, XmlSerializableClassAttribute classAttribute)
         {
-            return GetSerializableFields(type, classAttribute, Collections<FieldInfo>.EmptyCollection);
+            return GetSerializableFields(type, source, classAttribute, Collections<FieldInfo>.EmptyCollection);
         }
 
-        internal static IEnumerable<XmlSerializableField> GetSerializableFields(this Type type, ICollection<FieldInfo> excluded)
-        {
-            return GetSerializableFields(type, type.GetXmlSerializableClassAttribute(), excluded);
+        internal static IEnumerable<XmlSerializableField> GetSerializableFields(this Type type, XObject source, ICollection<FieldInfo> excluded)
+{
+            return GetSerializableFields(type, source, type.GetXmlSerializableClassAttribute(), excluded);
         }
 
-        internal static IEnumerable<XmlSerializableField> GetSerializableFields(this Type type, XmlSerializableClassAttribute classAttribute, ICollection<FieldInfo> excluded)
+        internal static IEnumerable<XmlSerializableField> GetSerializableFields(this Type type, XObject source, XmlSerializableClassAttribute classAttribute, ICollection<FieldInfo> excluded)
         {
             foreach (FieldInfo fieldInfo in type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
             {
@@ -110,19 +108,21 @@ namespace Baxendale.Data.Xml
                     continue; // skip anything compiler generated
                 if (fieldInfo.GetCustomAttribute<XmlDoNotSerializeAttribute>(inherit: true) != null)
                     continue; // skip fields tagged with this attribute
-                XmlSerializableField field = new XmlSerializableField(fieldInfo, classAttribute);
+                if (excluded.Contains(fieldInfo))
+                    continue; // skip excluded (obv)
+                XmlSerializableField field = new XmlSerializableField(source, fieldInfo, classAttribute);
                 if (!field.HasAttribute && classAttribute?.AllFields == false)
                     continue; // skip fields that do not have this attribute if not serializing all fields
                 yield return field;
             }
         }
 
-        internal static IEnumerable<XmlSerializableProperty> GetSerializableProperties(this Type type)
+        internal static IEnumerable<XmlSerializableProperty> GetSerializableProperties(this Type type, XObject source)
         {
-            return GetSerializableProperties(type, type.GetXmlSerializableClassAttribute());
+            return GetSerializableProperties(type, source, type.GetXmlSerializableClassAttribute());
         }
 
-        internal static IEnumerable<XmlSerializableProperty> GetSerializableProperties(this Type type, XmlSerializableClassAttribute classAttribute)
+        internal static IEnumerable<XmlSerializableProperty> GetSerializableProperties(this Type type, XObject source, XmlSerializableClassAttribute classAttribute)
         {
             foreach (PropertyInfo propertyInfo in type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
             {
@@ -130,7 +130,7 @@ namespace Baxendale.Data.Xml
                     continue; // skip anything compiler generated
                 if (propertyInfo.GetCustomAttribute<XmlDoNotSerializeAttribute>(inherit: true) != null)
                     continue; // skip properties tagged with this attribute
-                XmlSerializableProperty prop = new XmlSerializableProperty(propertyInfo, classAttribute);
+                XmlSerializableProperty prop = new XmlSerializableProperty(source, propertyInfo, classAttribute);
                 if (!prop.HasAttribute && classAttribute?.AllProperties == false)
                     continue; // skip properties that do not have this attribute if not serializing all properties
                 yield return prop;
