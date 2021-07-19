@@ -161,7 +161,7 @@ namespace Baxendale.Data.Xml
             get
             {
                 if (BackingField == null)
-                    return Member.CanWrite;
+                    return !Member.CanWrite;
                 return BackingField.IsLiteral || BackingField.IsInitOnly;
             }
         }
