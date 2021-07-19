@@ -69,6 +69,11 @@ namespace Baxendale.Data.Xml
             }
         }
 
+        public XSerializerCustomTypesMap(XmlSerializer serializer)
+        {
+            XmlSerializer = serializer;
+        }
+
         public void Add<T>(XName name)
             where T : IXmlSerializableObject
         {

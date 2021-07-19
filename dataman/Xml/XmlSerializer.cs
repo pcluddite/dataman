@@ -22,8 +22,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml.Linq;
-using Baxendale.Data.Collections;
-using Baxendale.Data.Collections.Concurrent;
 using Baxendale.Data.Reflection;
 
 namespace Baxendale.Data.Xml
@@ -47,10 +45,11 @@ namespace Baxendale.Data.Xml
         internal static readonly XName IndexAttributeName = ReservedNamespace + "i";
         internal static readonly XName TypeAttributeName = ReservedNamespace + "t";
 
-        private readonly XSerializerCustomTypesMap SerializableTypes = new XSerializerCustomTypesMap();
+        private readonly XSerializerCustomTypesMap SerializableTypes;
 
         public XmlSerializer()
         {
+            SerializableTypes = new XSerializerCustomTypesMap(this);
         }
 
         public void RegisterType<T>(XName name) where T : IXmlSerializableObject
