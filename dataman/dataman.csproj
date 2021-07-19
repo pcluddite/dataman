@@ -8,8 +8,8 @@
     <ProjectGuid>{26D9068F-CF73-4B51-8F17-3CF2AADF5CB4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Baxendale.Data.Xml</RootNamespace>
-    <AssemblyName>dmserial</AssemblyName>
+    <RootNamespace>Baxendale.Data</RootNamespace>
+    <AssemblyName>dataman</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
@@ -48,7 +48,40 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="XmlSerializer.Generated.cs">
+    <Compile Include="Collections\Arrays.cs" />
+    <Compile Include="Collections\BidirectionalDictionary.cs" />
+    <Compile Include="Collections\Collections%28T%29.cs" />
+    <Compile Include="Collections\Collections.cs" />
+    <Compile Include="Collections\CompositeComparer.cs" />
+    <Compile Include="Collections\Concurrent\ILockingCollection.cs" />
+    <Compile Include="Collections\Concurrent\LockingCollection.cs" />
+    <Compile Include="Collections\Concurrent\LockingCollectionBase.cs" />
+    <Compile Include="Collections\Concurrent\LockingDictionary.cs" />
+    <Compile Include="Collections\Concurrent\LockingDictionaryBase.cs" />
+    <Compile Include="Collections\Concurrent\LockingEnumerator.cs" />
+    <Compile Include="Collections\Concurrent\LockingHashSet.cs" />
+    <Compile Include="Collections\Concurrent\LockingList.cs" />
+    <Compile Include="Collections\Concurrent\LockingListBase.cs" />
+    <Compile Include="Collections\Concurrent\LockingSetBase.cs" />
+    <Compile Include="Collections\DynamicArray.cs" />
+    <Compile Include="Collections\Enumerable.cs" />
+    <Compile Include="Collections\IBidirectionalDictionary.cs" />
+    <Compile Include="Collections\ListSegment.cs" />
+    <Compile Include="Collections\MultiValueDictionary.cs" />
+    <Compile Include="Collections\NonGenerics\NonGenericExtensions.cs" />
+    <Compile Include="Collections\OneToManyBidictionary.cs" />
+    <Compile Include="Collections\OneToOneBidictionary.cs" />
+    <Compile Include="Collections\ReadOnly\ReadOnlyCollection.cs" />
+    <Compile Include="Collections\ReadOnly\ReadOnlyCollectionBase.cs" />
+    <Compile Include="Collections\ReadOnly\ReadOnlyList.cs" />
+    <Compile Include="Collections\ReadOnly\ReadOnlySet.cs" />
+    <Compile Include="Collections\ReverseEnumerator.cs" />
+    <Compile Include="Collections\SingletonSet.cs" />
+    <Compile Include="Collections\Vector.cs" />
+    <Compile Include="Reflection\MethodInfoComparer.cs" />
+    <Compile Include="Reflection\ReflectionExtensions.cs" />
+    <Compile Include="Reflection\TypeComparer.cs" />
+    <Compile Include="Xml\XmlSerializer.Generated.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>XmlSerializer.tt</DependentUpon>
@@ -92,24 +125,15 @@
     <Compile Include="Xml\Exceptions\XObjectNotFoundException.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Collections\Collections.csproj">
-      <Project>{283dd814-e043-4674-95fd-3df908a11eba}</Project>
-      <Name>Collections</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Reflection\Reflection.csproj">
-      <Project>{f1885a10-bea4-4296-b028-14d5082ffe4c}</Project>
-      <Name>Reflection</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="XmlSerializer.tt">
+    <Content Include="Xml\XmlSerializer.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>XmlSerializer.Generated.cs</LastGenOutput>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

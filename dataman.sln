@@ -3,11 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31424.327
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serialization", "Serialization\Serialization.csproj", "{26D9068F-CF73-4B51-8F17-3CF2AADF5CB4}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Collections", "Collections\Collections.csproj", "{283DD814-E043-4674-95FD-3DF908A11EBA}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reflection", "Reflection\Reflection.csproj", "{F1885A10-BEA4-4296-B028-14D5082FFE4C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dataman", "dataman\dataman.csproj", "{26D9068F-CF73-4B51-8F17-3CF2AADF5CB4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,14 +15,6 @@ Global
 		{26D9068F-CF73-4B51-8F17-3CF2AADF5CB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{26D9068F-CF73-4B51-8F17-3CF2AADF5CB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{26D9068F-CF73-4B51-8F17-3CF2AADF5CB4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{283DD814-E043-4674-95FD-3DF908A11EBA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{283DD814-E043-4674-95FD-3DF908A11EBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{283DD814-E043-4674-95FD-3DF908A11EBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{283DD814-E043-4674-95FD-3DF908A11EBA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F1885A10-BEA4-4296-B028-14D5082FFE4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F1885A10-BEA4-4296-B028-14D5082FFE4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F1885A10-BEA4-4296-B028-14D5082FFE4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F1885A10-BEA4-4296-B028-14D5082FFE4C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
