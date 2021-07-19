@@ -50,7 +50,7 @@ namespace Baxendale.Data.Xml
             XElement element = new XElement(name);
             foreach (ItemType item in obj)
             {
-                element.Add(XmlSerializer.Serialize(item, ElementName, ValueAttributeName));
+                element.Add(XmlSerializer.Serialize(item, ElementName ?? XmlSerializer.ElementName, ValueAttributeName ?? XmlSerializer.ValueAttributeName));
             }
             return element;
         }

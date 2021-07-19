@@ -140,7 +140,7 @@ namespace Baxendale.Data.Xml
                 Type collectionType = memberType.GetGenericBaseType(typeof(ICollection<>));
                 if (collectionType == null)
                     throw new UnsupportedTypeException(memberType);
-                return typeof(XmlGenericCollectionSerializer<,>).MakeGenericType(collectionType, collectionType.GetGenericArguments()[0]);
+                return typeof(XmlGenericCollectionSerializer<,>).MakeGenericType(memberType, collectionType.GetGenericArguments()[0]);
             }
             else if (typeof(ICollection).IsAssignableFrom(memberType))
             {

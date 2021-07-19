@@ -98,11 +98,21 @@ namespace Baxendale.Data.Reflection
             do
             {
                 Type cur = GetFullTypeDefinition(type);
-                if (interfaceType == cur || (isParameterLessGeneric && cur.GetInterfaces().Select(i => GetFullTypeDefinition(i)).Contains(GetFullTypeDefinition(interfaceType))))
+                if (interfaceType == cur) 
                 {
                     return type;
                 }
-                else if (!isParameterLessGeneric)
+                else if (isParameterLessGeneric)
+                {
+                    Type fullInterfaceType = GetFullTypeDefinition(interfaceType);
+                    foreach (Type declaredInterface in cur.GetInterfaces())
+                    {
+                        if (GetFullTypeDefinition(declaredInterface) == fullInterfaceType)
+                            return declaredInterface;
+                    }
+                }
+
+                if (!isParameterLessGeneric)
                 {
                     foreach (Type item in type.GetInterfaces().Where(i => GetFullTypeDefinition(interfaceType) == GetFullTypeDefinition(i)))
                     {

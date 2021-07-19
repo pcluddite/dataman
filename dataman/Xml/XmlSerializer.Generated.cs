@@ -19,7 +19,6 @@
 //
 using System;
 using System.Xml.Linq;
-using Baxendale.Data.Collections.Concurrent;
 
 namespace Baxendale.Data.Xml
 {
@@ -42,24 +41,28 @@ namespace Baxendale.Data.Xml
 
         internal XElement Serialize<T>(T obj, XName defaultElementName, XName defaultAttributeName)
         {
-            IXmlObjectSerializer<T> serializer = CreateSerializerObject(obj);
+            IXmlObjectSerializer serializer = CreateSerializerObject(obj);
             XName contentName = SerializableTypes.GetXName(typeof(T));
             if (contentName == null)
                 contentName = serializer.UsesXAttribute ? defaultAttributeName : defaultElementName;
             return Serialize(serializer, obj, contentName, defaultElementName);
         }
 
-        internal XElement Serialize<T>(IXmlObjectSerializer<T> serializer, T obj, XName contentName, XName defaultElementName)
+        internal XElement Serialize<T>(IXmlObjectSerializer serializer, T obj, XName contentName, XName defaultElementName)
         {
             XObject content;
+#if !DEBUG
             try
             {
+#endif
                 content = serializer.Serialize(obj, contentName);
+#if !DEBUG
             }
             catch (Exception ex) when(!(ex is XmlSerializationException))
             {
                 throw new XmlSerializationException(new XElement(contentName), ex.GetBaseException());
             }
+#endif
             if (serializer.UsesXAttribute)
             {
                 XElement element = new XElement(defaultElementName ?? ElementName);
@@ -69,16 +72,20 @@ namespace Baxendale.Data.Xml
             return (XElement)content;
         }
 
-        internal IXmlObjectSerializer<T> CreateSerializerObject<T>(T obj)
+        internal IXmlObjectSerializer CreateSerializerObject<T>(T obj)
         {
             if (obj == null)
                 return new XmlNullSerializer<T>(this);
-            return CreateSerializerObject<T>();
+            Type runtimeType = obj.GetType();
+            if (runtimeType == typeof(T))
+                return CreateSerializerObject<T>();
+            // runtime type does not match object type; this is a subclass or inherits an interface
+            return CreateSerializerObject(runtimeType);
         }
 
-        internal IXmlObjectSerializer<T> CreateSerializerObject<T>()
+        internal IXmlObjectSerializer CreateSerializerObject<T>()
         { 
-            IXmlObjectSerializer<T> serializer = SerializableTypes.GetCustomSerializer<T>();
+            IXmlObjectSerializer serializer = SerializableTypes.GetCustomSerializer<T>();
             if (serializer != null)
                 return serializer;
 
@@ -86,18 +93,21 @@ namespace Baxendale.Data.Xml
             if (serializerType == null)
                 throw new UnsupportedTypeException(typeof(T));
 
-            return (IXmlObjectSerializer<T>)Activator.CreateInstance(serializerType, this);
+            return (IXmlObjectSerializer)Activator.CreateInstance(serializerType, this);
         }
 
         public T Deserialize<T>(XElement content)
         {
             if (content == null) throw new ArgumentNullException(nameof(content));
-            IXmlObjectSerializer<T> serializer = CreateSerializerObject<T>();
+            IXmlObjectSerializer serializer = CreateSerializerObject<T>();
             if (serializer.UsesXAttribute)
                 throw new UnsupportedTypeException(typeof(T));
+#if !DEBUG
             try
             {
-                return serializer.Deserialize(content);
+#endif
+                return (T)serializer.Deserialize(content);
+#if !DEBUG
             }
             catch (Exception ex) when(!(ex is XmlSerializationException))
             {
@@ -105,17 +115,21 @@ namespace Baxendale.Data.Xml
                     throw ex.GetBaseException();
                 throw new XmlSerializationException(content, ex.GetBaseException());
             }
+#endif
         }
 
         public T Deserialize<T>(XAttribute content)
         {
             if (content == null) throw new ArgumentNullException(nameof(content));
-            IXmlObjectSerializer<T> serializer = CreateSerializerObject<T>();
+            IXmlObjectSerializer serializer = CreateSerializerObject<T>();
             if (!serializer.UsesXAttribute)
                 throw new UnsupportedTypeException(typeof(T));
+#if !DEBUG
             try
             {
-                return serializer.Deserialize(content);
+#endif
+                return (T)serializer.Deserialize(content);
+#if !DEBUG
             }
             catch (Exception ex) when(!(ex is XmlSerializationException))
             {
@@ -123,18 +137,19 @@ namespace Baxendale.Data.Xml
                     throw ex.GetBaseException();
                 throw new XmlSerializationException(content, ex.GetBaseException());
             }
+#endif
         }
 
         internal T Deserialize<T>(XElement content, XName defaultElementName, XName defaultAttributeName)
         {
-            IXmlObjectSerializer<T> serializer = CreateSerializerObject<T>();
+            IXmlObjectSerializer serializer = CreateSerializerObject<T>();
             XName contentName = SerializableTypes.GetXName(typeof(T));
             if (contentName == null)
                 contentName = serializer.UsesXAttribute ? defaultAttributeName : defaultElementName;
             return Deserialize<T>(serializer, content, contentName);
         }
 
-        internal T Deserialize<T>(IXmlObjectSerializer<T> serializer, XElement content, XName contentName)
+        internal T Deserialize<T>(IXmlObjectSerializer serializer, XElement content, XName contentName)
         {
             if (content == null) throw new ArgumentNullException(nameof(content));
             if (serializer.UsesXAttribute)
@@ -144,13 +159,16 @@ namespace Baxendale.Data.Xml
                 XAttribute attribute = content.Attribute(contentName);
                 if (attribute == null)
                     throw new XObjectNotFoundException(content, contentName);
-                return serializer.Deserialize(attribute);
+                return (T)serializer.Deserialize(attribute);
             }
             if (contentName != null)
                 content = content.Element(contentName);
+#if !DEBUG
             try
             {
-                return serializer.Deserialize(content);
+#endif
+                return (T)serializer.Deserialize(content);
+#if !DEBUG
             }
             catch (Exception ex) when(!(ex is XmlSerializationException))
             {
@@ -158,6 +176,7 @@ namespace Baxendale.Data.Xml
                     throw ex.GetBaseException();
                 throw new XmlSerializationException(content, ex.GetBaseException());
             }
+#endif
         }
 
         public XElement Serialize(Type t, object obj)
@@ -187,14 +206,18 @@ namespace Baxendale.Data.Xml
         internal XElement Serialize(Type t, IXmlObjectSerializer serializer, object obj, XName contentName, XName defaultElementName)
         {
             XObject content;
+#if !DEBUG
             try
             {
+#endif
                 content = serializer.Serialize(obj, contentName);
+#if !DEBUG
             }
             catch (Exception ex) when(!(ex is XmlSerializationException))
             {
                 throw new XmlSerializationException(new XElement(contentName), ex.GetBaseException());
             }
+#endif
             if (serializer.UsesXAttribute)
             {
                 XElement element = new XElement(defaultElementName ?? ElementName);
@@ -230,9 +253,12 @@ namespace Baxendale.Data.Xml
             IXmlObjectSerializer serializer = CreateSerializerObject(t);
             if (serializer.UsesXAttribute)
                 throw new UnsupportedTypeException(t);
+#if !DEBUG
             try
             {
+#endif
                 return serializer.Deserialize(content);
+#if !DEBUG
             }
             catch (Exception ex) when(!(ex is XmlSerializationException))
             {
@@ -240,6 +266,7 @@ namespace Baxendale.Data.Xml
                     throw ex.GetBaseException();
                 throw new XmlSerializationException(content, ex.GetBaseException());
             }
+#endif
         }
 
         public object Deserialize(Type t, XAttribute content)
@@ -248,9 +275,12 @@ namespace Baxendale.Data.Xml
             IXmlObjectSerializer serializer = CreateSerializerObject(t);
             if (!serializer.UsesXAttribute)
                 throw new UnsupportedTypeException(t);
+#if !DEBUG
             try
             {
+#endif
                 return serializer.Deserialize(content);
+#if !DEBUG
             }
             catch (Exception ex) when(!(ex is XmlSerializationException))
             {
@@ -258,6 +288,7 @@ namespace Baxendale.Data.Xml
                     throw ex.GetBaseException();
                 throw new XmlSerializationException(content, ex.GetBaseException());
             }
+#endif
         }
 
         internal object Deserialize(Type t, XElement content, XName defaultElementName, XName defaultAttributeName)
@@ -283,9 +314,12 @@ namespace Baxendale.Data.Xml
             }
             if (contentName != null)
                 content = content.Element(contentName);
+#if !DEBUG
             try
             {
+#endif
                 return serializer.Deserialize(content);
+#if !DEBUG
             }
             catch (Exception ex) when(!(ex is XmlSerializationException))
             {
@@ -293,6 +327,7 @@ namespace Baxendale.Data.Xml
                     throw ex.GetBaseException();
                 throw new XmlSerializationException(content, ex.GetBaseException());
             }
+#endif
         }
     }
 }
