@@ -28,10 +28,18 @@ using Baxendale.Data.Reflection;
 
 namespace Baxendale.Data.Xml
 {
+    public delegate XAttribute ToXAttribute<in T>(XmlSerializer serializer, T obj, XName name);
+    public delegate T FromXAttribute<out T>(XmlSerializer serializer, XAttribute content);
+
+    public delegate XElement ToXElement<in T>(XmlSerializer serializer, T obj, XName name);
+    public delegate T FromXElement<out T>(XmlSerializer serializer, XElement content);
+
     public sealed partial class XmlSerializer
     {
         public static readonly XNamespace ReservedNamespace = "https://github.com/pcluddite/dataman";
         public static readonly XName ReservedNamespaceName = XNamespace.Xmlns + "baxml";
+
+        public static XmlSerializer Default { get; } = new XmlSerializer();
 
         internal static readonly XName ElementName = ReservedNamespace + "a";
         internal static readonly XName KeyAttributeName = ReservedNamespace + "k";
@@ -39,87 +47,41 @@ namespace Baxendale.Data.Xml
         internal static readonly XName IndexAttributeName = ReservedNamespace + "i";
         internal static readonly XName TypeAttributeName = ReservedNamespace + "t";
 
-        private readonly OneToManyBidictionary<Type, XName> SerializableTypes = new OneToManyBidictionary<Type, XName>();
-
-        public static XmlSerializer Default { get; } = new XmlSerializer(cache: false);
-
-        private LockingDictionary<Type, IXmlObjectSerializer> _cache;
-
-        public bool CacheTypes
-        {
-            get
-            {
-                return _cache != null;
-            }
-            set
-            {
-                if (value && _cache == null)
-                {
-                    _cache = new LockingDictionary<Type, IXmlObjectSerializer>();
-                }
-                else if (!value && _cache != null)
-                {
-                    _cache.Clear();
-                    _cache = null;
-                }
-            }
-        }
+        private readonly XSerializerCustomTypesMap SerializableTypes = new XSerializerCustomTypesMap();
 
         public XmlSerializer()
-            : this(cache: true)
         {
-        }
-
-        public XmlSerializer(bool cache)
-        {
-            CacheTypes = cache;
         }
 
         public void RegisterType<T>(XName name) where T : IXmlSerializableObject
         {
             if (name == null) throw new ArgumentNullException(nameof(name));
             if (name.Namespace == ReservedNamespace) throw new ArgumentException($"'{name}' is a reserved name and cannot be registered");
-            SerializableTypes[typeof(T)] = name;
+            SerializableTypes.Add<T>(name);
         }
 
-        internal XName GetSerializedTypeName(Type type)
+        public void RegisterType<T>(XName name, ToXElement<T> toXmlDelegate, FromXElement<T> fromXmlDelegate)
         {
-            XName name;
-            if (SerializableTypes.TryGetValue(type, out name))
-                return name;
-            return null;
+            if (name == null) throw new ArgumentNullException(nameof(name));
+            if (toXmlDelegate == null) throw new ArgumentNullException(nameof(toXmlDelegate));
+            if (fromXmlDelegate == null) throw new ArgumentNullException(nameof(fromXmlDelegate));
+            if (name.Namespace == ReservedNamespace) throw new ArgumentException($"'{name}' is a reserved name and cannot be registered");
+            SerializableTypes.Add(name, toXmlDelegate, fromXmlDelegate);
         }
 
-        internal Type GetSerializedType(XName name)
+        public void RegisterType<T>(XName name, ToXAttribute<T> toXmlDelegate, FromXAttribute<T> fromXmlDelegate)
         {
-            Type type;
-            if (SerializableTypes.TryGetKey(name, out type))
-                return type;
-            return null;
+            if (name == null) throw new ArgumentNullException(nameof(name));
+            if (toXmlDelegate == null) throw new ArgumentNullException(nameof(toXmlDelegate));
+            if (fromXmlDelegate == null) throw new ArgumentNullException(nameof(fromXmlDelegate));
+            if (name.Namespace == ReservedNamespace) throw new ArgumentException($"'{name}' is a reserved name and cannot be registered");
+            SerializableTypes.Add(name, toXmlDelegate, fromXmlDelegate);
         }
 
         public object Deserialize(XElement node)
         {
             if (node == null) throw new ArgumentNullException(nameof(node));
-            return Deserialize(GetTypeFromNode(node), node);
-        }
-
-        private Type GetTypeFromNode(XElement node)
-        {
-            if (node.Name == ElementName)
-            {
-                string attrValue = node.Attribute(TypeAttributeName)?.Value;
-                if (attrValue == null)
-                    throw new UnregisteredTypeException(node.Name.ToString());
-                if (attrValue == "null")
-                    return typeof(object);
-                return Type.GetType(attrValue, throwOnError: true);
-            }
-
-            Type t;
-            if (!SerializableTypes.TryGetKey(node.Name, out t))
-                throw new UnregisteredTypeException(node.Name.ToString());
-            return t;
+            return Deserialize(SerializableTypes.GetTypeFromXElement(node), node);
         }
 
         public T Load<T>(string path) where T : IXmlSerializableObject
@@ -190,11 +152,6 @@ namespace Baxendale.Data.Xml
                 return typeof(XmlConvertibleSerializer<>).MakeGenericType(memberType);
             }
             return null;
-        }
-
-        public void ClearCache()
-        {
-            _cache?.Clear();
         }
     }
 }

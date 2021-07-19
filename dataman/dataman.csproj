@@ -81,6 +81,10 @@
     <Compile Include="Reflection\MethodInfoComparer.cs" />
     <Compile Include="Reflection\ReflectionExtensions.cs" />
     <Compile Include="Reflection\TypeComparer.cs" />
+    <Compile Include="Xml\XmlCustomTypeSerializer.cs">
+      <DependentUpon>XmlObjectSerializer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Xml\XmlCustomTypeMetaData.cs" />
     <Compile Include="Xml\XmlSerializer.Generated.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -123,6 +127,7 @@
     <Compile Include="Xml\Exceptions\XmlSerializationException.cs" />
     <Compile Include="Xml\XmlSerializer.cs" />
     <Compile Include="Xml\Exceptions\XObjectNotFoundException.cs" />
+    <Compile Include="Xml\XSerializerCustomTypesMap.cs" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

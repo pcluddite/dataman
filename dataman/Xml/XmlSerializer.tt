@@ -65,7 +65,7 @@ void BuildTypedMethods(bool generic)
 #>
         public XElement Serialize<#= genericParam #>(<#= typeParam #><#= typeName #> obj)
         {
-            XName contentName = GetSerializedTypeName(<#= typeOf #>);
+            XName contentName = SerializableTypes.GetXName(<#= typeOf #>);
             if (contentName == null)
                 throw new UnregisteredTypeException(<#= typeOf #>);
             return Serialize(<#= typeOfParam #>obj, contentName);
@@ -81,7 +81,7 @@ void BuildTypedMethods(bool generic)
         internal XElement Serialize<#= genericParam #>(<#= typeParam #><#= typeName #> obj, XName defaultElementName, XName defaultAttributeName)
         {
             IXmlObjectSerializer<#= genericParam #> serializer = CreateSerializerObject(obj);
-            XName contentName = GetSerializedTypeName(<#= typeOf #>);
+            XName contentName = SerializableTypes.GetXName(<#= typeOf #>);
             if (contentName == null)
                 contentName = serializer.UsesXAttribute ? defaultAttributeName : defaultElementName;
             return Serialize(<#= typeOfParam #>serializer, obj, contentName, defaultElementName);
@@ -120,19 +120,19 @@ void BuildTypedMethods(bool generic)
 
         internal IXmlObjectSerializer<#= genericParam #> CreateSerializerObject<#= genericParam #>(<#= typeDefine #>)
         { 
-            LockingDictionary<Type, IXmlObjectSerializer> cache = _cache;
+<#+ if (generic) { #>
+            IXmlObjectSerializer<#= genericParam #> serializer = SerializableTypes.GetCustomSerializer<#= genericParam #>();
+<#+ } else { #>
+            IXmlObjectSerializer<#= genericParam #> serializer = SerializableTypes.GetCustomSerializer(<#= typeOf #>);
+<#+ } #>
+            if (serializer != null)
+                return serializer;
+
             Type serializerType = GetObjectSerializerType(<#= typeOf #>);
             if (serializerType == null)
                 throw new UnsupportedTypeException(<#= typeOf #>);
 
-            if (cache == null)
-                return (IXmlObjectSerializer<#= genericParam #>)Activator.CreateInstance(serializerType, this);
-
-            IXmlObjectSerializer serializer;
-            if (!cache.TryGetValue(<#= typeOf #>, out serializer))
-                cache.Add(<#= typeOf #>, serializer = (IXmlObjectSerializer)Activator.CreateInstance(serializerType, this));
-
-            return (IXmlObjectSerializer<#= genericParam #>)serializer;
+            return (IXmlObjectSerializer<#= genericParam #>)Activator.CreateInstance(serializerType, this);
         }
 <#+
 
@@ -166,7 +166,7 @@ void BuildTypedMethods(bool generic)
         internal <#= typeName #> Deserialize<#= genericParam #>(<#= typeParam #>XElement content, XName defaultElementName, XName defaultAttributeName)
         {
             IXmlObjectSerializer<#= genericParam #> serializer = <#= createSerializerObject #>;
-            XName contentName = GetSerializedTypeName(<#= typeOf #>);
+            XName contentName = SerializableTypes.GetXName(<#= typeOf #>);
             if (contentName == null)
                 contentName = serializer.UsesXAttribute ? defaultAttributeName : defaultElementName;
             return Deserialize<#= genericParam #>(<#= typeOfParam#>serializer, content, contentName);
