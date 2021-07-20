@@ -161,8 +161,6 @@ namespace Baxendale.Data.Xml
                     throw new XObjectNotFoundException(content, contentName);
                 return (T)serializer.Deserialize(attribute);
             }
-            if (contentName != null)
-                content = content.Element(contentName);
 #if !DEBUG
             try
             {
@@ -312,8 +310,6 @@ namespace Baxendale.Data.Xml
                     throw new XObjectNotFoundException(content, contentName);
                 return serializer.Deserialize(attribute);
             }
-            if (contentName != null)
-                content = content.Element(contentName);
 #if !DEBUG
             try
             {

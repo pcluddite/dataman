@@ -198,8 +198,6 @@ void BuildTypedMethods(bool generic)
                     throw new XObjectNotFoundException(content, contentName);
                 return <#= cast #>serializer.Deserialize(attribute);
             }
-            if (contentName != null)
-                content = content.Element(contentName);
 #if !DEBUG
             try
             {
