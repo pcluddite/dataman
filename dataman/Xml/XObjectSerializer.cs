@@ -31,13 +31,19 @@ namespace Baxendale.Data.Xml
         bool UsesXAttribute { get; }
     }
 
-    internal interface IXObjectSerializer<T> : IXObjectSerializer
+    internal interface IXObjectSerializer<in T, out XContentType> : IXObjectSerializer
+        where XContentType : XObject
     {
-        new T Deserialize(XObject content);
-        XObject Serialize(T obj, XName name);
+        XContentType Serialize(T obj, XName name);
     }
 
-    internal abstract class XObjectSerializer<T, XContentType> : IXObjectSerializer<T>
+    internal interface IXObjectDeserializer<in XContentType, out T> : IXObjectSerializer
+        where XContentType : XObject
+    {
+        T Deserialize(XContentType content);
+    }
+
+    internal abstract class XObjectSerializer<T, XContentType> : IXObjectSerializer<T, XContentType>, IXObjectDeserializer<XContentType, T>
         where XContentType : XObject
     {
         public XmlSerializer XmlSerializer { get; }
@@ -64,19 +70,9 @@ namespace Baxendale.Data.Xml
             return Deserialize((XContentType)content);
         }
 
-        T IXObjectSerializer<T>.Deserialize(XObject content)
-        {
-            return Deserialize((XContentType)content);
-        }
-
         XObject IXObjectSerializer.Serialize(object obj, XName contentName)
         {
             return Serialize((T)obj, contentName);
-        }
-
-        XObject IXObjectSerializer<T>.Serialize(T obj, XName name)
-        {
-            return Serialize(obj, name);
         }
 
         #endregion
