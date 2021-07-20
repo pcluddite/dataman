@@ -84,8 +84,38 @@ namespace Baxendale.Data.Reflection
 
         public static IEnumerable<Type> GetBaseTypes(this Type currentType)
         {
-            while ((currentType = currentType.BaseType) != null)
+            if (currentType == null) throw new ArgumentNullException(nameof(currentType));
+            while ((currentType = currentType.BaseType) != null && currentType != typeof(object))
                 yield return currentType;
+        }
+
+        public static IEnumerable<Type> GetHierarchy(this Type currentType)
+        {
+            if (currentType == null) throw new ArgumentNullException(nameof(currentType));
+
+            yield return currentType;
+
+            while ((currentType = currentType.BaseType) != null && currentType != typeof(object))
+                yield return currentType;
+        }
+
+        public static Dictionary<Type, ISet<Type>> GetDeclaredInterfaces(this Type type)
+        {
+            if (type == null) throw new ArgumentNullException(nameof(type));
+            Dictionary<Type, ISet<Type>> interfaces = new Dictionary<Type, ISet<Type>>();
+            HashSet<Type> currentSet = new HashSet<Type>(type.GetInterfaces());
+            
+            interfaces.Add(type, currentSet);
+
+            foreach (Type parent in type.GetBaseTypes())
+            {
+                HashSet<Type> parentSet = new HashSet<Type>(parent.GetInterfaces());
+                currentSet.ExceptWith(parentSet);
+                interfaces.Add(parent, parentSet);
+                currentSet = parentSet;
+            }
+
+            return interfaces;
         }
 
         public static bool IsUnboundGeneric(this Type type)

@@ -81,6 +81,7 @@
     <Compile Include="Reflection\MethodInfoComparer.cs" />
     <Compile Include="Reflection\ReflectionExtensions.cs" />
     <Compile Include="Reflection\TypeComparer.cs" />
+    <Compile Include="Reflection\TypeDictionary.cs" />
     <Compile Include="Xml\XmlCustomTypeSerializer.cs">
       <DependentUpon>XObjectSerializer.cs</DependentUpon>
     </Compile>
