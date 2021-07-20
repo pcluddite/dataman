@@ -81,14 +81,14 @@ void BuildTypedMethods(bool generic)
 
         internal XElement Serialize<#= genericParam #>(<#= typeParam #><#= typeName #> obj, XName defaultElementName, XName defaultAttributeName)
         {
-            IXmlObjectSerializer serializer = CreateSerializerObject(obj);
+            IXObjectSerializer serializer = CreateSerializerObject(obj);
             XName contentName = SerializableTypes.GetXName(<#= typeOf #>);
             if (contentName == null)
                 contentName = serializer.UsesXAttribute ? defaultAttributeName : defaultElementName;
             return Serialize(<#= typeOfParam #>serializer, obj, contentName, defaultElementName);
         }
 
-        internal XElement Serialize<#= genericParam #>(<#= typeParam #>IXmlObjectSerializer serializer, <#= typeName #> obj, XName contentName, XName defaultElementName)
+        internal XElement Serialize<#= genericParam #>(<#= typeParam #>IXObjectSerializer serializer, <#= typeName #> obj, XName contentName, XName defaultElementName)
         {
             XObject content;
 #if !DEBUG
@@ -112,7 +112,7 @@ void BuildTypedMethods(bool generic)
             return (XElement)content;
         }
 
-        internal IXmlObjectSerializer CreateSerializerObject<#= genericParam #>(<#= typeParam #><#= typeName #> obj)
+        internal IXObjectSerializer CreateSerializerObject<#= genericParam #>(<#= typeParam #><#= typeName #> obj)
         {
             if (obj == null)
 <#+ if (generic) { #>
@@ -123,17 +123,17 @@ void BuildTypedMethods(bool generic)
             // runtime type does not match object type; this is a subclass or inherits an interface
             return CreateSerializerObject(runtimeType);
 <#+ } else { #>
-                return (IXmlObjectSerializer)Activator.CreateInstance(typeof(XmlNullSerializer<>).MakeGenericType(<#= typeOf #>), this);
+                return (IXObjectSerializer)Activator.CreateInstance(typeof(XmlNullSerializer<>).MakeGenericType(<#= typeOf #>), this);
             return <#= createSerializerObject #>;
 <#+ } #>
         }
 
-        internal IXmlObjectSerializer CreateSerializerObject<#= genericParam #>(<#= typeDefine #>)
+        internal IXObjectSerializer CreateSerializerObject<#= genericParam #>(<#= typeDefine #>)
         { 
 <#+ if (generic) { #>
-            IXmlObjectSerializer serializer = SerializableTypes.GetCustomSerializer<#= genericParam #>();
+            IXObjectSerializer serializer = SerializableTypes.GetCustomSerializer<#= genericParam #>();
 <#+ } else { #>
-            IXmlObjectSerializer serializer = SerializableTypes.GetCustomSerializer(<#= typeOf #>);
+            IXObjectSerializer serializer = SerializableTypes.GetCustomSerializer(<#= typeOf #>);
 <#+ } #>
             if (serializer != null)
                 return serializer;
@@ -142,7 +142,7 @@ void BuildTypedMethods(bool generic)
             if (serializerType == null)
                 throw new UnsupportedTypeException(<#= typeOf #>);
 
-            return (IXmlObjectSerializer)Activator.CreateInstance(serializerType, this);
+            return (IXObjectSerializer)Activator.CreateInstance(serializerType, this);
         }
 <#+
 
@@ -155,7 +155,7 @@ void BuildTypedMethods(bool generic)
         public <#= typeName #> Deserialize<#= genericParam #>(<#= typeParam #><#= xtype #> content)
         {
             if (content == null) throw new ArgumentNullException(nameof(content));
-            IXmlObjectSerializer serializer = <#= createSerializerObject #>;
+            IXObjectSerializer serializer = <#= createSerializerObject #>;
             if (<#= attributeCheck #>)
                 throw new UnsupportedTypeException(<#= typeOf #>);
 #if !DEBUG
@@ -182,7 +182,7 @@ void BuildTypedMethods(bool generic)
             Type runtimeType = <#= typeOf #>;
             if (<#= typeOf #>.IsAbstract || <#= typeOf #>.IsInterface)
                 runtimeType = SerializableTypes.GetTypeFromXElement(content);
-            IXmlObjectSerializer serializer = CreateSerializerObject(runtimeType);
+            IXObjectSerializer serializer = CreateSerializerObject(runtimeType);
             XName contentName = SerializableTypes.GetXName(<#= typeOf #>);
             if (contentName == null && <#= typeOf #> != runtimeType)
                 contentName = SerializableTypes.GetXName(runtimeType);
@@ -191,7 +191,7 @@ void BuildTypedMethods(bool generic)
             return Deserialize<#= genericParam #>(<#= typeOfParam#>serializer, content, contentName);
         }
 
-        internal <#= typeName #> Deserialize<#= genericParam #>(<#= typeParam #>IXmlObjectSerializer serializer, XElement content, XName contentName)
+        internal <#= typeName #> Deserialize<#= genericParam #>(<#= typeParam #>IXObjectSerializer serializer, XElement content, XName contentName)
         {
             if (content == null) throw new ArgumentNullException(nameof(content));
             if (serializer.UsesXAttribute)

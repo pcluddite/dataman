@@ -22,7 +22,7 @@ using System.Xml.Linq;
 
 namespace Baxendale.Data.Xml
 {
-    internal class XmlConvertibleSerializer<V> : XmlObjectSerializer<V, XAttribute>
+    internal class XmlConvertibleSerializer<V> : XObjectSerializer<V, XAttribute>
         where V : IConvertible
     {
         public override bool UsesXAttribute => true;

@@ -21,7 +21,7 @@ using System.Xml.Linq;
 
 namespace Baxendale.Data.Xml
 {
-    internal class XmlNullSerializer<T> : XmlObjectSerializer<T, XElement>
+    internal class XmlNullSerializer<T> : XObjectSerializer<T, XElement>
     {
         public override bool UsesXAttribute => false;
 

@@ -23,7 +23,7 @@ using System.Xml.Linq;
 
 namespace Baxendale.Data.Xml
 {
-    internal class XmlDictionarySerializer<DictionaryType, TKey, TValue> : XmlObjectSerializer<DictionaryType, XElement>
+    internal class XmlDictionarySerializer<DictionaryType, TKey, TValue> : XObjectSerializer<DictionaryType, XElement>
         where DictionaryType : IDictionary<TKey, TValue>, new()
     {
         public override bool UsesXAttribute => false;

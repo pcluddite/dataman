@@ -130,18 +130,18 @@ namespace Baxendale.Data.Xml
             return t;
         }
 
-        public IXmlObjectSerializer<T> GetCustomSerializer<T>()
+        public IXObjectSerializer<T> GetCustomSerializer<T>()
         {
             lock (_locker)
             {
                 XmlCustomTypeMetaData meta;
                 if (_types.TryGetValue(typeof(T), out meta))
-                    return (IXmlObjectSerializer<T>)meta.ObjectSerializer;
+                    return (IXObjectSerializer<T>)meta.ObjectSerializer;
                 return null;
             }
         }
 
-        public IXmlObjectSerializer GetCustomSerializer(Type t)
+        public IXObjectSerializer GetCustomSerializer(Type t)
         {
             lock (_locker)
             {

@@ -25,7 +25,7 @@ using Baxendale.Data.Collections.NonGenerics;
 
 namespace Baxendale.Data.Xml
 {
-    internal class XmlGenericCollectionSerializer<CollectionType, ItemType> : XmlObjectSerializer<CollectionType, XElement>
+    internal class XmlGenericCollectionSerializer<CollectionType, ItemType> : XObjectSerializer<CollectionType, XElement>
         where CollectionType : ICollection<ItemType>, new()
     {
         public override bool UsesXAttribute => false;
@@ -62,7 +62,7 @@ namespace Baxendale.Data.Xml
         }
     }
 
-    internal class XmlCollectionSerializer<CollectionType> : XmlObjectSerializer<CollectionType, XElement>
+    internal class XmlCollectionSerializer<CollectionType> : XObjectSerializer<CollectionType, XElement>
         where CollectionType : ICollection
     {
         public override bool UsesXAttribute => false;

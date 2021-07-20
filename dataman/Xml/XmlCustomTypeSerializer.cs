@@ -21,7 +21,7 @@ using System.Xml.Linq;
 
 namespace Baxendale.Data.Xml
 {
-    internal class XmlCustomXElementSerializer<T> : XmlObjectSerializer<T, XElement>
+    internal class XmlCustomXElementSerializer<T> : XObjectSerializer<T, XElement>
     {
         public override bool UsesXAttribute => false;
 
@@ -46,7 +46,7 @@ namespace Baxendale.Data.Xml
         }
     }
 
-    internal class XmlCustomXAttributeSerializer<T> : XmlObjectSerializer<T, XAttribute>
+    internal class XmlCustomXAttributeSerializer<T> : XObjectSerializer<T, XAttribute>
     {
         public override bool UsesXAttribute => true;
 

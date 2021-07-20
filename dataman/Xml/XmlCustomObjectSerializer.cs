@@ -26,7 +26,7 @@ using Baxendale.Data.Reflection;
 
 namespace Baxendale.Data.Xml
 {
-    internal class XmlCustomObjectSerializer<V> : XmlObjectSerializer<V, XObject>
+    internal class XmlCustomObjectSerializer<V> : XObjectSerializer<V, XObject>
         where V : IXmlSerializableObject
     {
         public MethodInfo DeserializeMethod { get; }
@@ -108,7 +108,7 @@ namespace Baxendale.Data.Xml
 
         private object DeserializeMember(IXmlSerializableMember member, XElement content)
         {
-            IXmlObjectSerializer serializer = XmlSerializer.CreateSerializerObject(member.MemberType);
+            IXObjectSerializer serializer = XmlSerializer.CreateSerializerObject(member.MemberType);
             serializer.ElementName = member.ElementName;
             serializer.ValueAttributeName = member.AttributeName;
 
@@ -169,7 +169,7 @@ namespace Baxendale.Data.Xml
 
         private XObject SerializeMember(V obj, IXmlSerializableMember member)
         {
-            IXmlObjectSerializer serializer = XmlSerializer.CreateSerializerObject(member.MemberType);
+            IXObjectSerializer serializer = XmlSerializer.CreateSerializerObject(member.MemberType);
             serializer.ElementName = member.ElementName;
             serializer.ValueAttributeName = member.AttributeName;
             return serializer.Serialize(member.GetValue(obj), member.Name);

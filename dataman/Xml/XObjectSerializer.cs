@@ -21,7 +21,7 @@ using System.Xml.Linq;
 
 namespace Baxendale.Data.Xml
 {
-    internal interface IXmlObjectSerializer
+    internal interface IXObjectSerializer
     {
         XName ElementName { get; set; }
         XName ValueAttributeName { get; set; }
@@ -31,13 +31,13 @@ namespace Baxendale.Data.Xml
         bool UsesXAttribute { get; }
     }
 
-    internal interface IXmlObjectSerializer<T> : IXmlObjectSerializer
+    internal interface IXObjectSerializer<T> : IXObjectSerializer
     {
         new T Deserialize(XObject content);
         XObject Serialize(T obj, XName name);
     }
 
-    internal abstract class XmlObjectSerializer<T, XContentType> : IXmlObjectSerializer<T>
+    internal abstract class XObjectSerializer<T, XContentType> : IXObjectSerializer<T>
         where XContentType : XObject
     {
         public XmlSerializer XmlSerializer { get; }
@@ -46,7 +46,7 @@ namespace Baxendale.Data.Xml
 
         public virtual XName ValueAttributeName { get; set; }
 
-        public XmlObjectSerializer(XmlSerializer serializer)
+        public XObjectSerializer(XmlSerializer serializer)
         {
             XmlSerializer = serializer;
         }
@@ -59,22 +59,22 @@ namespace Baxendale.Data.Xml
 
         #region ISerializedXmlObject Members
 
-        object IXmlObjectSerializer.Deserialize(XObject content)
+        object IXObjectSerializer.Deserialize(XObject content)
         {
             return Deserialize((XContentType)content);
         }
 
-        T IXmlObjectSerializer<T>.Deserialize(XObject content)
+        T IXObjectSerializer<T>.Deserialize(XObject content)
         {
             return Deserialize((XContentType)content);
         }
 
-        XObject IXmlObjectSerializer.Serialize(object obj, XName contentName)
+        XObject IXObjectSerializer.Serialize(object obj, XName contentName)
         {
             return Serialize((T)obj, contentName);
         }
 
-        XObject IXmlObjectSerializer<T>.Serialize(T obj, XName name)
+        XObject IXObjectSerializer<T>.Serialize(T obj, XName name)
         {
             return Serialize(obj, name);
         }

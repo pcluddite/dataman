@@ -24,16 +24,16 @@ namespace Baxendale.Data.Xml
 {
     internal struct XmlCustomTypeMetaData : IEquatable<XmlCustomTypeMetaData>
     {
-        private Lazy<IXmlObjectSerializer> _objSerializer;
+        private Lazy<IXObjectSerializer> _objSerializer;
 
         public Type Type { get; }
-        public IXmlObjectSerializer ObjectSerializer => _objSerializer.Value;
+        public IXObjectSerializer ObjectSerializer => _objSerializer.Value;
         public XName Name { get; }
 
-        public XmlCustomTypeMetaData(Type t, XName name, IXmlObjectSerializer objSerializer)
+        public XmlCustomTypeMetaData(Type t, XName name, IXObjectSerializer objSerializer)
         {
             Type = t;
-            _objSerializer = new Lazy<IXmlObjectSerializer>(() => objSerializer);
+            _objSerializer = new Lazy<IXObjectSerializer>(() => objSerializer);
             Name = name;
         }
 
@@ -44,7 +44,7 @@ namespace Baxendale.Data.Xml
             Name = name;
         }
 
-        private XmlCustomTypeMetaData(Type t, XName name, Lazy<IXmlObjectSerializer> objSerializer)
+        private XmlCustomTypeMetaData(Type t, XName name, Lazy<IXObjectSerializer> objSerializer)
         {
             Type = t;
             _objSerializer = objSerializer;
@@ -54,19 +54,19 @@ namespace Baxendale.Data.Xml
         public static XmlCustomTypeMetaData CreateMetaData<T>(XmlSerializer serializer, XName name)
             where T : IXmlSerializableObject
         {
-            Lazy<IXmlObjectSerializer> objSerializer = new Lazy<IXmlObjectSerializer>(() => new XmlCustomObjectSerializer<T>(serializer));
+            Lazy<IXObjectSerializer> objSerializer = new Lazy<IXObjectSerializer>(() => new XmlCustomObjectSerializer<T>(serializer));
             return new XmlCustomTypeMetaData(typeof(T), name, objSerializer);
         }
 
         public static XmlCustomTypeMetaData CreateMetaData<T>(XmlSerializer serializer, XName name, ToXElement<T> toXml, FromXElement<T> fromXml)
         {
-            Lazy<IXmlObjectSerializer> objSerializer = new Lazy<IXmlObjectSerializer>(() => new XmlCustomXElementSerializer<T>(serializer, toXml, fromXml));
+            Lazy<IXObjectSerializer> objSerializer = new Lazy<IXObjectSerializer>(() => new XmlCustomXElementSerializer<T>(serializer, toXml, fromXml));
             return new XmlCustomTypeMetaData(typeof(T), name, objSerializer);
         }
 
         public static XmlCustomTypeMetaData CreateMetaData<T>(XmlSerializer serializer, XName name, ToXAttribute<T> toXml, FromXAttribute<T> fromXml)
         {
-            Lazy<IXmlObjectSerializer> objSerializer = new Lazy<IXmlObjectSerializer>(() => new XmlCustomXAttributeSerializer<T>(serializer, toXml, fromXml));
+            Lazy<IXObjectSerializer> objSerializer = new Lazy<IXObjectSerializer>(() => new XmlCustomXAttributeSerializer<T>(serializer, toXml, fromXml));
             return new XmlCustomTypeMetaData(typeof(T), name, objSerializer);
         }
 

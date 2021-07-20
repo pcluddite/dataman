@@ -82,7 +82,7 @@
     <Compile Include="Reflection\ReflectionExtensions.cs" />
     <Compile Include="Reflection\TypeComparer.cs" />
     <Compile Include="Xml\XmlCustomTypeSerializer.cs">
-      <DependentUpon>XmlObjectSerializer.cs</DependentUpon>
+      <DependentUpon>XObjectSerializer.cs</DependentUpon>
     </Compile>
     <Compile Include="Xml\XmlCustomTypeMetaData.cs" />
     <Compile Include="Xml\XmlSerializer.Generated.cs">
@@ -94,29 +94,29 @@
     <Compile Include="Xml\Exceptions\ReadOnlyFieldException.cs" />
     <Compile Include="Xml\Exceptions\SerializerException.cs" />
     <Compile Include="Xml\XmlArraySerializer.cs">
-      <DependentUpon>XmlObjectSerializer.cs</DependentUpon>
+      <DependentUpon>XObjectSerializer.cs</DependentUpon>
     </Compile>
     <Compile Include="Xml\XmlCollectionSerializer.cs">
-      <DependentUpon>XmlObjectSerializer.cs</DependentUpon>
+      <DependentUpon>XObjectSerializer.cs</DependentUpon>
     </Compile>
     <Compile Include="Xml\XmlConvertibleSerializer.cs">
-      <DependentUpon>XmlObjectSerializer.cs</DependentUpon>
+      <DependentUpon>XObjectSerializer.cs</DependentUpon>
     </Compile>
     <Compile Include="Xml\XmlCustomObjectSerializer.cs">
-      <DependentUpon>XmlObjectSerializer.cs</DependentUpon>
+      <DependentUpon>XObjectSerializer.cs</DependentUpon>
     </Compile>
     <Compile Include="Xml\XmlDictionarySerializer.cs">
-      <DependentUpon>XmlObjectSerializer.cs</DependentUpon>
+      <DependentUpon>XObjectSerializer.cs</DependentUpon>
     </Compile>
     <Compile Include="Xml\XmlNullSerializer.cs">
-      <DependentUpon>XmlObjectSerializer.cs</DependentUpon>
+      <DependentUpon>XObjectSerializer.cs</DependentUpon>
     </Compile>
     <Compile Include="Xml\Exceptions\UnregisteredTypeException.cs" />
     <Compile Include="Xml\Exceptions\UnsupportedTypeException.cs" />
     <Compile Include="Xml\XmlExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Xml\IXmlSerializableObject.cs" />
-    <Compile Include="Xml\XmlObjectSerializer.cs" />
+    <Compile Include="Xml\XObjectSerializer.cs" />
     <Compile Include="Xml\Attributes\XmlDoNotSerializeAttribute.cs" />
     <Compile Include="Xml\Attributes\XmlSerializableClassAttribute.cs" />
     <Compile Include="Xml\XmlSerializableMember.cs" />

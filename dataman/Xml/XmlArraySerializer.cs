@@ -24,7 +24,7 @@ using Baxendale.Data.Collections;
 
 namespace Baxendale.Data.Xml
 {
-    internal class XmlArraySerializer<ArrayType, ElementType> : XmlObjectSerializer<Array, XElement>
+    internal class XmlArraySerializer<ArrayType, ElementType> : XObjectSerializer<Array, XElement>
     {
         public int Rank
         {
