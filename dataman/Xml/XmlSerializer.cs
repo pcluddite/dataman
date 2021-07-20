@@ -45,11 +45,11 @@ namespace Baxendale.Data.Xml
         internal static readonly XName IndexAttributeName = ReservedNamespace + "i";
         internal static readonly XName TypeAttributeName = ReservedNamespace + "t";
 
-        private readonly XSerializerCustomTypesMap SerializableTypes;
+        private readonly XSerializerTypeDictionary SerializableTypes;
 
         public XmlSerializer()
         {
-            SerializableTypes = new XSerializerCustomTypesMap(this);
+            SerializableTypes = new XSerializerTypeDictionary(this);
         }
 
         public void RegisterType<T>(XName name) where T : IXmlSerializableObject

@@ -125,7 +125,7 @@
     <Compile Include="Xml\Exceptions\XmlSerializationException.cs" />
     <Compile Include="Xml\XmlSerializer.cs" />
     <Compile Include="Xml\Exceptions\XObjectNotFoundException.cs" />
-    <Compile Include="Xml\XSerializerCustomTypesMap.cs" />
+    <Compile Include="Xml\XSerializerTypeDictionary.cs" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

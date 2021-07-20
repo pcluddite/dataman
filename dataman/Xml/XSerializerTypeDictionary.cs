@@ -27,7 +27,7 @@ using Baxendale.Data.Collections;
 
 namespace Baxendale.Data.Xml
 {
-    internal class XSerializerCustomTypesMap : IDictionary<Type, XName>
+    internal class XSerializerTypeDictionary : IDictionary<Type, XName>
     {
         private readonly OneToManyBidictionary<Type, XmlCustomTypeMetaData> _types = new OneToManyBidictionary<Type, XmlCustomTypeMetaData>();
         private readonly object _locker = new object();
@@ -69,7 +69,7 @@ namespace Baxendale.Data.Xml
             }
         }
 
-        public XSerializerCustomTypesMap(XmlSerializer serializer)
+        public XSerializerTypeDictionary(XmlSerializer serializer)
         {
             XmlSerializer = serializer;
         }
