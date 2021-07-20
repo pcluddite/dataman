@@ -90,7 +90,7 @@ namespace Baxendale.Data.Xml
             V obj = (V)Activator.CreateInstance(typeof(V), nonPublic: true);
             HashSet<FieldInfo> backingFields = new HashSet<FieldInfo>();
 
-            foreach (XmlSerializableProperty property in typeof(V).GetSerializableProperties(content))
+            foreach (XmlSerializableProperty property in typeof(V).GetSerializableProperties(content, CustomClassAttribute))
             {
                 FieldInfo backingField = property.BackingField;
                 if (backingField != null)
