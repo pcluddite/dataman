@@ -51,7 +51,7 @@ namespace Baxendale.Data.Xml
         public TAttribType Attribute { get; }
         public XObject Source { get; }
 
-        public string Name => Attribute.Name;
+        public string Name => Attribute.Name ?? Member.Name;
         public string ElementName => Attribute.ElementName;
         public string AttributeName => Attribute.AttributeName;
         public bool SerializeDefault => Attribute.SerializeDefault;
