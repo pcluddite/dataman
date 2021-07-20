@@ -19,11 +19,49 @@
 //
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Xml.Linq;
 using Baxendale.Data.Collections.NonGenerics;
 
 namespace Baxendale.Data.Xml
 {
+    internal class XmlGenericCollectionSerializer<CollectionType, ItemType> : XmlObjectSerializer<CollectionType, XElement>
+        where CollectionType : ICollection<ItemType>, new()
+    {
+        public override bool UsesXAttribute => false;
+
+        public XmlGenericCollectionSerializer(XmlSerializer serializer)
+            : base(serializer)
+        {
+            if (ElementName == null)
+                ElementName = XmlSerializer.ElementName;
+            if (ValueAttributeName == null)
+                ValueAttributeName = XmlSerializer.ValueAttributeName;
+        }
+
+        public override CollectionType Deserialize(XElement content)
+        {
+            CollectionType collection = Activator.CreateInstance<CollectionType>();
+            if (collection.IsReadOnly)
+                throw new UnsupportedTypeException(typeof(CollectionType));
+            foreach (XElement child in content.Elements())
+            {
+                collection.Add(XmlSerializer.Deserialize<ItemType>(child, null, ValueAttributeName));
+            }
+            return collection;
+        }
+
+        public override XElement Serialize(CollectionType obj, XName name)
+        {
+            XElement element = new XElement(name);
+            foreach (ItemType item in obj)
+            {
+                element.Add(XmlSerializer.Serialize(item, ElementName, ValueAttributeName));
+            }
+            return element;
+        }
+    }
+
     internal class XmlCollectionSerializer<CollectionType> : XmlObjectSerializer<CollectionType, XElement>
         where CollectionType : ICollection
     {
@@ -32,6 +70,10 @@ namespace Baxendale.Data.Xml
         public XmlCollectionSerializer(XmlSerializer serializer)
             : base(serializer)
         {
+            if (ElementName == null)
+                ElementName = XmlSerializer.ElementName;
+            if (ValueAttributeName == null)
+                ValueAttributeName = XmlSerializer.ValueAttributeName;
         }
 
         public override CollectionType Deserialize(XElement content)
@@ -41,10 +83,7 @@ namespace Baxendale.Data.Xml
                 throw new UnsupportedTypeException(typeof(CollectionType));
             foreach (XElement child in content.Elements())
             {
-                XAttribute typeAttribute = child.Attribute(XmlSerializer.TypeAttributeName);
-                if (typeAttribute == null)
-                    throw new UnregisteredTypeException(child.Name.ToString());
-                Type itemType = Type.GetType(typeAttribute.Value, true);
+                Type itemType = XmlSerializer.GetTypeFromXElement(child);
                 collection.Add(XmlSerializer.Deserialize(itemType, child, null, ValueAttributeName));
             }
             return collection;
@@ -58,7 +97,7 @@ namespace Baxendale.Data.Xml
                 Type itemType = item?.GetType();
                 XElement a = XmlSerializer.Serialize(itemType, item, ElementName, ValueAttributeName);
                 if (itemType != null)
-                    a.SetAttributeValue(XmlSerializer.TypeAttributeName, itemType.FullName ?? "null");
+                    a.SetAttributeValue(XmlSerializer.TypeAttributeName, itemType?.FullName ?? "null");
                 element.Add(a);
             }
             return element;

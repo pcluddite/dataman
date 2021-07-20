@@ -179,8 +179,13 @@ void BuildTypedMethods(bool generic)
 
         internal <#= typeName #> Deserialize<#= genericParam #>(<#= typeParam #>XElement content, XName defaultElementName, XName defaultAttributeName)
         {
-            IXmlObjectSerializer serializer = <#= createSerializerObject #>;
+            Type runtimeType = <#= typeOf #>;
+            if (<#= typeOf #>.IsAbstract || <#= typeOf #>.IsInterface)
+                runtimeType = SerializableTypes.GetTypeFromXElement(content);
+            IXmlObjectSerializer serializer = CreateSerializerObject(runtimeType);
             XName contentName = SerializableTypes.GetXName(<#= typeOf #>);
+            if (contentName == null && <#= typeOf #> != runtimeType)
+                contentName = SerializableTypes.GetXName(runtimeType);
             if (contentName == null)
                 contentName = serializer.UsesXAttribute ? defaultAttributeName : defaultElementName;
             return Deserialize<#= genericParam #>(<#= typeOfParam#>serializer, content, contentName);

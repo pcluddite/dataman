@@ -108,9 +108,6 @@
     <Compile Include="Xml\XmlDictionarySerializer.cs">
       <DependentUpon>XmlObjectSerializer.cs</DependentUpon>
     </Compile>
-    <Compile Include="Xml\XmlGenericCollectionSerializer.cs">
-      <DependentUpon>XmlObjectSerializer.cs</DependentUpon>
-    </Compile>
     <Compile Include="Xml\XmlNullSerializer.cs">
       <DependentUpon>XmlObjectSerializer.cs</DependentUpon>
     </Compile>

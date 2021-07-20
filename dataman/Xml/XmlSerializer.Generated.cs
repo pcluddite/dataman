@@ -142,8 +142,13 @@ namespace Baxendale.Data.Xml
 
         internal T Deserialize<T>(XElement content, XName defaultElementName, XName defaultAttributeName)
         {
-            IXmlObjectSerializer serializer = CreateSerializerObject<T>();
+            Type runtimeType = typeof(T);
+            if (typeof(T).IsAbstract || typeof(T).IsInterface)
+                runtimeType = SerializableTypes.GetTypeFromXElement(content);
+            IXmlObjectSerializer serializer = CreateSerializerObject(runtimeType);
             XName contentName = SerializableTypes.GetXName(typeof(T));
+            if (contentName == null && typeof(T) != runtimeType)
+                contentName = SerializableTypes.GetXName(runtimeType);
             if (contentName == null)
                 contentName = serializer.UsesXAttribute ? defaultAttributeName : defaultElementName;
             return Deserialize<T>(serializer, content, contentName);
@@ -291,8 +296,13 @@ namespace Baxendale.Data.Xml
 
         internal object Deserialize(Type t, XElement content, XName defaultElementName, XName defaultAttributeName)
         {
-            IXmlObjectSerializer serializer = CreateSerializerObject(t);
+            Type runtimeType = t;
+            if (t.IsAbstract || t.IsInterface)
+                runtimeType = SerializableTypes.GetTypeFromXElement(content);
+            IXmlObjectSerializer serializer = CreateSerializerObject(runtimeType);
             XName contentName = SerializableTypes.GetXName(t);
+            if (contentName == null && t != runtimeType)
+                contentName = SerializableTypes.GetXName(runtimeType);
             if (contentName == null)
                 contentName = serializer.UsesXAttribute ? defaultAttributeName : defaultElementName;
             return Deserialize(t, serializer, content, contentName);
