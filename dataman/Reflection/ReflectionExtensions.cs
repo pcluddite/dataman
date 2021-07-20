@@ -88,96 +88,51 @@ namespace Baxendale.Data.Reflection
                 yield return currentType;
         }
 
-        // Adapted from https://stackoverflow.com/questions/457676/check-if-a-class-is-derived-from-a-generic-class/18828085#18828085
-
-        public static Type GetGenericBaseType(this Type type, Type interfaceType)
+        public static bool IsUnboundGeneric(this Type type)
         {
-            Type[] typeParamters = interfaceType.GetGenericArguments();
-            bool isParameterLessGeneric = !(typeParamters != null && typeParamters.Length > 0 &&
-                ((typeParamters[0].Attributes & TypeAttributes.BeforeFieldInit) == TypeAttributes.BeforeFieldInit));
-            do
-            {
-                Type cur = GetFullTypeDefinition(type);
-                if (interfaceType == cur) 
-                {
-                    return type;
-                }
-                else if (isParameterLessGeneric)
-                {
-                    Type fullInterfaceType = GetFullTypeDefinition(interfaceType);
-                    foreach (Type declaredInterface in cur.GetInterfaces())
-                    {
-                        if (GetFullTypeDefinition(declaredInterface) == fullInterfaceType)
-                            return declaredInterface;
-                    }
-                }
-
-                if (!isParameterLessGeneric)
-                {
-                    foreach (Type item in type.GetInterfaces().Where(i => GetFullTypeDefinition(interfaceType) == GetFullTypeDefinition(i)))
-                    {
-                        if (VerifyGenericArguments(interfaceType, item)) return item;
-                    }
-                }
-                type = type.BaseType;
-            }
-            while (type != null && type != typeof(object));
-            return null;
+            if (type == null) throw new ArgumentNullException(nameof(type));
+            Type[] genericArguments = type.GetGenericArguments();
+            return genericArguments == null || genericArguments.Length == 0 || ((genericArguments[0].Attributes & TypeAttributes.BeforeFieldInit) != TypeAttributes.BeforeFieldInit);
         }
 
-        // Stolen from https://stackoverflow.com/questions/457676/check-if-a-class-is-derived-from-a-generic-class/18828085#18828085
-
-        public static bool IsSubClassOfGeneric(this Type child, Type parent)
+        public static Type GetUnboundType(this Type type)
         {
-            if (child == parent)
-                return false;
-
-            if (child.IsSubclassOf(parent))
-                return true;
-
-            var parameters = parent.GetGenericArguments();
-            var isParameterLessGeneric = !(parameters != null && parameters.Length > 0 &&
-                ((parameters[0].Attributes & TypeAttributes.BeforeFieldInit) == TypeAttributes.BeforeFieldInit));
-
-            while (child != null && child != typeof(object))
-            {
-                var cur = GetFullTypeDefinition(child);
-                if (parent == cur || (isParameterLessGeneric && cur.GetInterfaces().Select(i => GetFullTypeDefinition(i)).Contains(GetFullTypeDefinition(parent))))
-                    return true;
-                else if (!isParameterLessGeneric)
-                    if (GetFullTypeDefinition(parent) == cur && !cur.IsInterface)
-                    {
-                        if (VerifyGenericArguments(GetFullTypeDefinition(parent), cur))
-                            if (VerifyGenericArguments(parent, child))
-                                return true;
-                    }
-                    else
-                        foreach (var item in child.GetInterfaces().Where(i => GetFullTypeDefinition(parent) == GetFullTypeDefinition(i)))
-                            if (VerifyGenericArguments(parent, item))
-                                return true;
-
-                child = child.BaseType;
-            }
-
-            return false;
-        }
-
-        public static Type GetFullTypeDefinition(this Type type)
-        {
+            if (type == null) throw new ArgumentNullException(nameof(type));
             return type.IsGenericType ? type.GetGenericTypeDefinition() : type;
         }
 
-        public static bool VerifyGenericArguments(this Type parent, Type child)
+        public static bool HasSameGenerics(this Type a, Type b)
         {
-            Type[] childArguments = child.GetGenericArguments();
-            Type[] parentArguments = parent.GetGenericArguments();
-            if (childArguments.Length == parentArguments.Length)
-                for (int i = 0; i < childArguments.Length; i++)
-                    if (childArguments[i].Assembly != parentArguments[i].Assembly || childArguments[i].Name != parentArguments[i].Name || childArguments[i].Namespace != parentArguments[i].Namespace)
-                        if (!childArguments[i].IsSubclassOf(parentArguments[i]))
-                            return false;
-
+            Type[] aGenerics = b.GetGenericArguments();
+            Type[] bGenerics = a.GetGenericArguments();
+            if (aGenerics.Length != bGenerics.Length)
+                return false;
+            for(int idx = 0; idx < aGenerics.Length; ++idx)
+            {
+                if (aGenerics[idx] != bGenerics[idx] && !bGenerics[idx].IsSubclassOf(aGenerics[idx]))
+                    return false;
+            }
             return true;
+        }
+
+        public static Type GetGenericInterfaceDefinition(this Type type, Type interfaceType)
+        {
+            bool isUnboundInterface = IsUnboundGeneric(interfaceType);
+            Type unboundInterface = GetUnboundType(interfaceType);
+
+            do
+            {
+                Type unboundType = GetUnboundType(type);
+                if (interfaceType == unboundType)
+                    return type;
+                foreach (Type definedInterface in type.GetInterfaces().Where(i => GetUnboundType(i) == unboundInterface))
+                {
+                    if (isUnboundInterface || HasSameGenerics(definedInterface, interfaceType))
+                        return definedInterface;
+                }
+            }
+            while ((type = type.BaseType) != null);
+            return null;
         }
     }
 }

@@ -127,22 +127,21 @@ namespace Baxendale.Data.Xml
             {
                 return typeof(XmlArraySerializer<,>).MakeGenericType(memberType, memberType.GetElementType());
             }
-            else if (memberType.IsSubClassOfGeneric(typeof(IDictionary<,>)))
+
+            Type dictionaryType = memberType.GetGenericInterfaceDefinition(typeof(IDictionary<,>));
+            if (dictionaryType != null)
             {
-                Type dictionaryType = memberType.GetGenericBaseType(typeof(IDictionary<,>));
-                if (dictionaryType == null)
-                    throw new UnsupportedTypeException(memberType);
                 Type[] generics = dictionaryType.GetGenericArguments();
                 return typeof(XmlDictionarySerializer<,,>).MakeGenericType(dictionaryType, generics[0], generics[1]);
             }
-            else if (memberType.IsSubClassOfGeneric(typeof(ICollection<>)))
+
+            Type collectionType = memberType.GetGenericInterfaceDefinition(typeof(ICollection<>));
+            if (collectionType != null)
             {
-                Type collectionType = memberType.GetGenericBaseType(typeof(ICollection<>));
-                if (collectionType == null)
-                    throw new UnsupportedTypeException(memberType);
                 return typeof(XmlGenericCollectionSerializer<,>).MakeGenericType(memberType, collectionType.GetGenericArguments()[0]);
             }
-            else if (typeof(ICollection).IsAssignableFrom(memberType))
+            
+            if (typeof(ICollection).IsAssignableFrom(memberType))
             {
                 return typeof(XmlCollectionSerializer<>).MakeGenericType(memberType);
             }
