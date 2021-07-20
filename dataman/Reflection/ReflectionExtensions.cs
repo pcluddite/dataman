@@ -82,6 +82,12 @@ namespace Baxendale.Data.Reflection
             }
         }
 
+        public static ConstructorInfo GetParameterlessConstructor(this Type type)
+        {
+            if (type == null) throw new ArgumentNullException(nameof(type));
+            return type.GetConstructor(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public, Type.DefaultBinder, Type.EmptyTypes, null);
+        }
+
         public static IEnumerable<Type> GetBaseTypes(this Type currentType)
         {
             if (currentType == null) throw new ArgumentNullException(nameof(currentType));

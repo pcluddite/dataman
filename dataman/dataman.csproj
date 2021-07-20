@@ -82,6 +82,9 @@
     <Compile Include="Reflection\ReflectionExtensions.cs" />
     <Compile Include="Reflection\TypeComparer.cs" />
     <Compile Include="Reflection\TypeDictionary.cs" />
+    <Compile Include="Xml\Exceptions\AbstractInstantiationException.cs" />
+    <Compile Include="Xml\Exceptions\ConstructorNotFound.cs" />
+    <Compile Include="Xml\Exceptions\UnserializableMemberException.cs" />
     <Compile Include="Xml\XmlCustomTypeSerializer.cs">
       <DependentUpon>XObjectSerializer.cs</DependentUpon>
     </Compile>
@@ -92,7 +95,7 @@
       <DependentUpon>XmlSerializer.tt</DependentUpon>
     </Compile>
     <Compile Include="Xml\Exceptions\FieldNotFoundException.cs" />
-    <Compile Include="Xml\Exceptions\ReadOnlyFieldException.cs" />
+    <Compile Include="Xml\Exceptions\ReadOnlyMemberException.cs" />
     <Compile Include="Xml\Exceptions\SerializerException.cs" />
     <Compile Include="Xml\XmlArraySerializer.cs">
       <DependentUpon>XObjectSerializer.cs</DependentUpon>

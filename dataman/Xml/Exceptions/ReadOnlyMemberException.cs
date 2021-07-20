@@ -17,21 +17,21 @@
 //    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
 //    USA
 //
-using System;
+using System.Reflection;
 using System.Xml.Linq;
 
 namespace Baxendale.Data.Xml
 {
-    public class FieldNotFoundException : UnserializableMemberException
+    public class ReadOnlyMemberException : UnserializableMemberException
     {
-        public Type DeclaringType { get; }
-        public string MissingFieldName { get; }
-
-        public FieldNotFoundException(XObject source, Type declaringType, string fieldName)
-            : base(source, null, $"{declaringType.FullName} does not contain a field named {fieldName}")
+        public ReadOnlyMemberException(XObject source, MemberInfo member)
+            : this(source, member, $"{member.Name} in {member.DeclaringType.FullName} is read only and cannot be set when deserialized")
         {
-            DeclaringType = declaringType;
-            MissingFieldName = fieldName;
+        }
+
+        public ReadOnlyMemberException(XObject source, MemberInfo member, string message)
+            : base(source, member, message)
+        {
         }
     }
 }

@@ -136,6 +136,8 @@ namespace Baxendale.Data.Xml
             Type dictionaryType = memberType.GetGenericInterfaceDefinition(typeof(IDictionary<,>));
             if (dictionaryType != null)
             {
+                if (memberType.GetConstructor(Type.EmptyTypes) == null)
+                    throw new ConstructorNotFound(memberType);
                 Type[] generics = dictionaryType.GetGenericArguments();
                 return typeof(XmlDictionarySerializer<,,>).MakeGenericType(dictionaryType, generics[0], generics[1]);
             }
@@ -143,11 +145,15 @@ namespace Baxendale.Data.Xml
             Type collectionType = memberType.GetGenericInterfaceDefinition(typeof(ICollection<>));
             if (collectionType != null)
             {
+                if (memberType.GetConstructor(Type.EmptyTypes) == null)
+                    throw new ConstructorNotFound(memberType);
                 return typeof(XmlGenericCollectionSerializer<,>).MakeGenericType(memberType, collectionType.GetGenericArguments()[0]);
             }
             
             if (typeof(ICollection).IsAssignableFrom(memberType))
             {
+                if (memberType.GetConstructor(Type.EmptyTypes) == null)
+                    throw new ConstructorNotFound(memberType);
                 return typeof(XmlCollectionSerializer<>).MakeGenericType(memberType);
             }
             else if (typeof(IConvertible).IsAssignableFrom(memberType))

@@ -112,6 +112,9 @@ namespace Baxendale.Data.Xml
             serializer.ElementName = member.ElementName;
             serializer.ValueAttributeName = member.AttributeName;
 
+            if (member.MemberType.IsInterface || member.MemberType.IsAbstract)
+                throw new AbstractInstantiationException(content, member.Member);
+
             XObject memberContent;
             if (serializer.UsesXAttribute)
             {
@@ -154,14 +157,28 @@ namespace Baxendale.Data.Xml
                 FieldInfo backingField = property.BackingField;
                 if (backingField != null)
                     backingFields.Add(backingField);
-                content.Add(SerializeMember(obj, property));
+                try
+                {
+                    content.Add(SerializeMember(obj, property));
+                }
+                catch (Exception ex) when (ex is SerializerException || ex.GetBaseException() is SerializerException)
+                {
+                    throw new XmlSerializationException(content, ex.Message, ex);
+                }
             }
 
             foreach (XmlSerializableField field in typeof(V).GetSerializableFields(content, CustomClassAttribute, backingFields))
             {
-                XObject fieldContent = SerializeMember(obj, field);
-                if (fieldContent != null)
-                    content.Add(fieldContent);
+                try
+                {
+                    XObject fieldContent = SerializeMember(obj, field);
+                    if (fieldContent != null)
+                        content.Add(fieldContent);
+                }
+                catch (Exception ex) when (ex is SerializerException || ex.GetBaseException() is SerializerException)
+                {
+                    throw new XmlSerializationException(content, ex.Message, ex);
+                }
             }
 
             return content;
@@ -169,10 +186,11 @@ namespace Baxendale.Data.Xml
 
         private XObject SerializeMember(V obj, IXmlSerializableMember member)
         {
-            IXObjectSerializer serializer = XmlSerializer.CreateSerializerObject(member.MemberType);
+            object value = member.GetValue(obj);
+            IXObjectSerializer serializer = XmlSerializer.CreateSerializerObject(value?.GetType() ?? member.MemberType);
             serializer.ElementName = member.ElementName;
             serializer.ValueAttributeName = member.AttributeName;
-            return serializer.Serialize(member.GetValue(obj), member.Name);
+            return serializer.Serialize(value, member.Name);
         }
 
         private static MethodInfo FindDeserializeMethod<XType>(string methodName)

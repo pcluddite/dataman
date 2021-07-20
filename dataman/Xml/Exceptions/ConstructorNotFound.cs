@@ -18,20 +18,19 @@
 //    USA
 //
 using System;
-using System.Xml.Linq;
 
 namespace Baxendale.Data.Xml
 {
-    public class FieldNotFoundException : UnserializableMemberException
+    public class ConstructorNotFound : UnsupportedTypeException
     {
-        public Type DeclaringType { get; }
-        public string MissingFieldName { get; }
-
-        public FieldNotFoundException(XObject source, Type declaringType, string fieldName)
-            : base(source, null, $"{declaringType.FullName} does not contain a field named {fieldName}")
+        public ConstructorNotFound(Type type)
+            : this(type, "No public parameterless constructor could be found.")
         {
-            DeclaringType = declaringType;
-            MissingFieldName = fieldName;
+        }
+
+        public ConstructorNotFound(Type type, string message)
+            : base(type, message)
+        {
         }
     }
 }

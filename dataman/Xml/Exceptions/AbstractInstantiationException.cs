@@ -22,19 +22,11 @@ using System.Xml.Linq;
 
 namespace Baxendale.Data.Xml
 {
-    public class ReadOnlyFieldException : XmlSerializationException
+    public class AbstractInstantiationException : UnserializableMemberException
     {
-        public MemberInfo Member { get; }
-
-        public ReadOnlyFieldException(XObject source, MemberInfo member)
-            : this(source, member, $"{member.Name} in {member.DeclaringType.FullName} is read only and cannot be set")
+        public AbstractInstantiationException(XObject source, MemberInfo member)
+            : base(source, member, $"{member.Name} in {member.DeclaringType.FullName} is defined as an interface or abstract class and its runtime type cannot be inferred")
         {
-        }
-
-        public ReadOnlyFieldException(XObject source, MemberInfo member, string message)
-            : base(source, message)
-        {
-            Member = member;
         }
     }
 }

@@ -124,7 +124,7 @@ namespace Baxendale.Data.Xml
 
         public override void SetValue(object instance, object value)
         {
-            if (IsReadOnly) throw new ReadOnlyFieldException(Source, Member);
+            if (IsReadOnly) throw new ReadOnlyMemberException(Source, Member);
             if (value == null && Default == null && MemberType.IsValueType)
                 Attribute.Default = Activator.CreateInstance(MemberType);
             Member.SetValue(instance, value);
@@ -132,7 +132,7 @@ namespace Baxendale.Data.Xml
 
         public override object GetValue(object instance)
         {
-            if (IsReadOnly) throw new ReadOnlyFieldException(Source, Member);
+            if (IsReadOnly) throw new ReadOnlyMemberException(Source, Member);
             object value = Member.GetValue(instance);
             if (value == null && SerializeDefault && Default == null && MemberType.IsValueType)
                 return Activator.CreateInstance(MemberType);
@@ -140,7 +140,7 @@ namespace Baxendale.Data.Xml
         }
     }
 
-    internal class XmlSerializableProperty : XmlSerializableMember<PropertyInfo, XmlSerializablePropertyAttribute>
+    internal class XmlSerializableProperty : XmlSerializableMember<PropertyInfo, XmlSerializablePropertyAttribute>, IXmlSerializableMember
     {
         private readonly Lazy<FieldInfo> _backingField;
 
@@ -182,11 +182,11 @@ namespace Baxendale.Data.Xml
         {
             if (BackingField == null)
             {
-                if (IsReadOnly) throw new ReadOnlyFieldException(Source, Member);
+                if (IsReadOnly) throw new ReadOnlyMemberException(Source, Member);
                 return Member.GetValue(instance);
             }
 
-            if (IsReadOnly) throw new ReadOnlyFieldException(Source, BackingField);
+            if (IsReadOnly) throw new ReadOnlyMemberException(Source, BackingField);
             object value = BackingField.GetValue(instance);
             if (value == null && SerializeDefault && Default == null && MemberType.IsValueType)
                 return Activator.CreateInstance(MemberType);
@@ -200,12 +200,12 @@ namespace Baxendale.Data.Xml
                 value = Activator.CreateInstance(MemberType);
             if (BackingField == null)
             {
-                if (IsReadOnly) throw new ReadOnlyFieldException(Source, Member);
+                if (IsReadOnly) throw new ReadOnlyMemberException(Source, Member);
                 Member.SetValue(instance, value);
             }
             else
             {
-                if (IsReadOnly) throw new ReadOnlyFieldException(Source, BackingField);
+                if (IsReadOnly) throw new ReadOnlyMemberException(Source, BackingField);
                 BackingField.SetValue(instance, value);
             }
         }
@@ -218,6 +218,14 @@ namespace Baxendale.Data.Xml
             if (field == null)
                 throw new FieldNotFoundException(Source, MemberType, Name);
             return field;
+        }
+
+        MemberInfo IXmlSerializableMember.Member
+        {
+            get
+            {
+                return (MemberInfo)BackingField ?? Member;
+            }
         }
     }
 }

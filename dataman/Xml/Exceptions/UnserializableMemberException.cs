@@ -17,21 +17,24 @@
 //    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
 //    USA
 //
-using System;
+using System.Reflection;
 using System.Xml.Linq;
 
 namespace Baxendale.Data.Xml
 {
-    public class FieldNotFoundException : UnserializableMemberException
+    public class UnserializableMemberException : XmlSerializationException
     {
-        public Type DeclaringType { get; }
-        public string MissingFieldName { get; }
+        public MemberInfo Member { get; }
 
-        public FieldNotFoundException(XObject source, Type declaringType, string fieldName)
-            : base(source, null, $"{declaringType.FullName} does not contain a field named {fieldName}")
+        public UnserializableMemberException(XObject source, MemberInfo member)
+            : this(source, member, $"{member.Name} in {member.DeclaringType.FullName} cannot be serialized")
         {
-            DeclaringType = declaringType;
-            MissingFieldName = fieldName;
+        }
+
+        public UnserializableMemberException(XObject source, MemberInfo member, string message)
+            : base(source, message)
+        {
+            Member = member;
         }
     }
 }
