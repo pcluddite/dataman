@@ -122,6 +122,11 @@ namespace Baxendale.Data.Xml
             return SerializableTypes.GetTypeFromXElement(content);
         }
 
+        internal XName GeRegisteredTypeName(Type type)
+        {
+            return SerializableTypes.GetXName(type);
+        }
+
         internal static Type GetObjectSerializerType(Type memberType)
         {
             if (typeof(IXmlSerializableObject).IsAssignableFrom(memberType))
