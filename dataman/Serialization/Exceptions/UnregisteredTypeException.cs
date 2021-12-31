@@ -19,18 +19,23 @@
 //
 using System;
 
-namespace Baxendale.Data.Xml
+namespace Baxendale.Serialization
 {
-    public class ConstructorNotFound : UnsupportedTypeException
+    public class UnregisteredTypeException : SerializerException
     {
-        public ConstructorNotFound(Type type)
-            : this(type, "No public parameterless constructor could be found.")
+        public string ElementName { get; private set; }
+        public Type UnregisteredType { get; private set; }
+
+        public UnregisteredTypeException(string elementName)
+            : base($"<{elementName}> was not registered for deserialization and the type of object is not known")
         {
+            ElementName = elementName;
         }
 
-        public ConstructorNotFound(Type type, string message)
-            : base(type, message)
+        public UnregisteredTypeException(Type type)
+            : base($"{type.FullName} was not registered for serialization and no XML name is associated with it")
         {
+            UnregisteredType = type;
         }
     }
 }

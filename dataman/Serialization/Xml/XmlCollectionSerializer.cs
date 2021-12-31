@@ -22,6 +22,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Xml.Linq;
 using Baxendale.Data.Collections.NonGenerics;
+using Baxendale.Serialization;
 
 namespace Baxendale.Data.Xml
 {

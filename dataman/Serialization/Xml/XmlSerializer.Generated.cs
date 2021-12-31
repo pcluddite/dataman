@@ -19,6 +19,7 @@
 //
 using System;
 using System.Xml.Linq;
+using Baxendale.Serialization;
 
 namespace Baxendale.Data.Xml
 {

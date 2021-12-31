@@ -24,6 +24,7 @@ using System.Linq;
 using System.Reflection;
 using System.Xml.Linq;
 using Baxendale.Data.Collections;
+using Baxendale.Serialization;
 
 namespace Baxendale.Data.Xml
 {

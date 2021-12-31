@@ -20,21 +20,18 @@
 using System.Reflection;
 using System.Xml.Linq;
 
-namespace Baxendale.Data.Xml
+namespace Baxendale.Serialization
 {
-    public class UnserializableMemberException : XmlSerializationException
+    public class ReadOnlyMemberException : UnserializableMemberException
     {
-        public MemberInfo Member { get; }
-
-        public UnserializableMemberException(XObject source, MemberInfo member)
-            : this(source, member, $"{member.Name} in {member.DeclaringType.FullName} cannot be serialized")
+        public ReadOnlyMemberException(XObject source, MemberInfo member)
+            : this(source, member, $"{member.Name} in {member.DeclaringType.FullName} is read only and cannot be set when deserialized")
         {
         }
 
-        public UnserializableMemberException(XObject source, MemberInfo member, string message)
-            : base(source, message)
+        public ReadOnlyMemberException(XObject source, MemberInfo member, string message)
+            : base(source, member, message)
         {
-            Member = member;
         }
     }
 }

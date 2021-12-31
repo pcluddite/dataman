@@ -23,6 +23,7 @@ using System.Linq;
 using System.Reflection;
 using System.Xml.Linq;
 using Baxendale.Data.Reflection;
+using Baxendale.Serialization;
 
 namespace Baxendale.Data.Xml
 {
@@ -77,7 +78,7 @@ namespace Baxendale.Data.Xml
             {
                 XElement xelementContent = content as XElement;
                 if (xelementContent == null)
-                    throw new XmlSerializationException(content, $"Cannot deserialize {typeof(V).Name} from given XObject type.");
+                    throw new SerializationException(content, $"Cannot deserialize {typeof(V).Name} from given XObject type.");
                 return DefaultDeserialize((XElement)content);
             }
             if (deserializeMethod.GetParameters().Length == 1)
@@ -163,7 +164,7 @@ namespace Baxendale.Data.Xml
                 }
                 catch (Exception ex) when (ex is SerializerException || ex.GetBaseException() is SerializerException)
                 {
-                    throw new XmlSerializationException(content, ex.Message, ex);
+                    throw new SerializationException(content, ex.Message, ex);
                 }
             }
 
@@ -177,7 +178,7 @@ namespace Baxendale.Data.Xml
                 }
                 catch (Exception ex) when (ex is SerializerException || ex.GetBaseException() is SerializerException)
                 {
-                    throw new XmlSerializationException(content, ex.Message, ex);
+                    throw new SerializationException(content, ex.Message, ex);
                 }
             }
 

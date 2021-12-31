@@ -1,6 +1,6 @@
 ﻿//
 //    DataMan - Supplemental library for managing data types and handling serialization
-//    Copyright (C) 2021 Timothy Baxendale
+//    Copyright (C) 2021-2022 Timothy Baxendale
 //
 //    This library is free software; you can redistribute it and/or
 //    modify it under the terms of the GNU Lesser General Public
@@ -19,29 +19,22 @@
 //
 using System;
 
-namespace Baxendale.Data.Xml
+namespace Baxendale.Serialization
 {
-    public class UnsupportedTypeException : SerializerException
+    public class SerializerException : Exception
     {
-        public Type UnsupportedType { get; private set; }
-
-        public UnsupportedTypeException(Type type)
-            : this(type, null)
+        public SerializerException()
+            : base()
         {
         }
 
-        public UnsupportedTypeException(string typeName)
-            : this(typeName, null)
+        public SerializerException(string message)
+            : base(message)
         {
-        }
-        public UnsupportedTypeException(Type type, string message)
-            : this(type.Name, message)
-        {
-            UnsupportedType = type;
         }
 
-        public UnsupportedTypeException(string typeName, string message)
-            : base(typeName + " is unsupported for deserialization." + (message == null ? "" : " " + message))
+        public SerializerException(string message, Exception innerException)
+            : base(message, innerException)
         {
         }
     }

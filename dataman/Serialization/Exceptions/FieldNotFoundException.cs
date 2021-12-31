@@ -17,16 +17,21 @@
 //    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
 //    USA
 //
-using System.Reflection;
+using System;
 using System.Xml.Linq;
 
-namespace Baxendale.Data.Xml
+namespace Baxendale.Serialization
 {
-    public class AbstractInstantiationException : UnserializableMemberException
+    public class FieldNotFoundException : UnserializableMemberException
     {
-        public AbstractInstantiationException(XObject source, MemberInfo member)
-            : base(source, member, $"{member.Name} in {member.DeclaringType.FullName} is defined as an interface or abstract class and its runtime type cannot be inferred")
+        public Type DeclaringType { get; }
+        public string MissingFieldName { get; }
+
+        public FieldNotFoundException(XObject source, Type declaringType, string fieldName)
+            : base(source, null, $"{declaringType.FullName} does not contain a field named {fieldName}")
         {
+            DeclaringType = declaringType;
+            MissingFieldName = fieldName;
         }
     }
 }

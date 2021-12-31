@@ -17,25 +17,24 @@
 //    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
 //    USA
 //
-using System;
 
-namespace Baxendale.Data.Xml
+using System.Xml.Linq;
+
+namespace Baxendale.Serialization
 {
-    public class SerializerException : Exception
+    internal class XObjectNotFoundException : SerializationException
     {
-        public SerializerException()
-            : base()
+        public string Name { get; }
+
+        public XObjectNotFoundException(XObject source, XName name)
+            : this(source, name?.ToString())
         {
         }
 
-        public SerializerException(string message)
-            : base(message)
+        public XObjectNotFoundException(XObject source, string name)
+            : base(source, $"{name} was not found in the current element")
         {
-        }
-
-        public SerializerException(string message, Exception innerException)
-            : base(message, innerException)
-        {
+            Name = name;
         }
     }
 }

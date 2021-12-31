@@ -18,34 +18,19 @@
 //    USA
 //
 using System;
-using System.Xml.Linq;
 
-namespace Baxendale.Data.Xml
+namespace Baxendale.Serialization
 {
-    public class XmlSerializationException : Exception
+    public class ConstructorNotFound : UnsupportedTypeException
     {
-        public XObject XmlSource { get; }
-
-        public XmlSerializationException(XObject source)
-            : this(source, $"An exception occurred when processing {source?.BaseUri}")
+        public ConstructorNotFound(Type type)
+            : this(type, "No public parameterless constructor could be found.")
         {
         }
 
-        public XmlSerializationException(XObject source, Exception innerException)
-            : this(source, $"An exception occurred when processing {source?.BaseUri} because of the following: {innerException?.Message}")
+        public ConstructorNotFound(Type type, string message)
+            : base(type, message)
         {
-        }
-
-        public XmlSerializationException(XObject source, string message)
-            : base(message)
-        {
-            XmlSource = source;
-        }
-
-        public XmlSerializationException(XObject source, string message, Exception innerException)
-            : base(message, innerException)
-        {
-            XmlSource = source;
         }
     }
 }

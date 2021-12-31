@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Xml.Linq;
 using Baxendale.Data.Reflection;
+using Baxendale.Serialization;
 
 namespace Baxendale.Data.Xml
 {

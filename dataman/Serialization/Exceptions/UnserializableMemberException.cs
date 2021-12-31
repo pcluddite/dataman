@@ -17,25 +17,24 @@
 //    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
 //    USA
 //
-using System;
+using System.Reflection;
+using System.Xml.Linq;
 
-namespace Baxendale.Data.Xml
+namespace Baxendale.Serialization
 {
-    public class UnregisteredTypeException : SerializerException
+    public class UnserializableMemberException : SerializationException
     {
-        public string ElementName { get; private set; }
-        public Type UnregisteredType { get; private set; }
+        public MemberInfo Member { get; }
 
-        public UnregisteredTypeException(string elementName)
-            : base($"<{elementName}> was not registered for deserialization and the type of object is not known")
+        public UnserializableMemberException(XObject source, MemberInfo member)
+            : this(source, member, $"{member.Name} in {member.DeclaringType.FullName} cannot be serialized")
         {
-            ElementName = elementName;
         }
 
-        public UnregisteredTypeException(Type type)
-            : base($"{type.FullName} was not registered for serialization and no XML name is associated with it")
+        public UnserializableMemberException(XObject source, MemberInfo member, string message)
+            : base(source, message)
         {
-            UnregisteredType = type;
+            Member = member;
         }
     }
 }

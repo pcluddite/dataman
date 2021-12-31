@@ -17,24 +17,32 @@
 //    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
 //    USA
 //
+using System;
 
-using System.Xml.Linq;
-
-namespace Baxendale.Data.Xml
+namespace Baxendale.Serialization
 {
-    internal class XObjectNotFoundException : XmlSerializationException
+    public class UnsupportedTypeException : SerializerException
     {
-        public string Name { get; }
+        public Type UnsupportedType { get; private set; }
 
-        public XObjectNotFoundException(XObject source, XName name)
-            : this(source, name?.ToString())
+        public UnsupportedTypeException(Type type)
+            : this(type, null)
         {
         }
 
-        public XObjectNotFoundException(XObject source, string name)
-            : base(source, $"{name} was not found in the current element")
+        public UnsupportedTypeException(string typeName)
+            : this(typeName, null)
         {
-            Name = name;
+        }
+        public UnsupportedTypeException(Type type, string message)
+            : this(type.Name, message)
+        {
+            UnsupportedType = type;
+        }
+
+        public UnsupportedTypeException(string typeName, string message)
+            : base(typeName + " is unsupported for deserialization." + (message == null ? "" : " " + message))
+        {
         }
     }
 }
