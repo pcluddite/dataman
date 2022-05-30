@@ -1,6 +1,6 @@
 ﻿//
 //    DataMan - Supplemental library for managing data types and handling serialization
-//    Copyright (C) 2021 Timothy Baxendale
+//    Copyright (C) 2021-2022 Timothy Baxendale
 //
 //    This library is free software; you can redistribute it and/or
 //    modify it under the terms of the GNU Lesser General Public
@@ -26,12 +26,12 @@ namespace Baxendale.Serialization
     {
         public MemberInfo Member { get; }
 
-        public UnserializableMemberException(XObject source, MemberInfo member)
+        public UnserializableMemberException(ISerializedObject source, MemberInfo member)
             : this(source, member, $"{member.Name} in {member.DeclaringType.FullName} cannot be serialized")
         {
         }
 
-        public UnserializableMemberException(XObject source, MemberInfo member, string message)
+        public UnserializableMemberException(ISerializedObject source, MemberInfo member, string message)
             : base(source, message)
         {
             Member = member;

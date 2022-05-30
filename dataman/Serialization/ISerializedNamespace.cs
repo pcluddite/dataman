@@ -17,32 +17,13 @@
 //    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
 //    USA
 //
+
 using System;
 
 namespace Baxendale.Serialization
 {
-    public class UnsupportedTypeException : SerializerException
+    public interface ISerializedNamespace : IEquatable<ISerializedNamespace>
     {
-        public Type UnsupportedType { get; private set; }
-
-        public UnsupportedTypeException(Type type)
-            : this(type, null)
-        {
-        }
-
-        public UnsupportedTypeException(string typeName)
-            : this(typeName, null)
-        {
-        }
-        public UnsupportedTypeException(Type type, string message)
-            : this(type.Name, message)
-        {
-            UnsupportedType = type;
-        }
-
-        public UnsupportedTypeException(string typeName, string message)
-            : base(typeName + " is unsupported for deserialization." + (message == null ? "" : " " + message))
-        {
-        }
+        string NamespaceName { get; }
     }
 }

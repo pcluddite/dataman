@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Baxendale.Data</RootNamespace>
     <AssemblyName>dataman</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -87,7 +87,11 @@
     <Compile Include="Serialization\Exceptions\AbstractInstantiationException.cs" />
     <Compile Include="Serialization\Exceptions\ConstructorNotFound.cs" />
     <Compile Include="Serialization\Exceptions\UnserializableMemberException.cs" />
+    <Compile Include="Serialization\ISerializedName.cs" />
+    <Compile Include="Serialization\ISerializedNamespace.cs" />
+    <Compile Include="Serialization\ISerializedObject.cs" />
     <Compile Include="Serialization\Xml\Exceptions\XmlSerializationException.cs" />
+    <Compile Include="Serialization\Xml\Exceptions\XObjectNotFoundException.cs" />
     <Compile Include="Serialization\Xml\XmlCustomTypeSerializer.cs">
       <DependentUpon>XObjectSerializer.cs</DependentUpon>
     </Compile>
@@ -130,8 +134,11 @@
     <Compile Include="Serialization\Xml\Attributes\XmlSerializableMemberAttribute.cs" />
     <Compile Include="Serialization\Exceptions\SerializationException.cs" />
     <Compile Include="Serialization\Xml\XmlSerializer.cs" />
-    <Compile Include="Serialization\Exceptions\XObjectNotFoundException.cs" />
+    <Compile Include="Serialization\Exceptions\ObjectNotFoundException.cs" />
     <Compile Include="Serialization\Xml\XSerializerTypeDictionary.cs" />
+    <Compile Include="Serialization\Xml\XTName.cs" />
+    <Compile Include="Serialization\Xml\XTNamespace.cs" />
+    <Compile Include="Serialization\Xml\XTObject.cs" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

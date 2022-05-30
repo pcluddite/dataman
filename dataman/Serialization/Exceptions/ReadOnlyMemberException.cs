@@ -1,6 +1,6 @@
 ﻿//
 //    DataMan - Supplemental library for managing data types and handling serialization
-//    Copyright (C) 2021 Timothy Baxendale
+//    Copyright (C) 2021-2022 Timothy Baxendale
 //
 //    This library is free software; you can redistribute it and/or
 //    modify it under the terms of the GNU Lesser General Public
@@ -24,12 +24,12 @@ namespace Baxendale.Serialization
 {
     public class ReadOnlyMemberException : UnserializableMemberException
     {
-        public ReadOnlyMemberException(XObject source, MemberInfo member)
+        public ReadOnlyMemberException(ISerializedObject source, MemberInfo member)
             : this(source, member, $"{member.Name} in {member.DeclaringType.FullName} is read only and cannot be set when deserialized")
         {
         }
 
-        public ReadOnlyMemberException(XObject source, MemberInfo member, string message)
+        public ReadOnlyMemberException(ISerializedObject source, MemberInfo member, string message)
             : base(source, member, message)
         {
         }

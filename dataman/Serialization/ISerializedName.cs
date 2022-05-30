@@ -1,6 +1,6 @@
 ﻿//
 //    DataMan - Supplemental library for managing data types and handling serialization
-//    Copyright (C) 2021 Timothy Baxendale
+//    Copyright (C) 2021-2022 Timothy Baxendale
 //
 //    This library is free software; you can redistribute it and/or
 //    modify it under the terms of the GNU Lesser General Public
@@ -18,23 +18,14 @@
 //    USA
 //
 
-using System.Xml.Linq;
+using System;
 
 namespace Baxendale.Serialization
 {
-    internal class XObjectNotFoundException : SerializationException
+    public interface ISerializedName : IEquatable<ISerializedName>, IEquatable<string>
     {
-        public string Name { get; }
-
-        public XObjectNotFoundException(XObject source, XName name)
-            : this(source, name?.ToString())
-        {
-        }
-
-        public XObjectNotFoundException(XObject source, string name)
-            : base(source, $"{name} was not found in the current element")
-        {
-            Name = name;
-        }
+        string LocalName { get; }
+        ISerializedNamespace Namespace { get; }
+        string NamespaceName { get; }
     }
 }

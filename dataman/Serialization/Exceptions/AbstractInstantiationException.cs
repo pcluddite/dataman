@@ -1,6 +1,6 @@
 ﻿//
 //    DataMan - Supplemental library for managing data types and handling serialization
-//    Copyright (C) 2021-22 Timothy Baxendale
+//    Copyright (C) 2021-2022 Timothy Baxendale
 //
 //    This library is free software; you can redistribute it and/or
 //    modify it under the terms of the GNU Lesser General Public
@@ -24,7 +24,7 @@ namespace Baxendale.Serialization
 {
     public class AbstractInstantiationException : UnserializableMemberException
     {
-        public AbstractInstantiationException(XObject source, MemberInfo member)
+        public AbstractInstantiationException(ISerializedObject source, MemberInfo member)
             : base(source, member, $"{member.Name} in {member.DeclaringType.FullName} is defined as an interface or abstract class and its runtime type cannot be inferred")
         {
         }

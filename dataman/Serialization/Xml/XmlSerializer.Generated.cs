@@ -164,7 +164,7 @@ namespace Baxendale.Data.Xml
                     contentName = ValueAttributeName;
                 XAttribute attribute = content.Attribute(contentName);
                 if (attribute == null)
-                    throw new XObjectNotFoundException(content, contentName);
+                    throw new ObjectNotFoundException(content, contentName);
                 return (T)serializer.Deserialize(attribute);
             }
 #if !DEBUG
@@ -318,7 +318,7 @@ namespace Baxendale.Data.Xml
                     contentName = ValueAttributeName;
                 XAttribute attribute = content.Attribute(contentName);
                 if (attribute == null)
-                    throw new XObjectNotFoundException(content, contentName);
+                    throw new ObjectNotFoundException(content, contentName);
                 return serializer.Deserialize(attribute);
             }
 #if !DEBUG

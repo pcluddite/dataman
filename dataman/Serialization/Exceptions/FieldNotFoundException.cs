@@ -1,6 +1,6 @@
 ﻿//
 //    DataMan - Supplemental library for managing data types and handling serialization
-//    Copyright (C) 2021 Timothy Baxendale
+//    Copyright (C) 2021-2022 Timothy Baxendale
 //
 //    This library is free software; you can redistribute it and/or
 //    modify it under the terms of the GNU Lesser General Public
@@ -27,7 +27,7 @@ namespace Baxendale.Serialization
         public Type DeclaringType { get; }
         public string MissingFieldName { get; }
 
-        public FieldNotFoundException(XObject source, Type declaringType, string fieldName)
+        public FieldNotFoundException(ISerializedObject source, Type declaringType, string fieldName)
             : base(source, null, $"{declaringType.FullName} does not contain a field named {fieldName}")
         {
             DeclaringType = declaringType;

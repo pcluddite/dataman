@@ -17,31 +17,19 @@
 //    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
 //    USA
 //
-using System;
+using System.Xml.Linq;
 
-namespace Baxendale.Serialization
+namespace Baxendale.Serialization.Xml
 {
-    public class UnsupportedTypeException : SerializerException
+    public class XObjectNotFoundException : ObjectNotFoundException
     {
-        public Type UnsupportedType { get; private set; }
-
-        public UnsupportedTypeException(Type type)
-            : this(type, null)
+        public XObjectNotFoundException(XTObject source, XName name)
+            : base(source, (XTName)name)
         {
         }
 
-        public UnsupportedTypeException(string typeName)
-            : this(typeName, null)
-        {
-        }
-        public UnsupportedTypeException(Type type, string message)
-            : this(type.Name, message)
-        {
-            UnsupportedType = type;
-        }
-
-        public UnsupportedTypeException(string typeName, string message)
-            : base(typeName + " is unsupported for deserialization." + (message == null ? "" : " " + message))
+        public XObjectNotFoundException(XTObject source, string name)
+            : base(source, name)
         {
         }
     }

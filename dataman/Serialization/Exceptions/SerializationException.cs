@@ -1,6 +1,6 @@
 ﻿//
 //    DataMan - Supplemental library for managing data types and handling serialization
-//    Copyright (C) 2021 Timothy Baxendale
+//    Copyright (C) 2021-2022 Timothy Baxendale
 //
 //    This library is free software; you can redistribute it and/or
 //    modify it under the terms of the GNU Lesser General Public
@@ -24,28 +24,28 @@ namespace Baxendale.Serialization
 {
     public class SerializationException : Exception
     {
-        public XObject XmlSource { get; }
+        public ISerializedObject SourceObject { get; }
 
-        public SerializationException(XObject source)
+        public SerializationException(ISerializedObject source)
             : this(source, $"An exception occurred when processing {source?.BaseUri}")
         {
         }
 
-        public SerializationException(XObject source, Exception innerException)
+        public SerializationException(ISerializedObject source, Exception innerException)
             : this(source, $"An exception occurred when processing {source?.BaseUri} because of the following: {innerException?.Message}")
         {
         }
 
-        public SerializationException(XObject source, string message)
+        public SerializationException(ISerializedObject source, string message)
             : base(message)
         {
-            XmlSource = source;
+            SourceObject = source;
         }
 
-        public SerializationException(XObject source, string message, Exception innerException)
+        public SerializationException(ISerializedObject source, string message, Exception innerException)
             : base(message, innerException)
         {
-            XmlSource = source;
+            SourceObject = source;
         }
     }
 }
